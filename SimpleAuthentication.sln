@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleAuthentication", "SimpleAuthentication\SimpleAuthentication.csproj", "{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleAuthentication", "src\SimpleAuthentication\SimpleAuthentication.csproj", "{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleAuthentication.WebApi", "SimpleAuthentication.WebApi\SimpleAuthentication.WebApi.csproj", "{6343E842-D778-4AD9-8796-1E55C5F39A16}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleAuthentication.WebApi", "src\SimpleAuthentication.WebApi\SimpleAuthentication.WebApi.csproj", "{6343E842-D778-4AD9-8796-1E55C5F39A16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
