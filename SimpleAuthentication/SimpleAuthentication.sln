@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleAuthentication", "SimpleAuthentication\SimpleAuthentication.csproj", "{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleAuthentication.WebApi", "SimpleAuthentication.WebApi\SimpleAuthentication.WebApi.csproj", "{6343E842-D778-4AD9-8796-1E55C5F39A16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AFC68B7-C503-4BB3-BAE4-1A7BC1207634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6343E842-D778-4AD9-8796-1E55C5F39A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6343E842-D778-4AD9-8796-1E55C5F39A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6343E842-D778-4AD9-8796-1E55C5F39A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6343E842-D778-4AD9-8796-1E55C5F39A16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02046913-4C76-4691-912A-75826EC29E5C}
+	EndGlobalSection
+EndGlobal
