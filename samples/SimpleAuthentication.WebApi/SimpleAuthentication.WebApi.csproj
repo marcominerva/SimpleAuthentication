@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SimpleAuthentication\SimpleAuthentication.csproj" />
+    <ProjectReference Include="..\..\src\SimpleAuthentication\SimpleAuthentication.csproj" />
   </ItemGroup>
 
 </Project>
