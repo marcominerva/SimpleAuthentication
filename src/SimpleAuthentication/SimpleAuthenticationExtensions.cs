@@ -5,6 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
+using SimpleAuthentication.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SimpleAuthentication;
 
@@ -38,7 +42,7 @@ public static class SimpleAuthenticationExtensions
                     ? new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey))
                     : null,
                 RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = settings.ClockSkew
             };
         });
 
@@ -57,5 +61,34 @@ public static class SimpleAuthenticationExtensions
         app.UseAuthorization();
 
         return app;
+    }
+
+    public static void AddJwtBearerAuthentication(this SwaggerGenOptions options)
+    {
+        options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Insert the Bearer Token with the 'Bearer ' prefix",
+            Name = HeaderNames.Authorization,
+            Type = SecuritySchemeType.ApiKey
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference= new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = JwtBearerDefaults.AuthenticationScheme
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+
+        options.OperationFilter<AuthenticationResponseOperationFilter>();
+        options.DocumentFilter<ProblemDetailsDocumentFilter>();
     }
 }
