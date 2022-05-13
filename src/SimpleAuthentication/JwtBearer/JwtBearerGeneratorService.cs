@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SimpleAuthentication;
+namespace SimpleAuthentication.JwtBearer;
 
 internal class JwtBearerGeneratorService : IJwtBearerGeneratorService
 {
@@ -35,7 +35,7 @@ internal class JwtBearerGeneratorService : IJwtBearerGeneratorService
             jwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? DateTime.UtcNow.Add(jwtBearerSettings.ExpirationTime!.Value) : null,
             signingCredentials);
 
-        var accessToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-        return accessToken;
+        var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+        return token;
     }
 }

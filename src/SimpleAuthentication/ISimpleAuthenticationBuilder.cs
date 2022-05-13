@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 
 namespace SimpleAuthentication;
 
 public interface ISimpleAuthenticationBuilder
 {
-    IServiceCollection Services { get; }
+    public IConfiguration Configuration { get; }
+
+    public AuthenticationBuilder Builder { get; }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using SimpleAuthentication.JwtBearer;
 using SimpleAuthentication.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -14,21 +16,32 @@ namespace SimpleAuthentication;
 
 public static class SimpleAuthenticationExtensions
 {
-    public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services)
-        => new DefaultSimpleAuthenticationBuilder(services);
-
-    public static IJwtAuthenticationBuilder WithJwtBearer(this ISimpleAuthenticationBuilder builder, IConfiguration configuration, string sectionName = "JwtBearer")
+    public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
     {
-        var section = configuration.GetSection(sectionName);
+        var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultAuthenticationScheme");
+
+        var builder = services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = defaultAuthenticationScheme;
+            options.DefaultChallengeScheme = defaultAuthenticationScheme;
+        });
+
+        CheckAddJwtBearer(configuration.GetSection($"{sectionName}:JwtBearer"), builder);
+
+        return new DefaultSimpleAuthenticationBuilder(configuration, builder);
+    }
+
+    private static void CheckAddJwtBearer(IConfigurationSection section, AuthenticationBuilder builder)
+    {
         var settings = section.Get<JwtBearerSettings>();
+        if (settings is null)
+        {
+            return;
+        }
+
         builder.Services.Configure<JwtBearerSettings>(section);
 
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
+        builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
             options.TokenValidationParameters = new()
             {
@@ -46,13 +59,10 @@ public static class SimpleAuthenticationExtensions
             };
         });
 
-        return new DefaultJwtAuthenticationBuilder(builder.Services);
-    }
-
-    public static IJwtAuthenticationBuilder AddJwtBearerGenerator(this IJwtAuthenticationBuilder builder)
-    {
-        builder.Services.TryAddSingleton<IJwtBearerGeneratorService, JwtBearerGeneratorService>();
-        return builder;
+        if (settings.EnableJwtBearerGeneration)
+        {
+            builder.Services.TryAddSingleton<IJwtBearerGeneratorService, JwtBearerGeneratorService>();
+        }
     }
 
     public static IApplicationBuilder UseSimpleAuthentication(this IApplicationBuilder app)

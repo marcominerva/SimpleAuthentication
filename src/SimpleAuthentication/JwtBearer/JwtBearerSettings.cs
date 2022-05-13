@@ -1,4 +1,4 @@
-﻿namespace SimpleAuthentication;
+﻿namespace SimpleAuthentication.JwtBearer;
 
 public class JwtBearerSettings
 {
@@ -11,4 +11,6 @@ public class JwtBearerSettings
     public TimeSpan? ExpirationTime { get; init; }
 
     public TimeSpan ClockSkew { get; init; } = TimeSpan.FromMinutes(5);
+
+    public bool EnableJwtBearerGeneration { get; init; } = true;
 }

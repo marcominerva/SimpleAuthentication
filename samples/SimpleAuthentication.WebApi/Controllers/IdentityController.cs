@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using SimpleAuthentication.JwtBearer;
 
 namespace SimpleAuthentication.WebApi.Controllers;
 
@@ -8,7 +9,7 @@ namespace SimpleAuthentication.WebApi.Controllers;
 public class AuthController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Login([FromServices] IJwtBearerGeneratorService tokenGeneratorService)
+    public IActionResult Login([FromServices] IJwtBearerGeneratorService jwtBearerGeneratorService)
     {
         var claims = new List<Claim>
         {
@@ -16,7 +17,7 @@ public class AuthController : ControllerBase
             new(ClaimTypes.Surname,"Duck")
         };
 
-        var token = tokenGeneratorService.CreateToken("marco", claims);
+        var token = jwtBearerGeneratorService.CreateToken("marco", claims);
         return Ok(new { token });
     }
 }
