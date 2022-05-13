@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SimpleAuthentication.JwtBearer;
+namespace SimpleAuthenticationTools.JwtBearer;
 
 internal class JwtBearerGeneratorService : IJwtBearerGeneratorService
 {

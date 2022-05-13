@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace SimpleAuthentication.JwtBearer;
+namespace SimpleAuthenticationTools.JwtBearer;
 
 public interface IJwtBearerGeneratorService
 {
