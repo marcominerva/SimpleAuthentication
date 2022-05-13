@@ -1,6 +1,6 @@
 ﻿namespace SimpleAuthentication;
 
-public class JwtSettings
+public class JwtBearerSettings
 {
     public string? SecurityKey { get; init; }
 
@@ -8,5 +8,7 @@ public class JwtSettings
 
     public string[]? Audiences { get; init; }
 
-    public int AccessTokenExpirationMinutes { get; init; }
+    public TimeSpan? ExpirationTime { get; init; }
+
+    public TimeSpan ClockSkew { get; init; } = TimeSpan.FromMinutes(5);
 }

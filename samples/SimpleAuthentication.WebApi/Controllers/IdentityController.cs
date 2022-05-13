@@ -8,7 +8,7 @@ namespace SimpleAuthentication.WebApi.Controllers;
 public class AuthController : ControllerBase
 {
     [HttpPost]
-    public IActionResult Login([FromServices] IJwtTokenGeneratorService tokenGeneratorService)
+    public IActionResult Login([FromServices] IJwtBearerGeneratorService tokenGeneratorService)
     {
         var claims = new List<Claim>
         {

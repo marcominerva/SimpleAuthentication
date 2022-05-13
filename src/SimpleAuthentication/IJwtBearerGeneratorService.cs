@@ -2,7 +2,7 @@
 
 namespace SimpleAuthentication;
 
-public interface IJwtTokenGeneratorService
+public interface IJwtBearerGeneratorService
 {
     string CreateToken(string username, IList<Claim>? claims = null, string? issuer = null, string? audience = null);
 }

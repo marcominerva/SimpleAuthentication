@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddSimpleAuthentication().WithJwtBearer(builder.Configuration).AddJwtTokenGenerator();
+builder.Services.AddSimpleAuthentication().WithJwtBearer(builder.Configuration).AddJwtBearerGenerator();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

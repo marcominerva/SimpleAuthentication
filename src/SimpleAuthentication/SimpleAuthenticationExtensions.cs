@@ -13,11 +13,11 @@ public static class SimpleAuthenticationExtensions
     public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services)
         => new DefaultSimpleAuthenticationBuilder(services);
 
-    public static IJwtAuthenticationBuilder WithJwtBearer(this ISimpleAuthenticationBuilder builder, IConfiguration configuration, string sectionName = "JwtSettings")
+    public static IJwtAuthenticationBuilder WithJwtBearer(this ISimpleAuthenticationBuilder builder, IConfiguration configuration, string sectionName = "JwtBearer")
     {
         var section = configuration.GetSection(sectionName);
-        var jwtSettings = section.Get<JwtSettings>();
-        builder.Services.Configure<JwtSettings>(section);
+        var settings = section.Get<JwtBearerSettings>();
+        builder.Services.Configure<JwtBearerSettings>(section);
 
         builder.Services.AddAuthentication(options =>
         {
@@ -28,16 +28,16 @@ public static class SimpleAuthenticationExtensions
         {
             options.TokenValidationParameters = new()
             {
-                ValidateIssuer = jwtSettings.Issuers?.Any() ?? false,
-                ValidIssuers = jwtSettings.Issuers,
-                ValidateAudience = jwtSettings.Audiences?.Any() ?? false,
-                ValidAudiences = jwtSettings.Audiences,
+                ValidateIssuer = settings.Issuers?.Any() ?? false,
+                ValidIssuers = settings.Issuers,
+                ValidateAudience = settings.Audiences?.Any() ?? false,
+                ValidAudiences = settings.Audiences,
                 ValidateLifetime = true,
-                ValidateIssuerSigningKey = !string.IsNullOrWhiteSpace(jwtSettings.SecurityKey),
-                IssuerSigningKey = !string.IsNullOrWhiteSpace(jwtSettings.SecurityKey)
-                    ? new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey))
+                ValidateIssuerSigningKey = !string.IsNullOrWhiteSpace(settings.SecurityKey),
+                IssuerSigningKey = !string.IsNullOrWhiteSpace(settings.SecurityKey)
+                    ? new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey))
                     : null,
-                RequireExpirationTime = jwtSettings.AccessTokenExpirationMinutes > 0,
+                RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
                 ClockSkew = TimeSpan.Zero
             };
         });
@@ -45,9 +45,9 @@ public static class SimpleAuthenticationExtensions
         return new DefaultJwtAuthenticationBuilder(builder.Services);
     }
 
-    public static IJwtAuthenticationBuilder AddJwtTokenGenerator(this IJwtAuthenticationBuilder builder)
+    public static IJwtAuthenticationBuilder AddJwtBearerGenerator(this IJwtAuthenticationBuilder builder)
     {
-        builder.Services.TryAddSingleton<IJwtTokenGeneratorService, JwtTokenGeneratorService>();
+        builder.Services.TryAddSingleton<IJwtBearerGeneratorService, JwtBearerGeneratorService>();
         return builder;
     }
 
