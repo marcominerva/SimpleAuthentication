@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Authors>Marco Minerva</Authors>
+		<Company>Marco Minerva</Company>
+		<Product>Simple Authentication</Product>
+		<Title>Simple Authentication</Title>
+		<Description>A library to easily integrate Authentication in ASP.NET Core Projects.</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
+		<PackageIcon>Toolbox.png</PackageIcon>
+		<PackageTags>csharp visualstudio aspnetcore webapi authentication jwt jwtbearer utilities helpers</PackageTags>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/marcominerva/SimpleAuthentication.git</RepositoryUrl>
+		<RepositoryBranch>master</RepositoryBranch>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
+	  <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.104">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Toolbox.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+</Project>
