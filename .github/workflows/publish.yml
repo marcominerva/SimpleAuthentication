@@ -8,8 +8,8 @@ on:
 
 env:
   NET_VERSION: '6.x'
-  PROJECT_NAME: src/SimpleAuthentication 
-  PROJECT_FILE: SimpleAuthentication.csproj  
+  PROJECT_NAME: src/SimpleAuthenticationTools 
+  PROJECT_FILE: SimpleAuthenticationTools.csproj  
   
 jobs:
   build:

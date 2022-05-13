@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SimpleAuthentication.WebApi.Controllers;
+namespace SimpleAuthenticationTools.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

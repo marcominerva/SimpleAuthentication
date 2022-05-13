@@ -1,4 +1,4 @@
-﻿namespace SimpleAuthentication.JwtBearer;
+﻿namespace SimpleAuthenticationTools.JwtBearer;
 
 public class JwtBearerSettings
 {

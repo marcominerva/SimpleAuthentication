@@ -2,7 +2,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace SimpleAuthentication.Swagger;
+namespace SimpleAuthenticationTools.Swagger;
 
 internal class ProblemDetailsDocumentFilter : IDocumentFilter
 {

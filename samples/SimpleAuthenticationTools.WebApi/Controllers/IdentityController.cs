@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using SimpleAuthentication.JwtBearer;
+using SimpleAuthenticationTools.JwtBearer;
 
-namespace SimpleAuthentication.WebApi.Controllers;
+namespace SimpleAuthenticationTools.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

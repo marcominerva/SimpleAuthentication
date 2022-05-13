@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 
-namespace SimpleAuthentication;
+namespace SimpleAuthenticationTools;
 
-public interface ISimpleAuthenticationBuilder
+public interface ISimpleAuthenticationToolsBuilder
 {
     public IConfiguration Configuration { get; }
 
