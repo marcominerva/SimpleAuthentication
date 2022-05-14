@@ -9,9 +9,9 @@ A library to easily integrate Authentication in ASP.NET Core Projects. Currently
 
 **Installation**
 
-The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthentication). Just search *SimpleAuthentication* in the **Package Manager GUI** or run the following command in the **Package Manager Console**:
+The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **Package Manager Console**:
 
-    Install-Package SimpleAuthentication
+    Install-Package SimpleAuthenticationTools
 
 **Contribute**
 
