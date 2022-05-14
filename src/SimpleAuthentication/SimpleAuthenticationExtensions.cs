@@ -40,6 +40,7 @@ public static class SimpleAuthenticationExtensions
         }
 
         ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
+        ArgumentNullException.ThrowIfNull(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
 
         builder.Services.Configure<JwtBearerSettings>(section);
 
