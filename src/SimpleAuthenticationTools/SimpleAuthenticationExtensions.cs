@@ -16,7 +16,7 @@ namespace SimpleAuthenticationTools;
 
 public static class SimpleAuthenticationToolsExtensions
 {
-    public static ISimpleAuthenticationToolsBuilder AddSimpleAuthenticationTools(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
+    public static ISimpleAuthenticationToolsBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
     {
         var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultAuthenticationScheme");
 
@@ -39,6 +39,8 @@ public static class SimpleAuthenticationToolsExtensions
             return;
         }
 
+        ArgumentNullException.ThrowIfNull(settings.SecurityKey, "SecurityKey");
+
         builder.Services.Configure<JwtBearerSettings>(section);
 
         builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -49,23 +51,21 @@ public static class SimpleAuthenticationToolsExtensions
                 ValidIssuers = settings.Issuers,
                 ValidateAudience = settings.Audiences?.Any() ?? false,
                 ValidAudiences = settings.Audiences,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = !string.IsNullOrWhiteSpace(settings.SecurityKey),
-                IssuerSigningKey = !string.IsNullOrWhiteSpace(settings.SecurityKey)
-                    ? new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey))
-                    : null,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey)),
+                ValidateLifetime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
                 RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
                 ClockSkew = settings.ClockSkew
             };
         });
 
-        if (settings.EnableJwtBearerGeneration)
+        if (settings.EnableJwtBearerService)
         {
-            builder.Services.TryAddSingleton<IJwtBearerGeneratorService, JwtBearerGeneratorService>();
+            builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
         }
     }
 
-    public static IApplicationBuilder UseSimpleAuthenticationTools(this IApplicationBuilder app)
+    public static IApplicationBuilder UseAuthenticationAndAuthorization(this IApplicationBuilder app)
     {
         app.UseAuthentication();
         app.UseAuthorization();
