@@ -6,9 +6,9 @@
 		<Nullable>enable</Nullable>
 		<Authors>Marco Minerva</Authors>
 		<Company>Marco Minerva</Company>
-		<Product>Simple Authentication</Product>
-		<Title>Simple Authentication</Title>
-		<Description>A library to easily integrate Authentication in ASP.NET Core Projects.</Description>
+		<Product>Simple Authentication for ASP.NET Core</Product>
+		<Title>Simple Authentication for ASP.NET Core</Title>
+		<Description>A library to easily integrate Authentication in ASP.NET Core projects</Description>
 		<PackageId>SimpleAuthenticationTools</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
