@@ -8,15 +8,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using SimpleAuthenticationTools.JwtBearer;
-using SimpleAuthenticationTools.Swagger;
+using SimpleAuthentication.JwtBearer;
+using SimpleAuthentication.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace SimpleAuthenticationTools;
+namespace SimpleAuthentication;
 
-public static class SimpleAuthenticationToolsExtensions
+public static class SimpleAuthenticationExtensions
 {
-    public static ISimpleAuthenticationToolsBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
+    public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
     {
         var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultAuthenticationScheme");
 
@@ -28,7 +28,7 @@ public static class SimpleAuthenticationToolsExtensions
 
         CheckAddJwtBearer(configuration.GetSection($"{sectionName}:JwtBearer"), builder);
 
-        return new DefaultSimpleAuthenticationToolsBuilder(configuration, builder);
+        return new DefaultSimpleAuthenticationBuilder(configuration, builder);
     }
 
     private static void CheckAddJwtBearer(IConfigurationSection section, AuthenticationBuilder builder)

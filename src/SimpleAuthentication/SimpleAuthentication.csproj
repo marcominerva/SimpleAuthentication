@@ -9,6 +9,7 @@
 		<Product>Simple Authentication</Product>
 		<Title>Simple Authentication</Title>
 		<Description>A library to easily integrate Authentication in ASP.NET Core Projects.</Description>
+		<PackageId>SimpleAuthenticationTools</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
 		<PackageIcon>Toolbox.png</PackageIcon>

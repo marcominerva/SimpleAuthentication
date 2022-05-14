@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 
-namespace SimpleAuthenticationTools;
+namespace SimpleAuthentication;
 
-internal class DefaultSimpleAuthenticationToolsBuilder : ISimpleAuthenticationToolsBuilder
+internal class DefaultSimpleAuthenticationBuilder : ISimpleAuthenticationBuilder
 {
     public IConfiguration Configuration { get; }
 
     public AuthenticationBuilder Builder { get; }
 
-    public DefaultSimpleAuthenticationToolsBuilder(IConfiguration configuration, AuthenticationBuilder builder)
+    public DefaultSimpleAuthenticationBuilder(IConfiguration configuration, AuthenticationBuilder builder)
     {
         Configuration = configuration;
         Builder = builder;

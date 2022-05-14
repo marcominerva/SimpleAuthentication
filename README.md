@@ -1,17 +1,17 @@
 # Simple Authentication Library
 
 [![GitHub Super-Linter](https://github.com/marcominerva/SimpleAuthentication/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![Nuget](https://img.shields.io/nuget/v/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
-[![Nuget](https://img.shields.io/nuget/dt/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
+[![Nuget](https://img.shields.io/nuget/v/SimpleAuthentication)](https://www.nuget.org/packages/SimpleAuthentication)
+[![Nuget](https://img.shields.io/nuget/dt/SimpleAuthentication)](https://www.nuget.org/packages/SimpleAuthentication)
 
 
 A library to easily integrate Authentication in ASP.NET Core Projects. Currently supports JWT Bearer Authentication.
 
 **Installation**
 
-The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **Package Manager Console**:
+The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthentication). Just search *SimpleAuthentication* in the **Package Manager GUI** or run the following command in the **Package Manager Console**:
 
-    Install-Package SimpleAuthenticationTools
+    Install-Package SimpleAuthentication
 
 **Contribute**
 
