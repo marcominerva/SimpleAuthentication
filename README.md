@@ -1,8 +1,8 @@
 # Simple Authentication Library
 
-[![GitHub Super-Linter](https://github.com/marcominerva/SimpleAuthenticationTools/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-[![Nuget](https://img.shields.io/nuget/v/SimpleAuthenticationTools)](https://www.nuget.org/packages/MinimalHelpers.Routing)
-[![Nuget](https://img.shields.io/nuget/dt/SimpleAuthenticationTools)](https://www.nuget.org/packages/MinimalHelpers.Routing)
+[![GitHub Super-Linter](https://github.com/marcominerva/SimpleAuthentication/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Nuget](https://img.shields.io/nuget/v/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
+[![Nuget](https://img.shields.io/nuget/dt/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
 
 
 A library to easily integrate Authentication in ASP.NET Core Projects. Currently supports JWT Bearer Authentication.
