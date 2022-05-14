@@ -19,8 +19,6 @@ Take a look to a quick demo showing how to integrate the library:
 
 [![Simple Authentication for ASP.NET Core](https://img.youtube.com/vi/P8atWWzm6Xk/0.jpg)](https://www.youtube.com/watch?v=P8atWWzm6Xk)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/P8atWWzm6Xk" title="Simple Authentication for ASP.NET Core" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 **Contribute**
 
 The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
