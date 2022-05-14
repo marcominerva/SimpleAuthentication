@@ -1,4 +1,4 @@
-using SimpleAuthenticationTools;
+using SimpleAuthentication;
 
 var builder = WebApplication.CreateBuilder(args);
 

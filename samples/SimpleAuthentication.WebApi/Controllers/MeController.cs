@@ -2,7 +2,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SimpleAuthenticationTools.WebApi.Controllers;
+namespace SimpleAuthentication.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
