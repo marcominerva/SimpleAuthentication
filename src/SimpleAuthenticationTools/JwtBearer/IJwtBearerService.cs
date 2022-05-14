@@ -2,7 +2,7 @@
 
 namespace SimpleAuthenticationTools.JwtBearer;
 
-public interface IJwtBearerGeneratorService
+public interface IJwtBearerService
 {
     string CreateToken(string username, IList<Claim>? claims = null, string? issuer = null, string? audience = null);
 }

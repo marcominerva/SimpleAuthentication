@@ -2,7 +2,9 @@
 
 public class JwtBearerSettings
 {
-    public string? SecurityKey { get; init; }
+    public string Algorithm { get; set; } = "HS256";
+
+    public string SecurityKey { get; init; } = null!;
 
     public string[]? Issuers { get; init; }
 
@@ -12,5 +14,5 @@ public class JwtBearerSettings
 
     public TimeSpan ClockSkew { get; init; } = TimeSpan.FromMinutes(5);
 
-    public bool EnableJwtBearerGeneration { get; init; } = true;
+    public bool EnableJwtBearerService { get; init; } = true;
 }

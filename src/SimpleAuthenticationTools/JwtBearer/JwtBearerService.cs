@@ -6,11 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace SimpleAuthenticationTools.JwtBearer;
 
-internal class JwtBearerGeneratorService : IJwtBearerGeneratorService
+internal class JwtBearerService : IJwtBearerService
 {
     private readonly JwtBearerSettings jwtBearerSettings;
 
-    public JwtBearerGeneratorService(IOptions<JwtBearerSettings> jwtBearerSettingsOptions)
+    public JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptions)
     {
         jwtBearerSettings = jwtBearerSettingsOptions.Value;
     }
@@ -23,17 +23,15 @@ internal class JwtBearerGeneratorService : IJwtBearerGeneratorService
             claims.Add(new Claim(ClaimTypes.Name, username));
         }
 
-        var signingCredentials = !string.IsNullOrWhiteSpace(jwtBearerSettings.SecurityKey)
-            ? new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerSettings.SecurityKey)), SecurityAlgorithms.HmacSha256)
-            : null;
+        var now = DateTime.UtcNow;
 
         var jwtSecurityToken = new JwtSecurityToken(
             issuer ?? jwtBearerSettings.Issuers?.FirstOrDefault(),
             audience ?? jwtBearerSettings.Audiences?.FirstOrDefault(),
             claims,
-            DateTime.UtcNow,
-            jwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? DateTime.UtcNow.Add(jwtBearerSettings.ExpirationTime!.Value) : null,
-            signingCredentials);
+            now,
+            jwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? now.Add(jwtBearerSettings.ExpirationTime!.Value) : DateTime.MaxValue,
+            new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerSettings.SecurityKey)), jwtBearerSettings.Algorithm));
 
         var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
         return token;
