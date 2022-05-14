@@ -39,7 +39,7 @@ public static class SimpleAuthenticationExtensions
             return;
         }
 
-        ArgumentNullException.ThrowIfNull(settings.SecurityKey, "SecurityKey");
+        ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
 
         builder.Services.Configure<JwtBearerSettings>(section);
 
