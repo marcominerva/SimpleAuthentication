@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddJwtBearerAuthentication();
+    options.AddSimpleAuthentication(builder.Configuration);
 });
 
 var app = builder.Build();
