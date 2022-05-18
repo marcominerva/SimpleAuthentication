@@ -17,7 +17,7 @@ The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthent
 
 Take a look to a quick demo showing how to integrate the library:
 
-[![Simple Authentication for ASP.NET Core](https://img.youtube.com/vi/P8atWWzm6Xk/0.jpg)](https://www.youtube.com/watch?v=P8atWWzm6Xk)
+[![Simple Authentication for ASP.NET Core](https://img.youtube.com/vi/SVZuaPE2yNc/0.jpg)](https://www.youtube.com/watch?v=SVZuaPE2yNc)
 
 **Contribute**
 
