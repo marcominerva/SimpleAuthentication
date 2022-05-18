@@ -26,43 +26,43 @@ public static class SimpleAuthenticationExtensions
             options.DefaultChallengeScheme = defaultAuthenticationScheme;
         });
 
-        CheckAddJwtBearer(configuration.GetSection($"{sectionName}:JwtBearer"), builder);
+        CheckAddJwtBearer(builder, configuration.GetSection($"{sectionName}:JwtBearer"));
 
         return new DefaultSimpleAuthenticationBuilder(configuration, builder);
-    }
 
-    private static void CheckAddJwtBearer(IConfigurationSection section, AuthenticationBuilder builder)
-    {
-        var settings = section.Get<JwtBearerSettings>();
-        if (settings is null)
+        static void CheckAddJwtBearer(AuthenticationBuilder builder, IConfigurationSection section)
         {
-            return;
-        }
-
-        ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
-        ArgumentNullException.ThrowIfNull(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
-
-        builder.Services.Configure<JwtBearerSettings>(section);
-
-        builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-        {
-            options.TokenValidationParameters = new()
+            var settings = section.Get<JwtBearerSettings>();
+            if (settings is null)
             {
-                ValidateIssuer = settings.Issuers?.Any() ?? false,
-                ValidIssuers = settings.Issuers,
-                ValidateAudience = settings.Audiences?.Any() ?? false,
-                ValidAudiences = settings.Audiences,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey)),
-                ValidateLifetime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
-                RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
-                ClockSkew = settings.ClockSkew
-            };
-        });
+                return;
+            }
 
-        if (settings.EnableJwtBearerService)
-        {
-            builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
+            ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
+            ArgumentNullException.ThrowIfNull(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
+
+            builder.Services.Configure<JwtBearerSettings>(section);
+
+            builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = settings.Issuers?.Any() ?? false,
+                    ValidIssuers = settings.Issuers,
+                    ValidateAudience = settings.Audiences?.Any() ?? false,
+                    ValidAudiences = settings.Audiences,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey)),
+                    ValidateLifetime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
+                    RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
+                    ClockSkew = settings.ClockSkew
+                };
+            });
+
+            if (settings.EnableJwtBearerService)
+            {
+                builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
+            }
         }
     }
 
@@ -74,32 +74,31 @@ public static class SimpleAuthenticationExtensions
         return app;
     }
 
-    public static void AddJwtBearerAuthentication(this SwaggerGenOptions options)
+    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName = "Authentication")
     {
-        options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Insert the Bearer Token with the 'Bearer ' prefix",
-            Name = HeaderNames.Authorization,
-            Type = SecuritySchemeType.ApiKey
-        });
+        CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));
 
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference= new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = JwtBearerDefaults.AuthenticationScheme
-                    }
-                },
-                Array.Empty<string>()
-            }
-        });
-
-        options.OperationFilter<AuthenticationResponseOperationFilter>();
+        options.OperationFilter<AuthenticationOperationFilter>();
         options.DocumentFilter<ProblemDetailsDocumentFilter>();
+
+        static void CheckAddJwtBearer(SwaggerGenOptions options, IConfigurationSection section)
+        {
+            var settings = section.Get<JwtBearerSettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            AddApiKeyAuthentication(options, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token with the 'Bearer ' prefix");
+        }
+
+        static void AddApiKeyAuthentication(SwaggerGenOptions options, string schemeName, ParameterLocation location, string name, string description)
+            => options.AddSecurityDefinition(schemeName, new OpenApiSecurityScheme
+            {
+                In = location,
+                Name = name,
+                Description = description,
+                Type = SecuritySchemeType.ApiKey
+            });
     }
 }

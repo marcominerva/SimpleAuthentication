@@ -1,21 +1,26 @@
 ﻿using System.Net;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SimpleAuthentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SimpleAuthentication.Swagger;
 
-internal class AuthenticationResponseOperationFilter : IOperationFilter
+internal class AuthenticationOperationFilter : IOperationFilter
 {
     private readonly IAuthorizationPolicyProvider authorizationPolicyProvider;
+    private readonly JwtBearerSettings jwtBearerSettings;
 
-    public AuthenticationResponseOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider)
+    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider, IOptions<JwtBearerSettings> jwtBearerSettingsOptions)
     {
         this.authorizationPolicyProvider = authorizationPolicyProvider;
+        jwtBearerSettings = jwtBearerSettingsOptions.Value;
     }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
@@ -33,9 +38,35 @@ internal class AuthenticationResponseOperationFilter : IOperationFilter
 
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
+            var hasJwtBearerAuthentication = !string.IsNullOrWhiteSpace(jwtBearerSettings?.SecurityKey);
+            CheckAddSecurityRequirement(operation, hasJwtBearerAuthentication ? JwtBearerDefaults.AuthenticationScheme : null);
+
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), GetResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), GetResponse(HttpStatusCode.Forbidden.ToString()));
         }
+    }
+
+    private static void CheckAddSecurityRequirement(OpenApiOperation operation, string? securityScheme)
+    {
+        if (string.IsNullOrWhiteSpace(securityScheme))
+        {
+            return;
+        }
+
+        operation.Security.Add(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = securityScheme
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
     }
 
     private static OpenApiResponse GetResponse(string description)
