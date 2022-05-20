@@ -7,11 +7,16 @@ namespace SimpleAuthentication.WebApi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-[Authorize]
 public class MeController : ControllerBase
 {
-    [HttpGet]
-    public User Get()
+    [Authorize]
+    [HttpGet("authorize-bearer")]
+    public User GetWithBearer()
+        => new(User.Identity!.Name);
+
+    [Authorize(AuthenticationSchemes = "ApiKey")]
+    [HttpGet("authorize-apikey")]
+    public User GetWithApiKey()
         => new(User.Identity!.Name);
 }
 

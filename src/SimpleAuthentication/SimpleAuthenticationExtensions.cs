@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using SimpleAuthentication.ApiKey;
 using SimpleAuthentication.JwtBearer;
 using SimpleAuthentication.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -27,6 +28,7 @@ public static class SimpleAuthenticationExtensions
         });
 
         CheckAddJwtBearer(builder, configuration.GetSection($"{sectionName}:JwtBearer"));
+        CheckAddApiKey(builder, configuration.GetSection($"{sectionName}:ApiKey"));
 
         return new DefaultSimpleAuthenticationBuilder(configuration, builder);
 
@@ -64,6 +66,38 @@ public static class SimpleAuthenticationExtensions
                 builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
             }
         }
+
+        static void CheckAddApiKey(AuthenticationBuilder builder, IConfigurationSection section)
+        {
+            var settings = section.Get<ApiKeySettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(ApiKeySettings.SchemeName));
+
+            if (string.IsNullOrWhiteSpace(settings.HeaderName) && string.IsNullOrWhiteSpace(settings.QueryName))
+            {
+                throw new ArgumentException("You need to specify either a header name or a query string parameter name");
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.ApiKeyValue))
+            {
+                ArgumentNullException.ThrowIfNull(settings.DefaultUsername, nameof(ApiKeySettings.DefaultUsername));
+            }
+
+            builder.Services.Configure<ApiKeySettings>(section);
+
+            builder.AddScheme<ApiKeySettings, ApiKeyAuthenticationHandler>(settings.SchemeName, options =>
+            {
+                options.SchemeName = settings.SchemeName;
+                options.HeaderName = settings.HeaderName;
+                options.QueryName = settings.QueryName;
+                options.ApiKeyValue = settings.ApiKeyValue;
+                options.DefaultUsername = settings.DefaultUsername;
+            });
+        }
     }
 
     public static IApplicationBuilder UseAuthenticationAndAuthorization(this IApplicationBuilder app)
@@ -77,6 +111,7 @@ public static class SimpleAuthenticationExtensions
     public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName = "Authentication")
     {
         CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));
+        CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"));
 
         options.OperationFilter<AuthenticationOperationFilter>();
         options.DocumentFilter<ProblemDetailsDocumentFilter>();
@@ -90,6 +125,25 @@ public static class SimpleAuthenticationExtensions
             }
 
             AddApiKeyAuthentication(options, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token with the 'Bearer ' prefix");
+        }
+
+        static void CheckAddApiKey(SwaggerGenOptions options, IConfigurationSection section)
+        {
+            var settings = section.Get<ApiKeySettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.HeaderName))
+            {
+                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Header", ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.QueryName))
+            {
+                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Query String", ParameterLocation.Query, settings.QueryName, "Insert the API Key");
+            }
         }
 
         static void AddApiKeyAuthentication(SwaggerGenOptions options, string schemeName, ParameterLocation location, string name, string description)

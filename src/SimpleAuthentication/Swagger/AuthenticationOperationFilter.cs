@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SimpleAuthentication.ApiKey;
 using SimpleAuthentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -16,11 +17,13 @@ internal class AuthenticationOperationFilter : IOperationFilter
 {
     private readonly IAuthorizationPolicyProvider authorizationPolicyProvider;
     private readonly JwtBearerSettings jwtBearerSettings;
+    private readonly ApiKeySettings apiKeySettings;
 
-    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider, IOptions<JwtBearerSettings> jwtBearerSettingsOptions)
+    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider, IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions)
     {
         this.authorizationPolicyProvider = authorizationPolicyProvider;
         jwtBearerSettings = jwtBearerSettingsOptions.Value;
+        apiKeySettings = apiKeySettingsOptions.Value;
     }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
@@ -38,8 +41,13 @@ internal class AuthenticationOperationFilter : IOperationFilter
 
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
-            var hasJwtBearerAuthentication = !string.IsNullOrWhiteSpace(jwtBearerSettings?.SecurityKey);
+            var hasJwtBearerAuthentication = !string.IsNullOrWhiteSpace(jwtBearerSettings.SecurityKey);
             CheckAddSecurityRequirement(operation, hasJwtBearerAuthentication ? JwtBearerDefaults.AuthenticationScheme : null);
+
+            var hasApiKeyHeaderAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.HeaderName);
+            var hasApiKeyQueryAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.QueryName);
+            CheckAddSecurityRequirement(operation, hasApiKeyHeaderAuthentication ? $"{apiKeySettings.SchemeName} in Header" : null);
+            CheckAddSecurityRequirement(operation, hasApiKeyQueryAuthentication ? $"{apiKeySettings.SchemeName} in Query String" : null);
 
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), GetResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), GetResponse(HttpStatusCode.Forbidden.ToString()));
