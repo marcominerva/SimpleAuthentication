@@ -13,7 +13,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
 		<PackageIcon>Toolbox.png</PackageIcon>
-		<PackageTags>csharp visualstudio aspnetcore webapi authentication jwt jwtbearer utilities helpers</PackageTags>
+		<PackageTags>csharp visualstudio aspnetcore webapi authentication jwt jwtbearer apikey utilities helpers</PackageTags>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/marcominerva/SimpleAuthentication.git</RepositoryUrl>
 		<RepositoryBranch>master</RepositoryBranch>
