@@ -4,7 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Authors>Marco Minerva</Authors>
+        <DocumentationFile>SimpleAuthentication.xml</DocumentationFile>
+        <Authors>Marco Minerva</Authors>
 		<Company>Marco Minerva</Company>
 		<Product>Simple Authentication for ASP.NET Core</Product>
 		<Title>Simple Authentication for ASP.NET Core</Title>
@@ -19,6 +20,10 @@
 		<RepositoryBranch>master</RepositoryBranch>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="SimpleAuthentication.xml" />
+    </ItemGroup>
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
