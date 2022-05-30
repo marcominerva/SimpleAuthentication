@@ -4,6 +4,52 @@
         <name>SimpleAuthentication</name>
     </assembly>
     <members>
+        <member name="T:SimpleAuthentication.ApiKey.ApiKeySettings">
+            <summary>
+            Options class provides information needed to control ApiKey Authentication handler behavior
+            </summary>
+            <seealso cref="T:Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions"/>
+        </member>
+        <member name="P:SimpleAuthentication.ApiKey.ApiKeySettings.SchemeName">
+            <summary>
+            Gets or sets the authentication scheme name (Default: ApiKey).
+            </summary>
+        </member>
+        <member name="P:SimpleAuthentication.ApiKey.ApiKeySettings.HeaderName">
+            <summary>
+            Gets or sets the name of the header that contains the ApiKey.
+            </summary>
+            <remarks>You can specify also the <see cref="P:SimpleAuthentication.ApiKey.ApiKeySettings.QueryName"/> to support both header and query string ApiKey Authentication</remarks>
+            <seealso cref="P:SimpleAuthentication.ApiKey.ApiKeySettings.QueryName"/>
+        </member>
+        <member name="P:SimpleAuthentication.ApiKey.ApiKeySettings.QueryName">
+            <summary>
+            Gets or sets the name of the query string parameter that contains the ApiKey.
+            </summary>
+            <remarks>You can specify also the <see cref="P:SimpleAuthentication.ApiKey.ApiKeySettings.HeaderName"/> to support both header and query string ApiKey Authentication</remarks>
+            <seealso cref="P:SimpleAuthentication.ApiKey.ApiKeySettings.HeaderName"/>
+        </member>
+        <member name="T:SimpleAuthentication.JwtBearer.JwtBearerSettings">
+            <summary>
+            Options class provides information needed to control Bearer Authentication handler behavior
+            </summary>
+        </member>
+        <member name="P:SimpleAuthentication.JwtBearer.JwtBearerSettings.SchemeName">
+            <summary>
+            Gets or sets The authentication scheme name (Default: Bearer).
+            </summary>
+        </member>
+        <member name="P:SimpleAuthentication.JwtBearer.JwtBearerSettings.Algorithm">
+            <summary>
+            Gets or sets the cryptographic algorithm that is used to generate the digital signature. (Default: HS256).
+            </summary>
+            <seealso cref="T:Microsoft.IdentityModel.Tokens.SecurityAlgorithms"/>
+        </member>
+        <member name="P:SimpleAuthentication.JwtBearer.JwtBearerSettings.SecurityKey">
+            <summary>
+            Gets or sets the security key that is used to sign the token.
+            </summary>
+        </member>
         <member name="T:SimpleAuthentication.SimpleAuthenticationExtensions">
             <summary>
             Providers extension methods for adding authentication support in ASP.NET Core.
