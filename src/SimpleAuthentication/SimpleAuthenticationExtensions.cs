@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +16,25 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SimpleAuthentication;
 
+/// <summary>
+/// Providers extension methods for adding authentication support in ASP.NET Core.
+/// </summary>
+/// <seealso cref="ISimpleAuthenticationBuilder"/>
+/// <seealso cref="AuthenticationBuilder"/>
 public static class SimpleAuthenticationExtensions
 {
+    /// <summary>
+    /// Registers services required by authentication services, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+    /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
+    /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+    /// <returns>A <see cref="ISimpleAuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <exception cref="ArgumentException">Configuration is invalid.</exception>
+    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
+    /// <seealso cref="IServiceCollection"/>
+    /// <seealso cref="IConfiguration"/>
+    /// <seealso cref="ISimpleAuthenticationBuilder"/>
     public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
     {
         var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultAuthenticationScheme");
@@ -40,6 +58,7 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
+            ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(JwtBearerSettings.SchemeName));
             ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
             ArgumentNullException.ThrowIfNull(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
 
@@ -100,6 +119,18 @@ public static class SimpleAuthenticationExtensions
         }
     }
 
+    /// <summary>
+    /// Adds the <see cref="AuthenticationMiddleware"/> and <see cref="AuthorizationMiddleware"/> middlewares to the
+    /// specified <see cref="IApplicationBuilder"/>, which enable authentication and authorization capabilities.
+    /// When authorizing a resource that is routed using endpoint routing, this call
+    /// must appear between the calls to <c>app.UseRouting()</c> and <c>app.UseEndpoints(...)</c> for
+    /// the middleware to function correctly.
+    /// </summary>
+    /// <param name="app">The <see cref="IApplicationBuilder"/> to add the middleware to.</param>
+    /// <returns>A reference to <paramref name="app"/> after the operation has completed.</returns>
+    /// <seealso cref="AuthenticationMiddleware"/>
+    /// <seealso cref="AuthorizationMiddleware"/>
+    /// <seealso cref="IApplicationBuilder"/>
     public static IApplicationBuilder UseAuthenticationAndAuthorization(this IApplicationBuilder app)
     {
         app.UseAuthentication();
@@ -108,6 +139,14 @@ public static class SimpleAuthenticationExtensions
         return app;
     }
 
+    /// <summary>
+    /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// </summary>
+    /// <param name="options">The <see cref="SwaggerGenOptions"/> to add configuration to.</param>
+    /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
+    /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+    /// <seealso cref="SwaggerGenOptions"/>
+    /// <seealso cref="IConfiguration"/>
     public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName = "Authentication")
     {
         CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));
