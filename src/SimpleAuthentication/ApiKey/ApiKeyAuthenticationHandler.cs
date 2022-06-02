@@ -65,10 +65,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
         AuthenticateResult CreateAuthenticationSuccessResult(string username, IList<Claim>? claims = null)
         {
             claims ??= new List<Claim>();
-            if (!claims.Any(c => c.Type == ClaimTypes.Name))
-            {
-                claims.Add(new Claim(ClaimTypes.Name, username));
-            }
+            claims.Update(ClaimTypes.Name, username);
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
