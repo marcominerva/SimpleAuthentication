@@ -49,7 +49,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
             var validationResult = await validator.ValidateAsync(value.ToString());
             if (validationResult.Succeeded)
             {
-                return CreateAuthenticationSuccessResult(validationResult.Username!, validationResult.Claims);
+                return CreateAuthenticationSuccessResult(validationResult.UserName!, validationResult.Claims);
             }
 
             return AuthenticateResult.Fail(validationResult.FailureMessage!);
@@ -57,15 +57,15 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
 
         if (!string.IsNullOrWhiteSpace(Options.ApiKeyValue) && value == Options.ApiKeyValue)
         {
-            return CreateAuthenticationSuccessResult(Options.DefaultUsername!);
+            return CreateAuthenticationSuccessResult(Options.DefaultUserName!);
         }
 
         return AuthenticateResult.Fail("Invalid API Key");
 
-        AuthenticateResult CreateAuthenticationSuccessResult(string username, IList<Claim>? claims = null)
+        AuthenticateResult CreateAuthenticationSuccessResult(string userName, IList<Claim>? claims = null)
         {
             claims ??= new List<Claim>();
-            claims.Update(ClaimTypes.Name, username);
+            claims.Update(ClaimTypes.Name, userName);
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);

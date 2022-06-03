@@ -13,9 +13,9 @@ public class ApiKeyValidationResult
     public bool Succeeded { get; }
 
     /// <summary>
-    /// Gets the authenticated username, if authentication was successful.
+    /// Gets the authenticated user name, if authentication was successful.
     /// </summary>
-    public string? Username { get; set; }
+    public string? UserName { get; set; }
 
     /// <summary>
     /// Gets the claim list, if authentication was successful.
@@ -27,10 +27,10 @@ public class ApiKeyValidationResult
     /// </summary>
     public string? FailureMessage { get; }
 
-    private ApiKeyValidationResult(string username, IList<Claim>? claims)
+    private ApiKeyValidationResult(string userName, IList<Claim>? claims)
     {
         Succeeded = true;
-        Username = username;
+        UserName = userName;
         Claims = claims;
     }
 
@@ -42,12 +42,12 @@ public class ApiKeyValidationResult
     /// <summary>
     /// Indicates that authentication was successful.
     /// </summary>
-    /// <param name="username">The username to be used.</param>
+    /// <param name="userName">The user name to be used.</param>
     /// <param name="claims">The claims list.</param>
     /// <returns>The authentication result.</returns>
     /// <seealso cref="IApiKeyValidator"/>
-    public static ApiKeyValidationResult Success(string username, IList<Claim>? claims = null)
-        => new(username, claims);
+    public static ApiKeyValidationResult Success(string userName, IList<Claim>? claims = null)
+        => new(userName, claims);
 
     /// <summary>
     /// Indicates that there was a failure during authentication.

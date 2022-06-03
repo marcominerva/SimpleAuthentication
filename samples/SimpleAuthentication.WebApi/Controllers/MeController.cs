@@ -15,4 +15,4 @@ public class MeController : ControllerBase
         => new(User.Identity!.Name);
 }
 
-public record class User(string? Username);
+public record class User(string? UserName);

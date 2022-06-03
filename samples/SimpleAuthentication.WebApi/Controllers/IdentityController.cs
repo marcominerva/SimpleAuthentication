@@ -24,11 +24,11 @@ public class AuthController : ControllerBase
             new(ClaimTypes.Surname, "Minerva")
         };
 
-        var token = jwtBearerService.CreateToken(loginRequest.Username, claims);
+        var token = jwtBearerService.CreateToken(loginRequest.UserName, claims);
         return new(token);
     }
 }
 
-public record class LoginRequest(string Username, string Password);
+public record class LoginRequest(string UserName, string Password);
 
 public record class LoginResponse(string Token);
