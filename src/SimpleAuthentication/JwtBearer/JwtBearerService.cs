@@ -15,10 +15,10 @@ internal class JwtBearerService : IJwtBearerService
         jwtBearerSettings = jwtBearerSettingsOptions.Value;
     }
 
-    public string CreateToken(string username, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
+    public string CreateToken(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {
         claims ??= new List<Claim>();
-        claims.Update(ClaimTypes.Name, username);
+        claims.Update(ClaimTypes.Name, userName);
 
         var now = DateTime.UtcNow;
 
