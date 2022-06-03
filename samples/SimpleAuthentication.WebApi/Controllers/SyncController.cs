@@ -9,7 +9,7 @@ namespace SimpleAuthentication.WebApi.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class SyncController : ControllerBase
 {
-    [Authorize("ApiKey")]
+    [Authorize(AuthenticationSchemes = "ApiKey")]
     [HttpGet("authorize-apikey")]
     public User GetWithApiKey()
         => new(User.Identity!.Name);
