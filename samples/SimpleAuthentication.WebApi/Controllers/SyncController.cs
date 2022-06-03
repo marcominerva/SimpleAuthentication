@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace SimpleAuthentication.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("service/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-public class MeController : ControllerBase
+public class SyncController : ControllerBase
 {
-    [Authorize]
-    [HttpGet("authorize-bearer")]
-    public User GetWithBearer()
+    [Authorize("ApiKey")]
+    [HttpGet("authorize-apikey")]
+    public User GetWithApiKey()
         => new(User.Identity!.Name);
 }
-
-public record class User(string? Username);

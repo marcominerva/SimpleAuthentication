@@ -1,15 +1,34 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using SimpleAuthentication;
 using SimpleAuthentication.ApiKey;
+using SimpleAuthentication.WebApi.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
 builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
+
+builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
+
+    options.AddPolicy("ApiKey", policy =>
+        policy.AddAuthenticationSchemes("ApiKey").RequireAuthenticatedUser());
+});
+
+builder.Services.AddSingleton<IAuthenticationSchemeProvider, ApplicationAuthenticationSchemeProvider>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
