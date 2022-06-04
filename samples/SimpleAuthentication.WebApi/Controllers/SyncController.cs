@@ -11,6 +11,9 @@ public class SyncController : ControllerBase
 {
     [Authorize(AuthenticationSchemes = "ApiKey")]
     [HttpGet("authorize-apikey")]
-    public User GetWithApiKey()
-        => new(User.Identity!.Name);
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesDefaultResponseType]
+    public ActionResult<User> GetWithApiKey()
+        => new User(User.Identity!.Name);
 }

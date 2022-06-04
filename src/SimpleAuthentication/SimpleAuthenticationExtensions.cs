@@ -45,6 +45,23 @@ public static class SimpleAuthenticationExtensions
             options.DefaultChallengeScheme = defaultAuthenticationScheme;
         });
 
+        return builder.AddSimpleAuthentication(configuration, sectionName);
+    }
+
+    /// <summary>
+    /// Registers services required by authentication services, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// </summary>
+    /// <param name="builder">The <see cref="AuthenticationBuilder"/>.</param>
+    /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
+    /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+    /// <returns>A <see cref="ISimpleAuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <exception cref="ArgumentException">Configuration is invalid.</exception>
+    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
+    /// <seealso cref="AuthenticationBuilder"/>
+    /// <seealso cref="IConfiguration"/>
+    /// <seealso cref="ISimpleAuthenticationBuilder"/>
+    public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, string sectionName = "Authentication")
+    {
         CheckAddJwtBearer(builder, configuration.GetSection($"{sectionName}:JwtBearer"));
         CheckAddApiKey(builder, configuration.GetSection($"{sectionName}:ApiKey"));
 
@@ -74,8 +91,8 @@ public static class SimpleAuthenticationExtensions
                     ValidAudiences = settings.Audiences,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey)),
+                    RequireExpirationTime = true,
                     ValidateLifetime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
-                    RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
                     ClockSkew = settings.ClockSkew
                 };
             });

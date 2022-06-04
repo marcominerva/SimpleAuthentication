@@ -11,8 +11,11 @@ public class MeController : ControllerBase
 {
     [Authorize]
     [HttpGet("authorize-bearer")]
-    public User GetWithBearer()
-        => new(User.Identity!.Name);
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesDefaultResponseType]
+    public ActionResult<User> GetWithBearer()
+        => new User(User.Identity!.Name);
 }
 
 public record class User(string? UserName);
