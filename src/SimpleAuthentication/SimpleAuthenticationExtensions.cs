@@ -74,8 +74,8 @@ public static class SimpleAuthenticationExtensions
                     ValidAudiences = settings.Audiences,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.SecurityKey)),
+                    RequireExpirationTime = true,
                     ValidateLifetime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
-                    RequireExpirationTime = settings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero,
                     ClockSkew = settings.ClockSkew
                 };
             });
