@@ -19,6 +19,7 @@ internal class JwtBearerService : IJwtBearerService
     {
         claims ??= new List<Claim>();
         claims.Update(ClaimTypes.Name, userName);
+        claims.Remove(JwtRegisteredClaimNames.Aud);
 
         var now = DateTime.UtcNow;
 
@@ -60,5 +61,18 @@ internal class JwtBearerService : IJwtBearerService
         }
 
         return principal;
+    }
+
+    public string RefreshToken(string token, bool validateLifetime, DateTime? absoluteExpiration = null)
+    {
+        var principal = ValidateToken(token, validateLifetime);
+        var claims = (principal.Identity as ClaimsIdentity)!.Claims.ToList();
+
+        var userName = claims.First(c => c.Type == ClaimTypes.Name).Value;
+        var issuer = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iss)?.Value;
+        var audience = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud)?.Value;
+
+        var newToken = CreateToken(userName, claims, issuer, audience, absoluteExpiration);
+        return newToken;
     }
 }

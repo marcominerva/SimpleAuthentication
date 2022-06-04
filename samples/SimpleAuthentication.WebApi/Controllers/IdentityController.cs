@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
-    public ActionResult<LoginResponse> Login(LoginRequest loginRequest)
+    public ActionResult<LoginResponse> Login(LoginRequest loginRequest, DateTime? expiration = null)
     {
         // Check for login rights...
 
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
             new(ClaimTypes.Surname, "Minerva")
         };
 
-        var token = jwtBearerService.CreateToken(loginRequest.UserName, claims);
+        var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
         return new LoginResponse(token);
     }
 
@@ -48,6 +48,15 @@ public class AuthController : ControllerBase
         }
 
         return new User(claimsPrincipal!.Identity!.Name);
+    }
+
+    [HttpPost("refresh")]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType]
+    public ActionResult<LoginResponse> Refresh(string token, bool validateLifetime = true, DateTime? expiration = null)
+    {
+        var newToken = jwtBearerService.RefreshToken(token, validateLifetime, expiration);
+        return new LoginResponse(newToken);
     }
 }
 
