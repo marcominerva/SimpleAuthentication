@@ -16,6 +16,16 @@ public class MeController : ControllerBase
     [ProducesDefaultResponseType]
     public ActionResult<User> GetWithBearer()
         => new User(User.Identity!.Name);
+
+    [Authorize(AuthenticationSchemes = "ApiKey")]
+    [HttpGet("authorize-apikey")]
+    public User GetWithApiKey()
+        => new(User.Identity!.Name);
+
+    [Authorize(AuthenticationSchemes = "Auth0")]
+    [HttpGet("authorize-auth0")]
+    public User GetWithAuth0()
+    => new("Auth0 default user");
 }
 
 public record class User(string? UserName);

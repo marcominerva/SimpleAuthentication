@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using SimpleAuthentication.ApiKey;
+using SimpleAuthentication.Auth0;
 using SimpleAuthentication.JwtBearer;
 using SimpleAuthentication.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -64,6 +65,7 @@ public static class SimpleAuthenticationExtensions
     {
         CheckAddJwtBearer(builder, configuration.GetSection($"{sectionName}:JwtBearer"));
         CheckAddApiKey(builder, configuration.GetSection($"{sectionName}:ApiKey"));
+        CheckAddAuth0(builder, configuration.GetSection($"{sectionName}:Auth0"));
 
         return new DefaultSimpleAuthenticationBuilder(configuration, builder);
 
@@ -133,6 +135,29 @@ public static class SimpleAuthenticationExtensions
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.DefaultUserName = settings.DefaultUserName;
             });
+        }
+
+        static void CheckAddAuth0(AuthenticationBuilder builder, IConfigurationSection section)
+        {
+            var auth0Settings = section.Get<Auth0Settings>();
+            if (auth0Settings is null)
+            {
+                return;
+            }
+
+            ArgumentNullException.ThrowIfNull(auth0Settings.SchemeName, nameof(Auth0Settings.SchemeName));
+            ArgumentNullException.ThrowIfNull(auth0Settings.Domain, nameof(Auth0Settings.Domain));
+            ArgumentNullException.ThrowIfNull(auth0Settings.Audience, nameof(Auth0Settings.Audience));
+
+            builder.Services.Configure<Auth0Settings>(section);
+
+            builder.AddJwtBearer(auth0Settings.SchemeName, options =>
+            {
+                options.Authority = auth0Settings.Domain;
+                options.Audience = auth0Settings.Audience;
+            });
+
+            builder.Services.TryAddSingleton<IAuth0Service, Auth0Service>();
         }
     }
 

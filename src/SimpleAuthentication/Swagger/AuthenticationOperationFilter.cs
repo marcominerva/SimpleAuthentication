@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SimpleAuthentication.ApiKey;
+using SimpleAuthentication.Auth0;
 using SimpleAuthentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -18,12 +19,14 @@ internal class AuthenticationOperationFilter : IOperationFilter
     private readonly IAuthorizationPolicyProvider authorizationPolicyProvider;
     private readonly JwtBearerSettings jwtBearerSettings;
     private readonly ApiKeySettings apiKeySettings;
+    private readonly Auth0Settings auth0Settings;
 
-    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider, IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions)
+    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider, IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions, IOptions<Auth0Settings> auth0SettingsOptions)
     {
         this.authorizationPolicyProvider = authorizationPolicyProvider;
         jwtBearerSettings = jwtBearerSettingsOptions.Value;
         apiKeySettings = apiKeySettingsOptions.Value;
+        auth0Settings = auth0SettingsOptions.Value;
     }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
@@ -48,6 +51,9 @@ internal class AuthenticationOperationFilter : IOperationFilter
             var hasApiKeyQueryAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.QueryName);
             CheckAddSecurityRequirement(operation, hasApiKeyHeaderAuthentication ? $"{apiKeySettings.SchemeName} in Header" : null);
             CheckAddSecurityRequirement(operation, hasApiKeyQueryAuthentication ? $"{apiKeySettings.SchemeName} in Query String" : null);
+
+            var hasAuth0Authentication = !string.IsNullOrWhiteSpace(auth0Settings.Domain);
+            CheckAddSecurityRequirement(operation, hasAuth0Authentication ? $"{auth0Settings.SchemeName} Bearer" : null);
 
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), GetResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), GetResponse(HttpStatusCode.Forbidden.ToString()));
