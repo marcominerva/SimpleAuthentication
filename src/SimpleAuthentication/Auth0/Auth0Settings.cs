@@ -8,7 +8,7 @@ namespace SimpleAuthentication.Auth0
     public class Auth0Settings
     {
         /// <summary>
-        /// Gets or sets The authentication scheme name (Default: Auth0).
+        /// Gets or sets The authentication scheme name (Default: Bearer).
         /// </summary>
         public string SchemeName { get; set; } = JwtBearerDefaults.AuthenticationScheme;
 
