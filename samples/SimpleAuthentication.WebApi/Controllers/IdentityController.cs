@@ -1,8 +1,8 @@
 using System.Net.Mime;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SimpleAuthentication.Auth0;
 using SimpleAuthentication.JwtBearer;
 
@@ -64,7 +64,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("auth0")]
-    public LoginResponseAuth0? LoginAuth0([FromServices] IAuth0Service auth0Service)
+    public Auth0LoginResponse? LoginAuth0([FromServices] IAuth0Service auth0Service)
     {
         // Check for login rights...
 
@@ -76,7 +76,7 @@ public class AuthController : ControllerBase
         };
 
         var token = auth0Service.ObtainTokenAsync(claims);
-        return JsonConvert.DeserializeObject<LoginResponseAuth0>(token.Result);
+        return JsonSerializer.Deserialize<Auth0LoginResponse>(token.Result);
     }
 }
 
@@ -86,18 +86,18 @@ public record class LoginResponse(string Token);
 
 public record class ValidationResponse(bool IsValid, User? User);
 
-public record class LoginResponseAuth0
+public record class Auth0LoginResponse
 {
-    [JsonProperty("access_token")]
+    [JsonPropertyName("access_token")]
     public string Token { get; set; }
 
-    [JsonProperty("expires_in")]
+    [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
 
-    [JsonProperty("token_type")]
+    [JsonPropertyName("token_type")]
     public string Type { get; set; }
 
-    public LoginResponseAuth0(string token, int expiresIn, string type)
+    public Auth0LoginResponse(string token, int expiresIn, string type)
     {
         this.Token = token;
         this.ExpiresIn = expiresIn;
