@@ -30,11 +30,16 @@ namespace SimpleAuthentication.Auth0
         /// <summary>
         /// Gets or sets the client id.
         /// </summary>
-        public string CilentId { get; set; } = null!;
+        public string ClientId { get; set; } = null!;
 
         /// <summary>
         /// Gets or sets the client secret.
         /// </summary>
-        public string CilentSecret { get; set; } = null!;
+        public string ClientSecret { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the grant type.
+        /// </summary>
+        public string GrantType { get; set; } = "client_credentials";
     }
 }

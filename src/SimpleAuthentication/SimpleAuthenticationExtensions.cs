@@ -158,6 +158,7 @@ public static class SimpleAuthenticationExtensions
             });
 
             builder.Services.TryAddSingleton<IAuth0Service, Auth0Service>();
+            builder.Services.AddHttpClient();
         }
     }
 
