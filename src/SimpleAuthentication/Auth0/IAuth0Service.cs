@@ -11,7 +11,7 @@ namespace SimpleAuthentication.Auth0
         /// Obtains a bearer token string from Auth0 provider.
         /// </summary>
         /// <param name="claims">The claims list.</param>
-        /// <returns></returns>
+        /// <returns>The JWT bearer token.</returns>
         Task<string> ObtainTokenAsync(IList<Claim>? claims = null);
     }
 }
