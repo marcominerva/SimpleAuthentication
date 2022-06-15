@@ -24,7 +24,7 @@ Take a look to a quick demo showing how to integrate the library:
 Authentication can be totally configured adding an _Authentication_ section in the _appsettings.json_ file:
 
     "Authentication": {
-      "DefaultAuthenticationScheme": "Bearer", // Optional
+      "DefaultScheme": "Bearer", // Optional
       "JwtBearer": {
           "SchemeName": "Bearer" // Default Bearer
           "SecurityKey": "supersecretsecuritykey42!", // Required
@@ -51,7 +51,7 @@ Authentication can be totally configured adding an _Authentication_ section in t
 
 You can configure only the kind of authentication you want to use, or you can include both.
 
-The _DefaultAuthenticationScheme_ attribute is used to specify what kind of authentication must be configured as default. Allowed values are the values of the _SchemeName_ attributes.
+The _DefaultScheme_ attribute is used to specify what kind of authentication must be configured as default. Allowed values are the values of the _SchemeName_ attributes.
 
 **Contribute**
 
