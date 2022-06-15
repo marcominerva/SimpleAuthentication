@@ -63,8 +63,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost]
-    [Route("auth0")]
-    public Auth0LoginResponse? LoginAuth0([FromServices] IAuth0Service auth0Service)
+    [Route("auth0/login")]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType]
+    public ActionResult<LoginResponse> LoginAuth0([FromServices] IAuth0Service auth0Service)
     {
         // Check for login rights...
 
@@ -76,7 +78,7 @@ public class AuthController : ControllerBase
         };
 
         var token = auth0Service.ObtainTokenAsync(claims);
-        return JsonSerializer.Deserialize<Auth0LoginResponse>(token.Result);
+        return new LoginResponse(token.Result);
     }
 }
 
@@ -85,22 +87,3 @@ public record class LoginRequest(string UserName, string Password);
 public record class LoginResponse(string Token);
 
 public record class ValidationResponse(bool IsValid, User? User);
-
-public record class Auth0LoginResponse
-{
-    [JsonPropertyName("access_token")]
-    public string Token { get; set; }
-
-    [JsonPropertyName("expires_in")]
-    public int ExpiresIn { get; set; }
-
-    [JsonPropertyName("token_type")]
-    public string Type { get; set; }
-
-    public Auth0LoginResponse(string token, int expiresIn, string type)
-    {
-        this.Token = token;
-        this.ExpiresIn = expiresIn;
-        this.Type = type;
-    }
-}
