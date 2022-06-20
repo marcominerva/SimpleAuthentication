@@ -38,7 +38,7 @@ public static class SimpleAuthenticationExtensions
     /// <seealso cref="ISimpleAuthenticationBuilder"/>
     public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication")
     {
-        var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultAuthenticationScheme");
+        var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultScheme");
 
         var builder = services.AddAuthentication(options =>
         {
