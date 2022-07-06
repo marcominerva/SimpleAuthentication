@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Security.Claims;
-using System.Security.Principal;
 
-namespace SimpleAuthentication.Extensions;
+namespace SimpleAuthentication;
 
 /// <summary>
 /// Provides extension methods for streamlining working with claims.
@@ -37,42 +36,56 @@ public static class ClaimExtensions
     }
 
     /// <summary>
-    /// Gets all the roles of the users, i.e. the claims with type <see cref="ClaimTypes.Role"/>.
+    /// Gets all the values for the claim with the specified <paramref name="type"/>.
     /// </summary>
     /// <param name="user">The user.</param>
-    /// <returns>The string list of the roles of the user.</returns>
-    public static IEnumerable<string?> GetRoles(this IPrincipal user)
-        => user.GetClaimValues<string?>(ClaimTypes.Role);
+    /// <param name="type">The type of the claim to match.</param>
+    /// <returns>The list of claim values.</returns>
+    /// <seealso cref="ClaimsPrincipal"/>
+    public static IEnumerable<string?> GetClaimValues(this ClaimsPrincipal user, string type)
+        => user.GetClaimValues<string>(type);
 
     /// <summary>
-    /// Gets all the values for the claim with the specified <paramref name="type"/>.
+    /// Gets all the values for the claim with the specified <paramref name="type"/>, casted as <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">The .NET type of the claim.</typeparam>
     /// <param name="user">The user.</param>
     /// <param name="type">The type of the claim to match.</param>
     /// <returns>The list of claim values.</returns>
-    public static IEnumerable<T?> GetClaimValues<T>(this IPrincipal user, string type)
+    /// <seealso cref="ClaimsPrincipal"/>
+    public static IEnumerable<T?> GetClaimValues<T>(this ClaimsPrincipal user, string type)
     {
-        var value = ((ClaimsPrincipal)user).FindAll(type).Select(c => c.Value).Cast<T>().ToList();
+        var value = user.FindAll(type).Select(c => Convert<T>(c.Value)).ToList();
         return value;
     }
 
     /// <summary>
     /// Gets the value of the first claim of the specified <paramref name="type"/>.
     /// </summary>
+    /// <param name="user">The user.</param>
+    /// <param name="type">The type of the claim to match.</param>
+    /// <returns>The claim value.</returns>
+    /// <seealso cref="ClaimsPrincipal"/>
+    public static string? GetClaimValue(this ClaimsPrincipal user, string type)
+        => user.GetClaimValue<string>(type);
+
+    /// <summary>
+    /// Gets the value of the first claim of the specified <paramref name="type"/>, casted as <typeparamref name="T"/>.
+    /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="user">The user.</param>
     /// <param name="type">The type of the claim to match.</param>
     /// <returns>The claim value.</returns>
-    public static T? GetClaimValue<T>(this IPrincipal user, string type)
+    /// <seealso cref="ClaimsPrincipal"/>
+    public static T? GetClaimValue<T>(this ClaimsPrincipal user, string type)
     {
-        var value = ((ClaimsPrincipal)user).FindFirstValue(type);
+        var value = user.FindFirstValue(type);
         if (value is null)
         {
             return default;
         }
 
-        return (T?)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(value);
+        return Convert<T>(value);
     }
 
     /// <summary>
@@ -81,9 +94,13 @@ public static class ClaimExtensions
     /// <param name="user">The user.</param>
     /// <param name="type">The type of the claim to match.</param>
     /// <returns><see langword="true"/> if the user has the requested claim; <see langword="false"/> otherwise.</returns>
-    public static bool HasClaim(this IPrincipal user, string type)
+    /// <seealso cref="ClaimsPrincipal"/>
+    public static bool HasClaim(this ClaimsPrincipal user, string type)
     {
-        var hasClaim = ((ClaimsPrincipal)user).Claims.Any(c => c.Type == type);
+        var hasClaim = user.Claims.Any(c => c.Type == type);
         return hasClaim;
     }
+
+    private static T? Convert<T>(string value)
+        => (T?)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(value);
 }
