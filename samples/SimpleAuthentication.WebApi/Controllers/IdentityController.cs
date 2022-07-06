@@ -1,6 +1,9 @@
 using System.Net.Mime;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using SimpleAuthentication.Auth0;
 using SimpleAuthentication.JwtBearer;
 
 namespace SimpleAuthentication.WebApi.Controllers;
@@ -57,6 +60,25 @@ public class AuthController : ControllerBase
     {
         var newToken = jwtBearerService.RefreshToken(token, validateLifetime, expiration);
         return new LoginResponse(newToken);
+    }
+
+    [HttpPost]
+    [Route("auth0/login")]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType]
+    public ActionResult<LoginResponse> LoginAuth0([FromServices] IAuth0Service auth0Service)
+    {
+        // Check for login rights...
+
+        // Add custom claims (optional).
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.GivenName, "Marco"),
+            new(ClaimTypes.Surname, "Minerva")
+        };
+
+        var token = auth0Service.ObtainTokenAsync(claims);
+        return new LoginResponse(token.Result);
     }
 }
 

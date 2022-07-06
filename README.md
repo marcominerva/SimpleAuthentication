@@ -45,7 +45,18 @@ Authentication can be totally configured adding an _Authentication_ section in t
           // to validate the API Key.
           //"ApiKeyValue": "f1I7S5GXa4wQDgLQWgz0",
           "DefaultUserName": "ApiUser" // Required ApiKeyValue is used
-      }
+      },
+      "Auth0":{
+            // This parameters are taken from https://auth0.com/ and you can use these only
+            // for test or you can create your personal api easily from dashboard.
+            "SchemeName": "Auth0",
+            "Algorithm": "RS256",
+            "Domain": "dev-a6-vyksc.us.auth0.com",
+            "Audience": "https://github.com/micheletolve",
+            "ClientId": "ipSAr24nCse9QIAlpN6nm2sYdarlaVY5",
+            "ClientSecret": "dr-qxPyLT2O7eDzCdzal9CHAe-V7t-aouZWBsDNCUsCk6r-rOjrVRQtZ9zGL7wCT",
+            "GrantType": "client_credentials"
+        }
     }
 
 
@@ -55,4 +66,4 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
 
 **Contribute**
 
-The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
+The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can.
