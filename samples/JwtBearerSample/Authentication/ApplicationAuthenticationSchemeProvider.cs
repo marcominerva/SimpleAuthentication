@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using SimpleAuthentication.ApiKey;
 using SimpleAuthentication.JwtBearer;
 
-namespace SimpleAuthentication.WebApi.Authentication;
+namespace JwtBearerSample.Authentication;
 
 public class ApplicationAuthenticationSchemeProvider : AuthenticationSchemeProvider
 {
@@ -28,13 +28,13 @@ public class ApplicationAuthenticationSchemeProvider : AuthenticationSchemeProvi
             throw new ArgumentNullException("The HTTP request cannot be retrieved.");
         }
 
-        // For API requests, use authentication tokens.
+        // For API requests, use Jwt Bearer Authentication.
         if (request.IsApiRequest())
         {
             return await GetSchemeAsync(jwtBearerSettings.SchemeName);
         }
 
-        // For API requests, use authentication tokens.
+        // For Services requests, use Api Key Authentication.
         if (request.IsServiceRequest())
         {
             return await GetSchemeAsync(apiKeySettings.SchemeName);

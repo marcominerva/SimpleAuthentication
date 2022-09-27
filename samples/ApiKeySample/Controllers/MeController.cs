@@ -2,7 +2,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SimpleAuthentication.WebApi.Controllers;
+namespace ApiKeySample.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -10,7 +10,7 @@ namespace SimpleAuthentication.WebApi.Controllers;
 public class MeController : ControllerBase
 {
     [Authorize]
-    [HttpGet("authorize-bearer")]
+    [HttpGet()]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesDefaultResponseType]

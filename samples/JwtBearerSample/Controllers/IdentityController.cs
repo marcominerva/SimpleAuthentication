@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAuthentication.JwtBearer;
 
-namespace SimpleAuthentication.WebApi.Controllers;
+namespace JwtBearerSample.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

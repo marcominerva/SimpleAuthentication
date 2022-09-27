@@ -14,7 +14,7 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //builder.Services.AddAuthorization(options =>
 //{
 //    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//                                .AddAuthenticationSchemes("ApiKey")
 //                                .RequireAuthenticatedUser()
 //                                .Build();
 
