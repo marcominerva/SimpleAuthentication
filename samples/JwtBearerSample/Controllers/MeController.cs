@@ -10,7 +10,7 @@ namespace JwtBearerSample.Controllers;
 public class MeController : ControllerBase
 {
     [Authorize]
-    [HttpGet()]
+    [HttpGet]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesDefaultResponseType]
