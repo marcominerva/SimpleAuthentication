@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -81,7 +80,7 @@ public static class SimpleAuthenticationExtensions
 
             builder.Services.Configure<JwtBearerSettings>(section);
 
-            builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            builder.AddJwtBearer(settings.SchemeName, options =>
             {
                 options.TokenValidationParameters = new()
                 {
@@ -180,7 +179,7 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            AddApiKeyAuthentication(options, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token with the 'Bearer ' prefix");
+            AddApiKeyAuthentication(options, settings.SchemeName, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token with the 'Bearer ' prefix");
         }
 
         static void CheckAddApiKey(SwaggerGenOptions options, IConfigurationSection section)

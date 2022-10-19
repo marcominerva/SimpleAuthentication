@@ -21,11 +21,8 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
     {
         var request = Context.Request;
 
-        var isApiKeyAvailable = !string.IsNullOrWhiteSpace(Options.HeaderName) && request.Headers.ContainsKey(Options.HeaderName);
-        if (!isApiKeyAvailable)
-        {
-            isApiKeyAvailable = !string.IsNullOrWhiteSpace(Options.QueryName) && request.Query.ContainsKey(Options.QueryName);
-        }
+        var isApiKeyAvailable = (!string.IsNullOrWhiteSpace(Options.HeaderName) && request.Headers.ContainsKey(Options.HeaderName))
+            || (!string.IsNullOrWhiteSpace(Options.QueryName) && request.Query.ContainsKey(Options.QueryName));
 
         if (!isApiKeyAvailable)
         {

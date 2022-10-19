@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Mime;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
@@ -42,7 +41,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
             var hasJwtBearerAuthentication = !string.IsNullOrWhiteSpace(jwtBearerSettings.SecurityKey);
-            CheckAddSecurityRequirement(operation, hasJwtBearerAuthentication ? JwtBearerDefaults.AuthenticationScheme : null);
+            CheckAddSecurityRequirement(operation, hasJwtBearerAuthentication ? jwtBearerSettings.SchemeName : null);
 
             var hasApiKeyHeaderAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.HeaderName);
             var hasApiKeyQueryAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.QueryName);

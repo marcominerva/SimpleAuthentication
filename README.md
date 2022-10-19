@@ -27,17 +27,17 @@ Authentication can be totally configured adding an _Authentication_ section in t
     "Authentication": {
       "DefaultScheme": "Bearer", // Optional
       "JwtBearer": {
-          "SchemeName": "Bearer" // Default Bearer
+          "SchemeName": "Bearer" // Default: Bearer
           "SecurityKey": "supersecretsecuritykey42!", // Required
-          "Algorithm": "HS256", // Default HS256
+          "Algorithm": "HS256", // Default: HS256
           "Issuers": [ "issuer" ], // Optional
           "Audiences": [ "audience" ], // Optional
-          "ExpirationTime": "01:00:00", // Default no expiration
-          "ClockSkew": "00:02:00", // Default 5 minutes
-          "EnableJwtBearerService": true // Default true
+          "ExpirationTime": "01:00:00", // Default: No expiration
+          "ClockSkew": "00:02:00", // Default: 5 minutes
+          "EnableJwtBearerService": true // Default: true
       },
       "ApiKey": {
-          "SchemeName": "MyApiKeyScheme", // Default "ApiKey"
+          "SchemeName": "MyApiKeyScheme", // Default: ApiKey
           // You can specify either HeaderName, QueryName or both
           "HeaderName": "x-api-key",
           "QueryName": "code",
