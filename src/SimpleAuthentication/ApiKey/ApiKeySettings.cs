@@ -11,7 +11,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// <summary>
     /// Gets or sets the authentication scheme name (Default: ApiKey).
     /// </summary>
-    public string SchemeName { get; set; } = "ApiKey";
+    public string SchemeName { get; set; } = ApiKeyDefaults.AuthenticationScheme;
 
     /// <summary>
     /// Gets or sets the name of the header that contains the API key.
