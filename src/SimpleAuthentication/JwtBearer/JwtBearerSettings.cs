@@ -17,8 +17,8 @@ public class JwtBearerSettings
     /// <summary>
     /// Gets or sets the cryptographic algorithm that is used to generate the digital signature (Default: HS256).
     /// </summary>
-    /// <seealso cref="Microsoft.IdentityModel.Tokens.SecurityAlgorithms"/>
-    public string Algorithm { get; set; } = "HS256";
+    /// <seealso cref="SecurityAlgorithms"/>
+    public string Algorithm { get; set; } = SecurityAlgorithms.HmacSha256;
 
     /// <summary>
     /// Gets or sets the security key that is used to sign the token.
