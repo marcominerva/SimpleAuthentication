@@ -44,7 +44,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
             CheckAddSecurityRequirement(operation, hasJwtBearerAuthentication ? jwtBearerSettings.SchemeName : null);
 
             var hasApiKeyHeaderAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.HeaderName);
-            var hasApiKeyQueryAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.QueryName);
+            var hasApiKeyQueryAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.QueryStringKey);
             CheckAddSecurityRequirement(operation, hasApiKeyHeaderAuthentication ? $"{apiKeySettings.SchemeName} in Header" : null);
             CheckAddSecurityRequirement(operation, hasApiKeyQueryAuthentication ? $"{apiKeySettings.SchemeName} in Query String" : null);
 

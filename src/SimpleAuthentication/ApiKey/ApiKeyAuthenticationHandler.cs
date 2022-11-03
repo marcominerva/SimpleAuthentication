@@ -22,7 +22,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
         var request = Context.Request;
 
         var isApiKeyAvailable = (!string.IsNullOrWhiteSpace(Options.HeaderName) && request.Headers.ContainsKey(Options.HeaderName))
-            || (!string.IsNullOrWhiteSpace(Options.QueryName) && request.Query.ContainsKey(Options.QueryName));
+            || (!string.IsNullOrWhiteSpace(Options.QueryStringKey) && request.Query.ContainsKey(Options.QueryStringKey));
 
         if (!isApiKeyAvailable)
         {
@@ -31,7 +31,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
 
         if (!request.Headers.TryGetValue(Options.HeaderName ?? string.Empty, out var value))
         {
-            request.Query.TryGetValue(Options.QueryName ?? string.Empty, out value);
+            request.Query.TryGetValue(Options.QueryStringKey ?? string.Empty, out value);
         }
 
         if (string.IsNullOrWhiteSpace(Options.ApiKeyValue))

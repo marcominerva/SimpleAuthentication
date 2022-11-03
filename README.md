@@ -38,9 +38,9 @@ Authentication can be totally configured adding an _Authentication_ section in t
       },
       "ApiKey": {
           "SchemeName": "MyApiKeyScheme", // Default: ApiKey
-          // You can specify either HeaderName, QueryName or both
+          // You can specify either HeaderName, QueryStringKey or both
           "HeaderName": "x-api-key",
-          "QueryName": "code",
+          "QueryStringKey": "code",
           // Uncomment this line if you want to validate the API Key against a fixed value.
           // Otherwise, you need to register an IApiKeyValidator implementation that will be used
           // to validate the API Key.

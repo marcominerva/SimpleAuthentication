@@ -112,7 +112,7 @@ public static class SimpleAuthenticationExtensions
 
             ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(ApiKeySettings.SchemeName));
 
-            if (string.IsNullOrWhiteSpace(settings.HeaderName) && string.IsNullOrWhiteSpace(settings.QueryName))
+            if (string.IsNullOrWhiteSpace(settings.HeaderName) && string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
                 throw new ArgumentException("You need to specify either a header name or a query string parameter name");
             }
@@ -128,7 +128,7 @@ public static class SimpleAuthenticationExtensions
             {
                 options.SchemeName = settings.SchemeName;
                 options.HeaderName = settings.HeaderName;
-                options.QueryName = settings.QueryName;
+                options.QueryStringKey = settings.QueryStringKey;
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.DefaultUserName = settings.DefaultUserName;
             });
@@ -195,9 +195,9 @@ public static class SimpleAuthenticationExtensions
                 AddApiKeyAuthentication(options, $"{settings.SchemeName} in Header", ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
             }
 
-            if (!string.IsNullOrWhiteSpace(settings.QueryName))
+            if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Query String", ParameterLocation.Query, settings.QueryName, "Insert the API Key");
+                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Query String", ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
             }
         }
 
