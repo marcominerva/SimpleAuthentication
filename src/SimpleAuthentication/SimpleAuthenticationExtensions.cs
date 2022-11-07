@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -179,7 +180,7 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            AddApiKeyAuthentication(options, settings.SchemeName, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token with the 'Bearer ' prefix");
+            AddAuthentication(options, settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token");
         }
 
         static void CheckAddApiKey(SwaggerGenOptions options, IConfigurationSection section)
@@ -192,22 +193,23 @@ public static class SimpleAuthenticationExtensions
 
             if (!string.IsNullOrWhiteSpace(settings.HeaderName))
             {
-                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Header", ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
+                AddAuthentication(options, $"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Query String", ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
+                AddAuthentication(options, $"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
             }
         }
 
-        static void AddApiKeyAuthentication(SwaggerGenOptions options, string schemeName, ParameterLocation location, string name, string description)
-            => options.AddSecurityDefinition(schemeName, new OpenApiSecurityScheme
+        static void AddAuthentication(SwaggerGenOptions options, string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description)
+            => options.AddSecurityDefinition(name, new OpenApiSecurityScheme
             {
                 In = location,
-                Name = name,
+                Name = parameterName,
                 Description = description,
-                Type = SecuritySchemeType.ApiKey
+                Type = securitySchemeType,
+                Scheme = scheme
             });
     }
 }
