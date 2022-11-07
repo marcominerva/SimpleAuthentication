@@ -12,9 +12,8 @@ public class MeController : ControllerBase
     [Authorize]
     [HttpGet]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesDefaultResponseType]
-    public ActionResult<User> GetWithBearer()
+    public ActionResult<User> Get()
         => new User(User.Identity!.Name);
 }
 

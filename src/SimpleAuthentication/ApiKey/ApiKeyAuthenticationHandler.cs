@@ -40,7 +40,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
             var validator = serviceProvider.GetService<IApiKeyValidator>();
             if (validator is null)
             {
-                throw new InvalidOperationException("There is not a default value for API Key and no custom validator has been provided");
+                throw new InvalidOperationException("There isn't a default value for API Key and no custom validator has been provided");
             }
 
             var validationResult = await validator.ValidateAsync(value.ToString());
@@ -52,7 +52,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
             return AuthenticateResult.Fail(validationResult.FailureMessage!);
         }
 
-        if (!string.IsNullOrWhiteSpace(Options.ApiKeyValue) && value == Options.ApiKeyValue)
+        if (value == Options.ApiKeyValue)
         {
             return CreateAuthenticationSuccessResult(Options.DefaultUserName!);
         }

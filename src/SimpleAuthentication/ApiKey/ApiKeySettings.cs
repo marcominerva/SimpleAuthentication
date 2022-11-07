@@ -28,7 +28,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     public string? QueryStringKey { get; set; }
 
     /// <summary>
-    /// Gets or sets a fixed value to compare the API key against. If you need to perform custom checks to validate the API key, you should leave this value <see langword="null"/> and register an <see cref="IApiKeyValidator"/> service.
+    /// Gets or sets a fixed value to compare the API key against. If you need to perform custom checks to validate the API key, you should leave this value to <see langword="null"/> and register an <see cref="IApiKeyValidator"/> service.
     /// </summary>
     /// <seealso cref="DefaultUserName"/>
     /// <seealso cref="IApiKeyValidator"/>

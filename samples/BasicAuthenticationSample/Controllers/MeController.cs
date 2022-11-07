@@ -2,7 +2,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiKeySample.Controllers;
+namespace BasicAuthenticationSample.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

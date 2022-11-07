@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using SimpleAuthentication.ApiKey;
+using SimpleAuthentication.BasicAuthentication;
 using SimpleAuthentication.JwtBearer;
 using SimpleAuthentication.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -63,6 +65,7 @@ public static class SimpleAuthenticationExtensions
     {
         CheckAddJwtBearer(builder, configuration.GetSection($"{sectionName}:JwtBearer"));
         CheckAddApiKey(builder, configuration.GetSection($"{sectionName}:ApiKey"));
+        CheckAddBasicAuthentication(builder, configuration.GetSection($"{sectionName}:Basic"));
 
         return new DefaultSimpleAuthenticationBuilder(configuration, builder);
 
@@ -114,7 +117,7 @@ public static class SimpleAuthenticationExtensions
 
             if (string.IsNullOrWhiteSpace(settings.HeaderName) && string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                throw new ArgumentException("You need to specify either a header name or a query string parameter name");
+                throw new ArgumentException("You need to specify either a header name or a query string parameter key");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.ApiKeyValue))
@@ -131,6 +134,42 @@ public static class SimpleAuthenticationExtensions
                 options.QueryStringKey = settings.QueryStringKey;
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.DefaultUserName = settings.DefaultUserName;
+            });
+        }
+
+        static void CheckAddBasicAuthentication(AuthenticationBuilder builder, IConfigurationSection section)
+        {
+            var settings = section.Get<BasicAuthenticationSettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(BasicAuthenticationSettings.SchemeName));
+
+            if (!string.IsNullOrWhiteSpace(settings.UserName))
+            {
+                ArgumentNullException.ThrowIfNull(settings.Password, nameof(BasicAuthenticationSettings.Password));
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.Password))
+            {
+                ArgumentNullException.ThrowIfNull(settings.UserName, nameof(BasicAuthenticationSettings.UserName));
+            }
+
+            builder.Services.Configure<BasicAuthenticationSettings>(options =>
+            {
+                options.SchemeName = settings.SchemeName;
+                options.UserName = settings.UserName;
+                options.Password = settings.Password;
+                options.IsEnabled = true;
+            });
+
+            builder.AddScheme<BasicAuthenticationSettings, BasicAuthenticationHandler>(settings.SchemeName, options =>
+            {
+                options.SchemeName = settings.SchemeName;
+                options.UserName = settings.UserName;
+                options.Password = settings.Password;
             });
         }
     }
@@ -167,6 +206,7 @@ public static class SimpleAuthenticationExtensions
     {
         CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));
         CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"));
+        CheckAddBasicAuthentication(options, configuration.GetSection($"{sectionName}:Basic"));
 
         options.OperationFilter<AuthenticationOperationFilter>();
         options.DocumentFilter<ProblemDetailsDocumentFilter>();
@@ -179,7 +219,7 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            AddApiKeyAuthentication(options, settings.SchemeName, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token with the 'Bearer ' prefix");
+            AddAuthentication(options, settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token");
         }
 
         static void CheckAddApiKey(SwaggerGenOptions options, IConfigurationSection section)
@@ -192,22 +232,34 @@ public static class SimpleAuthenticationExtensions
 
             if (!string.IsNullOrWhiteSpace(settings.HeaderName))
             {
-                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Header", ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
+                AddAuthentication(options, $"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                AddApiKeyAuthentication(options, $"{settings.SchemeName} in Query String", ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
+                AddAuthentication(options, $"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
             }
         }
 
-        static void AddApiKeyAuthentication(SwaggerGenOptions options, string schemeName, ParameterLocation location, string name, string description)
-            => options.AddSecurityDefinition(schemeName, new OpenApiSecurityScheme
+        static void CheckAddBasicAuthentication(SwaggerGenOptions options, IConfigurationSection section)
+        {
+            var settings = section.Get<BasicAuthenticationSettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            AddAuthentication(options, settings.SchemeName, SecuritySchemeType.Http, BasicAuthenticationDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert user name and password");
+        }
+
+        static void AddAuthentication(SwaggerGenOptions options, string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description)
+            => options.AddSecurityDefinition(name, new OpenApiSecurityScheme
             {
                 In = location,
-                Name = name,
+                Name = parameterName,
                 Description = description,
-                Type = SecuritySchemeType.ApiKey
+                Type = securitySchemeType,
+                Scheme = scheme
             });
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 
-namespace JwtBearerSample.Authentication;
+namespace BasicAuthenticationSample.Authentication;
 
 public class ClaimsTransformer : IClaimsTransformation
 {
