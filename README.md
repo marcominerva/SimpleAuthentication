@@ -62,6 +62,36 @@ You can configure only the kind of authentication you want to use, or you can in
 
 The _DefaultScheme_ attribute is used to specify what kind of authentication must be configured as default. Allowed values are the values of the _SchemeName_ attributes.
 
+**Registering authentication at Startup**
+
+    using SimpleAuthentication;
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    // ...
+    // Registers authentication schemes and services using IConfiguration information (see above).
+    builder.Services.AddSimpleAuthentication(builder.Configuration);
+
+    builder.Services.AddSwaggerGen(options =>
+    {
+        // ...
+        // Add this line to integrate authentication with Swagger.
+        options.AddSimpleAuthentication(builder.Configuration);
+    });
+
+    // ...
+
+    var app = builder.Build();
+
+    //...
+    // Remember to include both Authentication and Authorization middlewares.
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    //...
+
+    app.Run();
+
 **Contribute**
 
 The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
