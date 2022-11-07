@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SimpleAuthentication.ApiKey;
+using SimpleAuthentication.BasicAuthentication;
 using SimpleAuthentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -17,12 +18,16 @@ internal class AuthenticationOperationFilter : IOperationFilter
     private readonly IAuthorizationPolicyProvider authorizationPolicyProvider;
     private readonly JwtBearerSettings jwtBearerSettings;
     private readonly ApiKeySettings apiKeySettings;
+    private readonly BasicAuthenticationSettings basicAuthenticationSettings;
 
-    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider, IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions)
+    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider,
+        IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions, IOptions<BasicAuthenticationSettings> basicAuthenticationSettingsOptions)
     {
         this.authorizationPolicyProvider = authorizationPolicyProvider;
+
         jwtBearerSettings = jwtBearerSettingsOptions.Value;
         apiKeySettings = apiKeySettingsOptions.Value;
+        basicAuthenticationSettings = basicAuthenticationSettingsOptions.Value;
     }
 
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
@@ -48,6 +53,9 @@ internal class AuthenticationOperationFilter : IOperationFilter
             CheckAddSecurityRequirement(operation, hasApiKeyHeaderAuthentication ? $"{apiKeySettings.SchemeName} in Header" : null);
             CheckAddSecurityRequirement(operation, hasApiKeyQueryAuthentication ? $"{apiKeySettings.SchemeName} in Query String" : null);
 
+            var hasBasicAuthentication = basicAuthenticationSettings.IsEnabled;
+            CheckAddSecurityRequirement(operation, hasBasicAuthentication ? basicAuthenticationSettings.SchemeName : null);
+
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), GetResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), GetResponse(HttpStatusCode.Forbidden.ToString()));
         }
@@ -65,7 +73,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference
+                    Reference = new()
                     {
                         Type = ReferenceType.SecurityScheme,
                         Id = securityScheme

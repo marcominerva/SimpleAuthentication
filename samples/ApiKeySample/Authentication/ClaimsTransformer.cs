@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 
-namespace SimpleAuthentication.WebApi.Authentication;
+namespace ApiKeySample.Authentication;
 
 public class ClaimsTransformer : IClaimsTransformation
 {

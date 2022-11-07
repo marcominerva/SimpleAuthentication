@@ -1,7 +1,7 @@
+using ApiKeySample.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using SimpleAuthentication;
 using SimpleAuthentication.ApiKey;
-using SimpleAuthentication.WebApi.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +40,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -47,8 +48,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthenticationAndAuthorization();
 

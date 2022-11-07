@@ -1,6 +1,8 @@
-using JwtBearerSample.Authentication;
+using System.Security.Claims;
+using BasicAuthenticationSample.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using SimpleAuthentication;
+using SimpleAuthentication.BasicAuthentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,14 +15,16 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //builder.Services.AddAuthorization(options =>
 //{
 //    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//                                .AddAuthenticationSchemes("ApiKey")
 //                                .RequireAuthenticatedUser()
 //                                .Build();
 
-//    options.AddPolicy("Bearer", policy => policy
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+//    options.AddPolicy("ApiKey", policy => policy
+//                                .AddAuthenticationSchemes("ApiKey")
 //                                .RequireAuthenticatedUser());
 //});
+
+builder.Services.AddTransient<IBasicAuthenticationValidator, CustomBasicAuthenticationValidator>();
 
 // Uncomment the following line if you have multiple authentication schemes and
 // you need to determine the authentication scheme at runtime (for example, you don't want to use the default authentication scheme).
@@ -51,3 +55,17 @@ app.UseAuthenticationAndAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public class CustomBasicAuthenticationValidator : IBasicAuthenticationValidator
+{
+    public Task<BasicAuthenticationValidationResult> ValidateAsync(string userName, string password)
+    {
+        if (userName == password)
+        {
+            var claims = new List<Claim>() { new(ClaimTypes.Role, "User") };
+            return Task.FromResult(BasicAuthenticationValidationResult.Success(userName, claims));
+        }
+
+        return Task.FromResult(BasicAuthenticationValidationResult.Fail("Invalid user"));
+    }
+}
