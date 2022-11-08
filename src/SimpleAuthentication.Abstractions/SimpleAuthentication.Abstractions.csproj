@@ -41,4 +41,8 @@
 		</None>
 		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="SimpleAuthentication" />
+    </ItemGroup>
 </Project>
