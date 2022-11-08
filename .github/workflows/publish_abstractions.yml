@@ -1,19 +1,19 @@
-name: Publish on NuGet
+name: Publish Abstractions on NuGet
  
 on:
   push:
     branches: [ master ]
-    paths: [ 'src/**' ]
+    paths: [ 'src/SimpleAuthentication.Abstractions/**' ]
   workflow_dispatch:
 
 env:
   NET_VERSION: '6.x'
-  PROJECT_NAME: src/SimpleAuthentication 
-  PROJECT_FILE: SimpleAuthentication.csproj  
+  PROJECT_NAME: src/SimpleAuthentication.Abstractions 
+  PROJECT_FILE: SimpleAuthentication.Abstractions.csproj  
   
 jobs:
   build:
-    name: Publish on NuGet
+    name: Publish Abstractions on NuGet
     runs-on: ubuntu-latest
 
     steps:
