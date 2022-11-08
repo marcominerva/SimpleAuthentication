@@ -9,7 +9,7 @@
         <Authors>Marco Minerva</Authors>
 		<Company>Marco Minerva</Company>
 		<Product>Common types and interfaces for Simple Authentication for ASP.NET Core</Product>
-		<Title>Common types and interfaces forSimple Authentication for ASP.NET Core</Title>
+		<Title>Common types and interfaces for Simple Authentication for ASP.NET Core</Title>
 		<Description>A library that provides common types and interfaces that are used by Simple Authentication</Description>
 		<PackageId>SimpleAuthenticationTools.Abstractions</PackageId>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
