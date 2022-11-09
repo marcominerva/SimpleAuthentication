@@ -1,8 +1,0 @@
-<Project>
-
-  <ItemGroup>
-    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.5.109" />
-  </ItemGroup>
-
-</Project>
