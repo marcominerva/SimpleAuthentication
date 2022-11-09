@@ -49,9 +49,10 @@ Authentication can be totally configured adding an _Authentication_ section in t
       },
       "Basic": {
           "SchemeName": "Basic", // Default: Basic
-          // Uncomment the following lines if you want to validate user name and password against fixed values.
-          // Otherwise, you need to register an IBasicAuthenticationValidator implementation that will be used
-          // to validate the credentials.
+          // Uncomment the following lines if you want to validate user name and password
+          // against fixed values.
+          // Otherwise, you need to register an IBasicAuthenticationValidator implementation
+          // that will be used to validate the credentials.
           //"UserName": "marco",
           //"Password": "P@$$w0rd"
       }
