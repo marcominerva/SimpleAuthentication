@@ -211,7 +211,9 @@ public static class SimpleAuthenticationExtensions
         CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"));
         CheckAddBasicAuthentication(options, configuration.GetSection($"{sectionName}:Basic"));
 
+        // This filters automatically adds a security requirement to each endpoint that requires authentication.
         options.OperationFilter<AuthenticationOperationFilter>();
+
         options.DocumentFilter<ProblemDetailsDocumentFilter>();
 
         static void CheckAddJwtBearer(SwaggerGenOptions options, IConfigurationSection section)
@@ -268,6 +270,17 @@ public static class SimpleAuthenticationExtensions
 
 #if NET7_0_OR_GREATER
 
+    /// <summary>
+    /// Adds an OpenAPI annotation that specifies authentication requirements to <see cref="Endpoint.Metadata" /> associated
+    /// with the current endpoint, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// </summary>
+    /// <param name="builder">The <see cref="IEndpointConventionBuilder"/>.</param>
+    /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
+    /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+    /// <returns>A <see cref="IEndpointConventionBuilder"/> that can be used to further customize the endpoint.</returns>
+    /// <seealso cref="IEndpointConventionBuilder"/>
+    /// <seealso cref="Endpoint.Metadata"/>
+    /// <seealso cref="IConfiguration"/>
     public static TBuilder WithOpenApiAuthentication<TBuilder>(this TBuilder builder, IConfiguration configuration, string sectionName = "Authentication") where TBuilder : IEndpointConventionBuilder
     {
         var securityRequirement = new OpenApiSecurityRequirement();
@@ -301,7 +314,7 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            AddAuthentication(settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token", ref securityRequirement);
+            AddAuthentication(settings.SchemeName, ref securityRequirement);
         }
 
         static void CheckAddApiKey(IConfigurationSection section, ref OpenApiSecurityRequirement securityRequirement)
@@ -314,12 +327,12 @@ public static class SimpleAuthenticationExtensions
 
             if (!string.IsNullOrWhiteSpace(settings.HeaderName))
             {
-                AddAuthentication($"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key", ref securityRequirement);
+                AddAuthentication($"{settings.SchemeName} in Header", ref securityRequirement);
             }
 
             if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                AddAuthentication($"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key", ref securityRequirement);
+                AddAuthentication($"{settings.SchemeName} in Query String", ref securityRequirement);
             }
         }
 
@@ -331,20 +344,17 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            AddAuthentication(settings.SchemeName, SecuritySchemeType.Http, BasicAuthenticationDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert user name and password", ref securityRequirement);
+            AddAuthentication(settings.SchemeName, ref securityRequirement);
         }
 
-        static void AddAuthentication(string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description, ref OpenApiSecurityRequirement securityRequirement)
+        static void AddAuthentication(string name, ref OpenApiSecurityRequirement securityRequirement)
         {
             // Creates a security scheme using the information that comes from the configuration.
             // This scheme is then inserted in the security requirement that, in turn, is
-            // added as security information to the OpenApi information of the endpoint.
+            // added as security information to the OpenAPI information of the endpoint.
 
             var securityScheme = new OpenApiSecurityScheme()
             {
-                //Type = securitySchemeType,
-                //Name = parameterName,
-                //Scheme = scheme,
                 Reference = new()
                 {
                     Type = ReferenceType.SecurityScheme,
