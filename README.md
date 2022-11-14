@@ -6,7 +6,7 @@
 [![Nuget](https://img.shields.io/nuget/dt/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/marcominerva/SimpleAuthentication/blob/master/LICENSE)
 
-A library to easily integrate Authentication in ASP.NET Core projects. Currently supports JWT Bearer, API Key and Basic Authentication.
+A library to easily integrate Authentication in ASP.NET Core projects. Currently it supports JWT Bearer, API Key and Basic Authentication in both Controller-based and Minimal API projects.
 
 **Installation**
 
@@ -92,6 +92,24 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
     //...
 
     app.Run();
+
+
+**Additional steps for Minimal APIs (.NET 7.0)**
+
+If you're using Minimal APIs, you need to add metadata to any route handler that requires authentication:
+
+    app.MapGet("api/me", (ClaimsPrincipal user) =>
+    {
+        return new User(user.Identity!.Name);
+    })
+    .RequireAuthorization()
+    .WithOpenApiAuthentication(builder.Configuration);  // Add this extension method
+
+**Samples**
+
+- JWT Bearer ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/JwtBearerSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/JwtBearerSample))
+- API Key ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/ApiKeySample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/ApiKeySample))
+- Basic Authentication ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/BasicAuthenticationSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/BasicAuthenticationSample))
 
 **Contribute**
 

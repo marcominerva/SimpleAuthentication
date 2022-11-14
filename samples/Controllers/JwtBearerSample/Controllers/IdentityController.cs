@@ -63,5 +63,3 @@ public class AuthController : ControllerBase
 public record class LoginRequest(string UserName, string Password);
 
 public record class LoginResponse(string Token);
-
-public record class ValidationResponse(bool IsValid, User? User);
