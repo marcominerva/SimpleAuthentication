@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SimpleAuthentication.WebApi": {
+    "ApiKeySample": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

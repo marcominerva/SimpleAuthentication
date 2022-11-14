@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using JwtBearerSample.Authentication;
+using JwtBearerSample.Swagger;
 using Microsoft.AspNetCore.Authentication;
 using SimpleAuthentication;
 using SimpleAuthentication.JwtBearer;
@@ -35,6 +36,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.ParameterFilter<DateTimeParameterFilter>();
+
     options.AddSimpleAuthentication(builder.Configuration);
 });
 

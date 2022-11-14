@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "SimpleAuthentication.WebApi": {
+    "JwtBearerSample": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
