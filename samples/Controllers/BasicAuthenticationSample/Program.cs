@@ -15,12 +15,12 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //builder.Services.AddAuthorization(options =>
 //{
 //    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes("ApiKey")
+//                                .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
 //                                .RequireAuthenticatedUser()
 //                                .Build();
 
-//    options.AddPolicy("ApiKey", policy => policy
-//                                .AddAuthenticationSchemes("ApiKey")
+//    options.AddPolicy("Basic", policy => policy
+//                                .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
 //                                .RequireAuthenticatedUser());
 //});
 

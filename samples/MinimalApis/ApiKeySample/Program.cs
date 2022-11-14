@@ -15,12 +15,12 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //builder.Services.AddAuthorization(options =>
 //{
 //    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes("ApiKey")
+//                                .AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme)
 //                                .RequireAuthenticatedUser()
 //                                .Build();
 
 //    options.AddPolicy("ApiKey", policy => policy
-//                                .AddAuthenticationSchemes("ApiKey")
+//                                .AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme)
 //                                .RequireAuthenticatedUser());
 //});
 
@@ -37,29 +37,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    //options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-    //{
-    //    In = ParameterLocation.Header,
-    //    Description = "Insert JWT token with the \"Bearer \" prefix",
-    //    Name = "Authorization",
-    //    Type = SecuritySchemeType.ApiKey
-    //});
-
-    //options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    //            {
-    //                {
-    //                    new OpenApiSecurityScheme
-    //                    {
-    //                        Reference = new OpenApiReference
-    //                        {
-    //                            Type = ReferenceType.SecurityScheme,
-    //                            Id = "ApiKey" //JwtBearerDefaults.AuthenticationScheme
-    //                        }
-    //                    },
-    //                    Array.Empty<string>()
-    //                }
-    //            });
-
     options.AddSimpleAuthentication(builder.Configuration);
 });
 
@@ -79,8 +56,7 @@ app.MapGet("api/me", (ClaimsPrincipal user, HttpContext context) =>
 {
     return new User(user.Identity!.Name);
 })
-.RequireAuthorization()
-.WithOpenApiAuthentication(builder.Configuration);
+.RequireAuthorization();
 
 app.Run();
 

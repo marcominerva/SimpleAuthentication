@@ -91,8 +91,7 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
     return new User(user.Identity!.Name);
 })
-.RequireAuthorization()
-.WithOpenApiAuthentication(builder.Configuration);
+.RequireAuthorization();
 
 app.Run();
 

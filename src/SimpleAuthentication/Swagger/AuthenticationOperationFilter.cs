@@ -35,13 +35,10 @@ internal class AuthenticationOperationFilter : IOperationFilter
         var fallbackPolicy = authorizationPolicyProvider.GetFallbackPolicyAsync().GetAwaiter().GetResult();
         var requireAuthenticatedUser = fallbackPolicy?.Requirements.Any(r => r is DenyAnonymousAuthorizationRequirement) ?? false;
 
-        var requireAuthorization = context.MethodInfo.DeclaringType?.GetCustomAttributes(true)
-            .Union(context.MethodInfo.GetCustomAttributes(true))
-            .Any(a => a is AuthorizeAttribute) ?? false;
+        var endpointMetadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
 
-        var allowAnonymous = context.MethodInfo.DeclaringType?.GetCustomAttributes(true)
-            .Union(context.MethodInfo.GetCustomAttributes(true))
-            .Any(a => a is AllowAnonymousAttribute) ?? false;
+        var requireAuthorization = endpointMetadata.Any(m => m is AuthorizeAttribute);
+        var allowAnonymous = endpointMetadata.Any(m => m is AllowAnonymousAttribute);
 
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
@@ -84,7 +81,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
         });
     }
 
-    internal static OpenApiResponse GetResponse(string description)
+    private static OpenApiResponse GetResponse(string description)
         => new()
         {
             Description = description,
