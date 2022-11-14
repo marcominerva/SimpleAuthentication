@@ -61,9 +61,9 @@ internal class AuthenticationOperationFilter : IOperationFilter
         }
     }
 
-    private static void CheckAddSecurityRequirement(OpenApiOperation operation, string? securityScheme)
+    private static void CheckAddSecurityRequirement(OpenApiOperation operation, string? name)
     {
-        if (string.IsNullOrWhiteSpace(securityScheme))
+        if (string.IsNullOrWhiteSpace(name))
         {
             return;
         }
@@ -76,7 +76,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
                     Reference = new()
                     {
                         Type = ReferenceType.SecurityScheme,
-                        Id = securityScheme
+                        Id = name
                     }
                 },
                 Array.Empty<string>()
@@ -84,7 +84,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
         });
     }
 
-    private static OpenApiResponse GetResponse(string description)
+    internal static OpenApiResponse GetResponse(string description)
         => new()
         {
             Description = description,

@@ -1,44 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <DocumentationFile>SimpleAuthentication.xml</DocumentationFile>
         <Authors>Marco Minerva</Authors>
-		<Company>Marco Minerva</Company>
-		<Product>Simple Authentication for ASP.NET Core</Product>
-		<Title>Simple Authentication for ASP.NET Core</Title>
-		<Description>A library to easily integrate Authentication in ASP.NET Core projects</Description>
-		<PackageId>SimpleAuthenticationTools</PackageId>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
-		<PackageIcon>Toolbox.png</PackageIcon>
-		<PackageTags>csharp visualstudio aspnetcore webapi authentication jwt jwtbearer apikey utilities helpers</PackageTags>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/marcominerva/SimpleAuthentication.git</RepositoryUrl>
-		<RepositoryBranch>master</RepositoryBranch>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-	</PropertyGroup>
+        <Company>Marco Minerva</Company>
+        <Product>Simple Authentication for ASP.NET Core</Product>
+        <Title>Simple Authentication for ASP.NET Core</Title>
+        <Description>A library to easily integrate Authentication in ASP.NET Core projects</Description>
+        <PackageId>SimpleAuthenticationTools</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
+        <PackageIcon>Toolbox.png</PackageIcon>
+        <PackageTags>csharp visualstudio aspnetcore webapi authentication jwt jwtbearer apikey utilities helpers</PackageTags>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/marcominerva/SimpleAuthentication.git</RepositoryUrl>
+        <RepositoryBranch>master</RepositoryBranch>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
 
     <ItemGroup>
         <None Remove="SimpleAuthentication.xml" />
     </ItemGroup>
 
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
 
-	<ItemGroup> 
-	  <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="1.0.5" />
-	  <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="1.0.5" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<None Include="..\..\Toolbox.png">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
-	</ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\Toolbox.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 </Project>

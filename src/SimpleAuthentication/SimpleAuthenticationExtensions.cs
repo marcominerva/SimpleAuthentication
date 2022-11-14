@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -204,6 +206,7 @@ public static class SimpleAuthenticationExtensions
     /// <seealso cref="IConfiguration"/>
     public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName = "Authentication")
     {
+        // Adds a security definition for each authentication method that has been configured.
         CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));
         CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"));
         CheckAddBasicAuthentication(options, configuration.GetSection($"{sectionName}:Basic"));
@@ -262,4 +265,96 @@ public static class SimpleAuthenticationExtensions
                 Scheme = scheme
             });
     }
+
+#if NET7_0_OR_GREATER
+
+    public static TBuilder WithOpenApiAuthentication<TBuilder>(this TBuilder builder, IConfiguration configuration, string sectionName = "Authentication") where TBuilder : IEndpointConventionBuilder
+    {
+        var securityRequirement = new OpenApiSecurityRequirement();
+
+        // Each method, if the corresponding security scheme is defined, adds a security requirement.
+        CheckAddJwtBearer(configuration.GetSection($"{sectionName}:JwtBearer"), ref securityRequirement);
+        CheckAddApiKey(configuration.GetSection($"{sectionName}:ApiKey"), ref securityRequirement);
+        CheckAddBasicAuthentication(configuration.GetSection($"{sectionName}:Basic"), ref securityRequirement);
+
+        // Adds all the security requirements that have been defined in the configuration.
+        builder.WithOpenApi(operation =>
+        {
+            operation = new(operation)
+            {
+                Security = { securityRequirement }
+            };
+
+            operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), AuthenticationOperationFilter.GetResponse(HttpStatusCode.Unauthorized.ToString()));
+            operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), AuthenticationOperationFilter.GetResponse(HttpStatusCode.Forbidden.ToString()));
+
+            return operation;
+        });
+
+        return builder;
+
+        static void CheckAddJwtBearer(IConfigurationSection section, ref OpenApiSecurityRequirement securityRequirement)
+        {
+            var settings = section.Get<JwtBearerSettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            AddAuthentication(settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token", ref securityRequirement);
+        }
+
+        static void CheckAddApiKey(IConfigurationSection section, ref OpenApiSecurityRequirement securityRequirement)
+        {
+            var settings = section.Get<ApiKeySettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.HeaderName))
+            {
+                AddAuthentication($"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key", ref securityRequirement);
+            }
+
+            if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
+            {
+                AddAuthentication($"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key", ref securityRequirement);
+            }
+        }
+
+        static void CheckAddBasicAuthentication(IConfigurationSection section, ref OpenApiSecurityRequirement securityRequirement)
+        {
+            var settings = section.Get<BasicAuthenticationSettings>();
+            if (settings is null)
+            {
+                return;
+            }
+
+            AddAuthentication(settings.SchemeName, SecuritySchemeType.Http, BasicAuthenticationDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert user name and password", ref securityRequirement);
+        }
+
+        static void AddAuthentication(string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description, ref OpenApiSecurityRequirement securityRequirement)
+        {
+            // Creates a security scheme using the information that comes from the configuration.
+            // This scheme is then inserted in the security requirement that, in turn, is
+            // added as security information to the OpenApi information of the endpoint.
+
+            var securityScheme = new OpenApiSecurityScheme()
+            {
+                //Type = securitySchemeType,
+                //Name = parameterName,
+                //Scheme = scheme,
+                Reference = new()
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = name,
+                }
+            };
+
+            securityRequirement.Add(securityScheme, Array.Empty<string>());
+        }
+    }
+
+#endif
 }
