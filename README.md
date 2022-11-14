@@ -93,6 +93,24 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
 
     app.Run();
 
+
+**Additional steps for Minimal APIs (.NET 7.0)**
+
+If you're using Minimal APIs, you need to add metadata to any route handler that requires authentication:
+
+    app.MapGet("api/me", (ClaimsPrincipal user) =>
+    {
+        return new User(user.Identity!.Name);
+    })
+    .RequireAuthorization()
+    .WithOpenApiAuthentication(builder.Configuration);  // Add this extension method
+
+**Samples**
+
+- JWT Bearer (Controller | Minimal API)
+- API Key (Controller | Minimal API)
+- Basic Authentication (Controller | Minimal API)
+
 **Contribute**
 
 The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
