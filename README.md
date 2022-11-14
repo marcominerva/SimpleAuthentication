@@ -96,7 +96,7 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
 
 **Additional steps for Minimal APIs (.NET 7.0)**
 
-If you're using Minimal APIs, you need to add metadata to any route handler that requires authentication:
+If you're using Minimal APIs and you're adding authentication using fluent declaration (the most common approach), you need to add metadata to route handlers:
 
     app.MapGet("api/me", (ClaimsPrincipal user) =>
     {
@@ -104,6 +104,14 @@ If you're using Minimal APIs, you need to add metadata to any route handler that
     })
     .RequireAuthorization()
     .WithOpenApiAuthentication(builder.Configuration);  // Add this extension method
+
+This mean that you don't need to call the `WithOpenApiAutentication` extension method if you use a Data Annotation like this:
+
+    app.MapGet("api/me", [Authorize] (ClaimsPrincipal user) =>
+    {
+        return new User(user.Identity!.Name);
+    });
+
 
 **Samples**
 
