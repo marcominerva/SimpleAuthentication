@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
 
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
@@ -51,7 +50,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthenticationAndAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 var authApiGroup = app.MapGroup("api/auth");
 
