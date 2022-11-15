@@ -56,7 +56,8 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
     return new User(user.Identity!.Name);
 })
-.RequireAuthorization();
+.RequireAuthorization()
+.WithOpenApi();
 
 app.Run();
 

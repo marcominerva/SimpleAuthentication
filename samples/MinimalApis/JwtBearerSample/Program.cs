@@ -68,7 +68,8 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
 
     var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
     return Results.Ok(new LoginResponse(token));
-});
+})
+.WithOpenApi();
 
 authApiGroup.MapPost("validate", (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
 {
@@ -79,19 +80,22 @@ authApiGroup.MapPost("validate", (string token, bool validateLifetime, IJwtBeare
     }
 
     return Results.Ok(new User(claimsPrincipal!.Identity!.Name));
-});
+})
+.WithOpenApi();
 
 authApiGroup.MapPost("refresh", (string token, bool validateLifetime, DateTime? expiration, IJwtBearerService jwtBearerService) =>
 {
     var newToken = jwtBearerService.RefreshToken(token, validateLifetime, expiration);
     return Results.Ok(new LoginResponse(newToken));
-});
+})
+.WithOpenApi();
 
 app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
     return new User(user.Identity!.Name);
 })
-.RequireAuthorization();
+.RequireAuthorization()
+.WithOpenApi();
 
 app.Run();
 
