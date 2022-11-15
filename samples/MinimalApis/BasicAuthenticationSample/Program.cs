@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
 
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
@@ -50,9 +49,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthenticationAndAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapGet("api/me", (ClaimsPrincipal user, HttpContext context) =>
+app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
     return new User(user.Identity!.Name);
 })
