@@ -46,12 +46,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// The following middlewares aren't strictly necessary in .NET 7.0, because they are automatically added when detecting
-// that the corresponding services have been registered. However, you may need to call them explicitly if the default
-// middlewares configuration is not correct for your app, for example when you need to use CORS.
-// Check https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/middleware for more information.
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

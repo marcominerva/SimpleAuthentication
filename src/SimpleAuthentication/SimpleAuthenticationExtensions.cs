@@ -129,7 +129,7 @@ public static class SimpleAuthenticationExtensions
 
             if (!string.IsNullOrWhiteSpace(settings.ApiKeyValue))
             {
-                ArgumentNullException.ThrowIfNull(settings.DefaultUserName, nameof(ApiKeySettings.DefaultUserName));
+                ArgumentNullException.ThrowIfNull(settings.UserName, nameof(ApiKeySettings.UserName));
             }
 
             builder.Services.Configure<ApiKeySettings>(section);
@@ -140,7 +140,7 @@ public static class SimpleAuthenticationExtensions
                 options.HeaderName = settings.HeaderName;
                 options.QueryStringKey = settings.QueryStringKey;
                 options.ApiKeyValue = settings.ApiKeyValue;
-                options.DefaultUserName = settings.DefaultUserName;
+                options.UserName = settings.UserName;
             });
         }
 

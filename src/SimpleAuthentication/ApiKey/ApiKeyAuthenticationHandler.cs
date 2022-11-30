@@ -54,7 +54,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
 
         if (value == Options.ApiKeyValue)
         {
-            return CreateAuthenticationSuccessResult(Options.DefaultUserName!);
+            return CreateAuthenticationSuccessResult(Options.UserName!);
         }
 
         return AuthenticateResult.Fail("Invalid API Key");

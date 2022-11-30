@@ -4,6 +4,7 @@
         <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
         <DocumentationFile>SimpleAuthentication.xml</DocumentationFile>
         <Authors>Marco Minerva</Authors>
         <Company>Marco Minerva</Company>
@@ -30,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="1.0.5" />
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="1.0.11" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
     </ItemGroup>
 
