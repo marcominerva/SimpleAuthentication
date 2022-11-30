@@ -30,7 +30,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// <summary>
     /// Gets or sets a fixed value to compare the API key against. If you need to perform custom checks to validate the API key, you should leave this value to <see langword="null"/> and register an <see cref="IApiKeyValidator"/> service.
     /// </summary>
-    /// <seealso cref="DefaultUserName"/>
+    /// <seealso cref="UserName"/>
     /// <seealso cref="IApiKeyValidator"/>
     public string? ApiKeyValue { get; set; }
 
@@ -38,5 +38,5 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// Gets or sets the user name of to be used if the <see cref="ApiKeyValue"/> property is set.
     /// </summary>
     /// <seealso cref="ApiKeyValue"/>
-    public string? DefaultUserName { get; set; }
+    public string? UserName { get; set; }
 }
