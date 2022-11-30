@@ -45,7 +45,7 @@ Authentication can be totally configured adding an _Authentication_ section in t
           // Otherwise, you need to register an IApiKeyValidator implementation that will be used
           // to validate the API Key.
           //"ApiKeyValue": "f1I7S5GXa4wQDgLQWgz0",
-          "DefaultUserName": "ApiUser" // Required ApiKeyValue is used
+          "UserName": "ApiUser" // Required if ApiKeyValue is used
       },
       "Basic": {
           "SchemeName": "Basic", // Default: Basic
