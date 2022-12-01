@@ -20,7 +20,6 @@ namespace SimpleAuthentication;
 /// <summary>
 /// Provides extension methods for adding authentication support in ASP.NET Core.
 /// </summary>
-/// <seealso cref="ISimpleAuthenticationBuilder"/>
 /// <seealso cref="AuthenticationBuilder"/>
 public static class SimpleAuthenticationExtensions
 {
@@ -31,13 +30,13 @@ public static class SimpleAuthenticationExtensions
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
     /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
     /// <param name="addAuthorizationServices">Set to <see langword="true"/> to automatically add Authorization policy services.</param>
-    /// <returns>A <see cref="ISimpleAuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <returns>A <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
     /// <exception cref="ArgumentException">Configuration is invalid.</exception>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IServiceCollection"/>
     /// <seealso cref="IConfiguration"/>
-    /// <seealso cref="ISimpleAuthenticationBuilder"/>    
-    public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication", bool addAuthorizationServices = true)
+    /// <seealso cref="AuthenticationBuilder"/>    
+    public static AuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication", bool addAuthorizationServices = true)
     {
         var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultScheme");
 
@@ -57,13 +56,13 @@ public static class SimpleAuthenticationExtensions
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
     /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
     /// <param name="addAuthorizationServices">Set to <see langword="true"/> to automatically add Authorization policy services.</param>
-    /// <returns>A <see cref="ISimpleAuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <returns>A <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
     /// <exception cref="ArgumentException">Configuration is invalid.</exception>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="AuthenticationBuilder"/>
     /// <seealso cref="IConfiguration"/>
-    /// <seealso cref="ISimpleAuthenticationBuilder"/>
-    public static ISimpleAuthenticationBuilder AddSimpleAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, string sectionName = "Authentication", bool addAuthorizationServices = true)
+    /// <seealso cref="AuthenticationBuilder"/>
+    public static AuthenticationBuilder AddSimpleAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, string sectionName = "Authentication", bool addAuthorizationServices = true)
     {
         if (addAuthorizationServices)
         {
@@ -74,7 +73,7 @@ public static class SimpleAuthenticationExtensions
         CheckAddApiKey(builder, configuration.GetSection($"{sectionName}:ApiKey"));
         CheckAddBasicAuthentication(builder, configuration.GetSection($"{sectionName}:Basic"));
 
-        return new DefaultSimpleAuthenticationBuilder(configuration, builder);
+        return builder;
 
         static void CheckAddJwtBearer(AuthenticationBuilder builder, IConfigurationSection section)
         {
