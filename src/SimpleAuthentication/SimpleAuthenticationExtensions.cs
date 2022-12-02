@@ -340,7 +340,7 @@ public static class SimpleAuthenticationExtensions
                 {
                     new()
                     {
-                        Reference= new()
+                        Reference = new()
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = name
