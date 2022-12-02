@@ -56,29 +56,29 @@ internal class AuthenticationOperationFilter : IOperationFilter
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), GetResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), GetResponse(HttpStatusCode.Forbidden.ToString()));
         }
-    }
 
-    private static void CheckAddSecurityRequirement(OpenApiOperation operation, string? name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
+        static void CheckAddSecurityRequirement(OpenApiOperation operation, string? name)
         {
-            return;
-        }
-
-        operation.Security.Add(new OpenApiSecurityRequirement
-        {
+            if (string.IsNullOrWhiteSpace(name))
             {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new()
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = name
-                    }
-                },
-                Array.Empty<string>()
+                return;
             }
-        });
+
+            operation.Security.Add(new()
+            {
+                {
+                    new()
+                    {
+                        Reference = new()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = name
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        }
     }
 
     private static OpenApiResponse GetResponse(string description)
