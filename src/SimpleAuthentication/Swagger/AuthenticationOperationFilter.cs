@@ -1,9 +1,7 @@
 ﻿using System.Net;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SimpleAuthentication.ApiKey;
@@ -53,8 +51,8 @@ internal class AuthenticationOperationFilter : IOperationFilter
             var hasBasicAuthentication = basicAuthenticationSettings.IsEnabled;
             CheckAddSecurityRequirement(operation, hasBasicAuthentication ? basicAuthenticationSettings.SchemeName : null);
 
-            operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), GetResponse(HttpStatusCode.Unauthorized.ToString()));
-            operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), GetResponse(HttpStatusCode.Forbidden.ToString()));
+            operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), Helpers.CreateResponse(HttpStatusCode.Unauthorized.ToString()));
+            operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), Helpers.CreateResponse(HttpStatusCode.Forbidden.ToString()));
         }
 
         static void CheckAddSecurityRequirement(OpenApiOperation operation, string? name)
@@ -64,40 +62,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
                 return;
             }
 
-            operation.Security.Add(new()
-            {
-                {
-                    new()
-                    {
-                        Reference = new()
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = name
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
+            operation.Security.Add(Helpers.CreateSecurityRequirement(name));
         }
     }
-
-    private static OpenApiResponse GetResponse(string description)
-        => new()
-        {
-            Description = description,
-            Content = new Dictionary<string, OpenApiMediaType>
-            {
-                [MediaTypeNames.Application.Json] = new()
-                {
-                    Schema = new()
-                    {
-                        Reference = new()
-                        {
-                            Id = nameof(ProblemDetails),
-                            Type = ReferenceType.Schema
-                        }
-                    }
-                }
-            }
-        };
 }
