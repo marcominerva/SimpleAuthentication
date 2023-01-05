@@ -29,8 +29,33 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// <seealso cref="IBasicAuthenticationValidator"/>
     public string? Password { get; set; }
 
+    private ICollection<Credential> credentials = new HashSet<Credential>();
     /// <summary>
-    /// Internal value that tells if Basic authentication is actually enabled.
+    /// The collection of authorization credentials
     /// </summary>
-    internal bool IsEnabled { get; set; }
+    /// <seealso cref="Credential"/>
+    public ICollection<Credential> Credentials
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
+            {
+                // If necessary, add the credentials from the base properties.
+                credentials.Add(new Credential(UserName, Password));
+            }
+
+            return credentials;
+        }
+
+        internal set => credentials = value ?? new HashSet<Credential>();
+    }
+
+    internal bool IsConfigured { get; set; }
 }
+
+/// <summary>
+/// Store credentials used for Basic Authentication
+/// </summary>
+/// <param name="UserName">The user name</param>
+/// <param name="Password">The password</param>
+public record class Credential(string UserName, string Password);

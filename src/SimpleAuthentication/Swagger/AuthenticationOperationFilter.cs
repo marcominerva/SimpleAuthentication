@@ -48,7 +48,7 @@ internal class AuthenticationOperationFilter : IOperationFilter
             CheckAddSecurityRequirement(operation, hasApiKeyHeaderAuthentication ? $"{apiKeySettings.SchemeName} in Header" : null);
             CheckAddSecurityRequirement(operation, hasApiKeyQueryAuthentication ? $"{apiKeySettings.SchemeName} in Query String" : null);
 
-            var hasBasicAuthentication = basicAuthenticationSettings.IsEnabled;
+            var hasBasicAuthentication = basicAuthenticationSettings.IsConfigured;
             CheckAddSecurityRequirement(operation, hasBasicAuthentication ? basicAuthenticationSettings.SchemeName : null);
 
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), Helpers.CreateResponse(HttpStatusCode.Unauthorized.ToString()));

@@ -10,9 +10,9 @@ A library to easily integrate Authentication in ASP.NET Core projects. Currently
 
 **Installation**
 
-The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **Package Manager Console**:
+The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search for *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
 
-    Install-Package SimpleAuthenticationTools
+    dotnet add package SimpleAuthenticationTools
 
 **Usage Video**
 
@@ -85,10 +85,10 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
     var app = builder.Build();
 
     //...
-    // The following middlewares aren't strictly necessary in .NET 7.0, because they are automatically added
-    // when detecting that the corresponding services have been registered. However, you may need to call
-    // them explicitly if the default middlewares configuration is not correct for your app, for example
-    // when you need to use CORS.
+    // The following middlewares aren't strictly necessary in .NET 7.0, because they are automatically
+    // added when detecting that the corresponding services have been registered. However, you may
+    // need to call them explicitly if the default middlewares configuration is not correct for your
+    // app, for example when you need to use CORS.
     // Check https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/middleware
     // for more information.
     //app.UseAuthentication();

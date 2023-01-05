@@ -171,12 +171,18 @@ public static class SimpleAuthenticationExtensions
                 ArgumentNullException.ThrowIfNull(settings.UserName, nameof(BasicAuthenticationSettings.UserName));
             }
 
+            if (!settings.Credentials.Any(c => string.IsNullOrWhiteSpace(c.UserName) || string.IsNullOrWhiteSpace(c.Password)))
+            {
+                throw new ArgumentNullException("One or more credentials contains null values");
+            }
+
             builder.Services.Configure<BasicAuthenticationSettings>(options =>
             {
                 options.SchemeName = settings.SchemeName;
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
-                options.IsEnabled = true;
+                options.Credentials = settings.Credentials;
+                options.IsConfigured = true;
             });
 
             builder.AddScheme<BasicAuthenticationSettings, BasicAuthenticationHandler>(settings.SchemeName, options =>
@@ -184,6 +190,8 @@ public static class SimpleAuthenticationExtensions
                 options.SchemeName = settings.SchemeName;
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
+                options.Credentials = settings.Credentials;
+                options.IsConfigured = true;
             });
         }
     }
