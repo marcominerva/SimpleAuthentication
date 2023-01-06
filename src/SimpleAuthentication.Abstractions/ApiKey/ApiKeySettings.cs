@@ -51,7 +51,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
         {
             if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
             {
-                // If necessary, add the credentials from the base properties.
+                // If necessary, add the API Key from the base properties.
                 apiKeys.Add(new ApiKey(ApiKeyValue, UserName));
             }
 

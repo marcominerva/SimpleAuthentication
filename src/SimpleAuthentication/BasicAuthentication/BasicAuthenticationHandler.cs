@@ -52,7 +52,7 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
 
         if (!Options.Credentials.Any())
         {
-            // There is no fixed value, so it tries to get an external service to validate user name and password.
+            // There is no fixed values, so it tries to get an external service to validate user name and password.
             var validator = serviceProvider.GetService<IBasicAuthenticationValidator>();
             if (validator is null)
             {

@@ -35,7 +35,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.ParameterFilter<DateTimeParameterFilter>();
+    options.OperationFilter<MissingSchemasOperationFilter>();
 
     options.AddSimpleAuthentication(builder.Configuration);
 });

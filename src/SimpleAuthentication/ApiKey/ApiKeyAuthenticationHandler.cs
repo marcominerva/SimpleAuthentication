@@ -36,7 +36,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
 
         if (!Options.ApiKeys.Any())
         {
-            // There is no fixed value, so it tries to get an external service to validate the API Key.
+            // There is no fixed values, so it tries to get an external service to validate the API Key.
             var validator = serviceProvider.GetService<IApiKeyValidator>();
             if (validator is null)
             {
