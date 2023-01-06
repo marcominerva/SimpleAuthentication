@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 
 namespace SimpleAuthentication.ApiKey;
 
@@ -10,6 +11,8 @@ public class ApiKeyValidationResult
     /// <summary>
     /// <see langword="true"/> if authentication was successful; <see langword="false"/> otherwise.
     /// </summary>
+    [MemberNotNullWhen(true, nameof(UserName))]
+    [MemberNotNullWhen(false, nameof(FailureMessage))]
     public bool Succeeded { get; }
 
     /// <summary>

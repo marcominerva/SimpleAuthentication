@@ -31,7 +31,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
 
     private ICollection<Credential> credentials = new HashSet<Credential>();
     /// <summary>
-    /// The collection of authorization credentials
+    /// The collection of authorization credentials.
     /// </summary>
     /// <seealso cref="Credential"/>
     public ICollection<Credential> Credentials
@@ -54,7 +54,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
 }
 
 /// <summary>
-/// Store credentials used for Basic Authentication
+/// Store credentials used for Basic Authentication.
 /// </summary>
 /// <param name="UserName">The user name</param>
 /// <param name="Password">The password</param>

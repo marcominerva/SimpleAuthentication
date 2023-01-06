@@ -62,10 +62,10 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
             var validationResult = await validator.ValidateAsync(userName, password);
             if (validationResult.Succeeded)
             {
-                return CreateAuthenticationSuccessResult(validationResult.UserName!, validationResult.Claims);
+                return CreateAuthenticationSuccessResult(validationResult.UserName, validationResult.Claims);
             }
 
-            return AuthenticateResult.Fail(validationResult.FailureMessage!);
+            return AuthenticateResult.Fail(validationResult.FailureMessage);
         }
 
         var credential = Options.Credentials.FirstOrDefault(c => c.UserName == userName && c.Password == password);
