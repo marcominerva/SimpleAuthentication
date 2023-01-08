@@ -98,9 +98,9 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
 
     app.Run();
 
-**Creating JWT Bearer**
+**Creating a JWT Bearer**
 
-When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface that you can use to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
+When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
 
     app.MapPost("api/auth/login", (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
     {
@@ -121,6 +121,8 @@ When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ s
     public record class LoginRequest(string UserName, string Password);
 
     public record class LoginResponse(string Token);
+
+The [IJwtBearerService.CreateToken](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs#L23) method allows to specify the issuer and the audience of the token. If you don't specify any value, the first ones defined in _appsettings.json_ will be used.
 
 **Supporting multiple API Keys/Basic Authentication credentials**
 
