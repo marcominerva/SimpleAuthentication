@@ -98,6 +98,100 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
 
     app.Run();
 
+**Creating JWT Bearer**
+
+When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface that you can use to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
+
+    app.MapPost("api/auth/login", (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
+    {
+        // Check for login rights...
+
+        // Add custom claims (optional).
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.GivenName, "Marco"),
+            new(ClaimTypes.Surname, "Minerva")
+        };
+
+        var token = jwtBearerService.CreateToken(loginRequest.UserName, claims);
+        return TypedResults.Ok(new LoginResponse(token));
+    })
+    .WithOpenApi();
+
+    public record class LoginRequest(string UserName, string Password);
+
+    public record class LoginResponse(string Token);
+
+**Supporting multiple API Keys/Basic Authentication credentials**
+
+When using API Key or Basic Authentication, you can specify multiple fixed values for authentication:
+
+    "Authentication": {
+        "ApiKey": {
+            "ApiKeys": [
+                {
+                    "Value": "key-1",
+                    "UserName": "UserName1"
+                },
+                {
+                    "Value": "key-2",
+                    "UserName": "UserName2"
+                }
+            ]
+        },
+        "Basic": {
+            "Credentials": [
+                {
+                    "UserName": "UserName1",
+                    "Password": "Password1"
+                },
+                {
+                    "UserName": "UserName2",
+                    "Password": "Password2"
+                }
+            ]
+        }
+    }
+
+With this configuration, authentication will succedd if any of these credentials are provided.
+
+**Custom Authentication logic for API Keys and Basic Authentication**
+
+If you need to implement custom authentication login, for example validating credentials with dynamic values and adding claims to identity, you can omit all the credentials in the _appsettings.json_ file and then provide an implementation of [IApiKeyValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/ApiKey/IApiKeyValidator.cs) or [IBasicAuthenticationValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/BasicAuthentication/IBasicAuthenticationValidator.cs):
+
+    builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
+    builder.Services.AddTransient<IBasicAuthenticationValidator, CustomBasicAuthenticationValidator>();
+    //...
+
+    public class CustomApiKeyValidator : IApiKeyValidator
+    {
+        public Task<ApiKeyValidationResult> ValidateAsync(string apiKey)
+        {
+            var result = apiKey switch
+            {
+                "ArAilHVOoL3upX78Cohq" => ApiKeyValidationResult.Success("User 1"),
+                "DiUU5EqImTYkxPDAxBVS" => ApiKeyValidationResult.Success("User 2"),
+                _ => ApiKeyValidationResult.Fail("Invalid User")
+            };
+
+            return Task.FromResult(result);
+        }
+    }
+
+    public class CustomBasicAuthenticationValidator : IBasicAuthenticationValidator
+    {
+        public Task<BasicAuthenticationValidationResult> ValidateAsync(string userName, string password)
+        {
+            if (userName == password)
+            {
+                var claims = new List<Claim>() { new(ClaimTypes.Role, "User") };
+                return Task.FromResult(BasicAuthenticationValidationResult.Success(userName, claims));
+            }
+
+            return Task.FromResult(BasicAuthenticationValidationResult.Fail("Invalid user"));
+        }
+    }
+
 **Samples**
 
 - JWT Bearer ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/JwtBearerSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/JwtBearerSample))
