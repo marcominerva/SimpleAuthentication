@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -19,6 +20,7 @@ internal class JwtBearerService : IJwtBearerService
     {
         claims ??= new List<Claim>();
         claims.Update(ClaimTypes.Name, userName);
+        claims.Update(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString().GetHashCode().ToString("x", CultureInfo.InvariantCulture));
         claims.Remove(JwtRegisteredClaimNames.Aud);
 
         var now = DateTime.UtcNow;
