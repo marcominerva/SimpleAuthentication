@@ -2,6 +2,7 @@ using System.Security.Claims;
 using JwtBearerSample.Authentication;
 using JwtBearerSample.Swagger;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 using SimpleAuthentication;
 using SimpleAuthentication.JwtBearer;
 
@@ -35,7 +36,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.ParameterFilter<DateTimeParameterFilter>();
+    options.OperationFilter<MissingSchemasOperationFilter>();
 
     options.AddSimpleAuthentication(builder.Configuration);
 });
@@ -67,32 +68,32 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
     };
 
     var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
-    return Results.Ok(new LoginResponse(token));
+    return TypedResults.Ok(new LoginResponse(token));
 })
 .WithOpenApi();
 
-authApiGroup.MapPost("validate", (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
+authApiGroup.MapPost("validate", Results<Ok<User>, BadRequest> (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
 {
     var isValid = jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal);
     if (!isValid)
     {
-        return Results.BadRequest();
+        return TypedResults.BadRequest();
     }
 
-    return Results.Ok(new User(claimsPrincipal!.Identity!.Name));
+    return TypedResults.Ok(new User(claimsPrincipal!.Identity!.Name));
 })
 .WithOpenApi();
 
 authApiGroup.MapPost("refresh", (string token, bool validateLifetime, DateTime? expiration, IJwtBearerService jwtBearerService) =>
 {
     var newToken = jwtBearerService.RefreshToken(token, validateLifetime, expiration);
-    return Results.Ok(new LoginResponse(newToken));
+    return TypedResults.Ok(new LoginResponse(newToken));
 })
 .WithOpenApi();
 
 app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
-    return new User(user.Identity!.Name);
+    return TypedResults.Ok(new User(user.Identity!.Name));
 })
 .RequireAuthorization()
 .WithOpenApi();

@@ -31,7 +31,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// Gets or sets a fixed value to compare the API key against. If you need to perform custom checks to validate the API key, you should leave this value to <see langword="null"/> and register an <see cref="IApiKeyValidator"/> service.
     /// </summary>
     /// <seealso cref="UserName"/>
-    /// <seealso cref="IApiKeyValidator"/>
+    /// <seealso cref="IApiKeyValidator"/>    
     public string? ApiKeyValue { get; set; }
 
     /// <summary>
@@ -39,4 +39,32 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// </summary>
     /// <seealso cref="ApiKeyValue"/>
     public string? UserName { get; set; }
+
+    private ICollection<ApiKey> apiKeys = new HashSet<ApiKey>();
+    /// <summary>
+    /// The collection of valid API keys.
+    /// </summary>
+    /// <seealso cref="ApiKey"/>
+    public ICollection<ApiKey> ApiKeys
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
+            {
+                // If necessary, add the API Key from the base properties.
+                apiKeys.Add(new ApiKey(ApiKeyValue, UserName));
+            }
+
+            return apiKeys;
+        }
+
+        internal set => apiKeys = value ?? new HashSet<ApiKey>();
+    }
 }
+
+/// <summary>
+/// Store API Keys for API Key Authentication
+/// </summary>
+/// <param name="Value">The API key value</param>
+/// <param name="UserName">The user name associated with the current key</param>
+public record class ApiKey(string Value, string UserName);

@@ -10,9 +10,9 @@ A library to easily integrate Authentication in ASP.NET Core projects. Currently
 
 **Installation**
 
-The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **Package Manager Console**:
+The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search for *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
 
-    Install-Package SimpleAuthenticationTools
+    dotnet add package SimpleAuthenticationTools
 
 **Usage Video**
 
@@ -85,10 +85,10 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
     var app = builder.Build();
 
     //...
-    // The following middlewares aren't strictly necessary in .NET 7.0, because they are automatically added
-    // when detecting that the corresponding services have been registered. However, you may need to call
-    // them explicitly if the default middlewares configuration is not correct for your app, for example
-    // when you need to use CORS.
+    // The following middlewares aren't strictly necessary in .NET 7.0, because they are automatically
+    // added when detecting that the corresponding services have been registered. However, you may
+    // need to call them explicitly if the default middlewares configuration is not correct for your
+    // app, for example when you need to use CORS.
     // Check https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/middleware
     // for more information.
     //app.UseAuthentication();
@@ -97,6 +97,102 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
     //...
 
     app.Run();
+
+**Creating a JWT Bearer**
+
+When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
+
+    app.MapPost("api/auth/login", (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
+    {
+        // Check for login rights...
+
+        // Add custom claims (optional).
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.GivenName, "Marco"),
+            new(ClaimTypes.Surname, "Minerva")
+        };
+
+        var token = jwtBearerService.CreateToken(loginRequest.UserName, claims);
+        return TypedResults.Ok(new LoginResponse(token));
+    })
+    .WithOpenApi();
+
+    public record class LoginRequest(string UserName, string Password);
+
+    public record class LoginResponse(string Token);
+
+The [IJwtBearerService.CreateToken](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs#L23) method allows to specify the issuer and the audience of the token. If you don't specify any value, the first ones defined in _appsettings.json_ will be used.
+
+**Supporting multiple API Keys/Basic Authentication credentials**
+
+When using API Key or Basic Authentication, you can specify multiple fixed values for authentication:
+
+    "Authentication": {
+        "ApiKey": {
+            "ApiKeys": [
+                {
+                    "Value": "key-1",
+                    "UserName": "UserName1"
+                },
+                {
+                    "Value": "key-2",
+                    "UserName": "UserName2"
+                }
+            ]
+        },
+        "Basic": {
+            "Credentials": [
+                {
+                    "UserName": "UserName1",
+                    "Password": "Password1"
+                },
+                {
+                    "UserName": "UserName2",
+                    "Password": "Password2"
+                }
+            ]
+        }
+    }
+
+With this configuration, authentication will succedd if any of these credentials are provided.
+
+**Custom Authentication logic for API Keys and Basic Authentication**
+
+If you need to implement custom authentication login, for example validating credentials with dynamic values and adding claims to identity, you can omit all the credentials in the _appsettings.json_ file and then provide an implementation of [IApiKeyValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/ApiKey/IApiKeyValidator.cs) or [IBasicAuthenticationValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/BasicAuthentication/IBasicAuthenticationValidator.cs):
+
+    builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
+    builder.Services.AddTransient<IBasicAuthenticationValidator, CustomBasicAuthenticationValidator>();
+    //...
+
+    public class CustomApiKeyValidator : IApiKeyValidator
+    {
+        public Task<ApiKeyValidationResult> ValidateAsync(string apiKey)
+        {
+            var result = apiKey switch
+            {
+                "ArAilHVOoL3upX78Cohq" => ApiKeyValidationResult.Success("User 1"),
+                "DiUU5EqImTYkxPDAxBVS" => ApiKeyValidationResult.Success("User 2"),
+                _ => ApiKeyValidationResult.Fail("Invalid User")
+            };
+
+            return Task.FromResult(result);
+        }
+    }
+
+    public class CustomBasicAuthenticationValidator : IBasicAuthenticationValidator
+    {
+        public Task<BasicAuthenticationValidationResult> ValidateAsync(string userName, string password)
+        {
+            if (userName == password)
+            {
+                var claims = new List<Claim>() { new(ClaimTypes.Role, "User") };
+                return Task.FromResult(BasicAuthenticationValidationResult.Success(userName, claims));
+            }
+
+            return Task.FromResult(BasicAuthenticationValidationResult.Fail("Invalid user"));
+        }
+    }
 
 **Samples**
 

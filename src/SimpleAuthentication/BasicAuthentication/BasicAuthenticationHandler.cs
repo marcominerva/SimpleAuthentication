@@ -50,9 +50,9 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
             return AuthenticateResult.Fail("Invalid user name or password");
         }
 
-        if (string.IsNullOrWhiteSpace(Options.UserName) && string.IsNullOrWhiteSpace(Options.Password))
+        if (!Options.Credentials.Any())
         {
-            // There is no fixed value, so it tries to get an external service to validate user name and password.
+            // There is no fixed values, so it tries to get an external service to validate user name and password.
             var validator = serviceProvider.GetService<IBasicAuthenticationValidator>();
             if (validator is null)
             {
@@ -62,15 +62,16 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
             var validationResult = await validator.ValidateAsync(userName, password);
             if (validationResult.Succeeded)
             {
-                return CreateAuthenticationSuccessResult(validationResult.UserName!, validationResult.Claims);
+                return CreateAuthenticationSuccessResult(validationResult.UserName, validationResult.Claims);
             }
 
-            return AuthenticateResult.Fail(validationResult.FailureMessage!);
+            return AuthenticateResult.Fail(validationResult.FailureMessage);
         }
 
-        if (userName == Options.UserName && password == Options.Password)
+        var credential = Options.Credentials.FirstOrDefault(c => c.UserName == userName && c.Password == password);
+        if (credential is not null)
         {
-            return CreateAuthenticationSuccessResult(Options.UserName!);
+            return CreateAuthenticationSuccessResult(credential.UserName);
         }
 
         return AuthenticateResult.Fail("Invalid user name or password");

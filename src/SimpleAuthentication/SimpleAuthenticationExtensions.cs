@@ -139,6 +139,11 @@ public static class SimpleAuthenticationExtensions
                 ArgumentNullException.ThrowIfNull(settings.UserName, nameof(ApiKeySettings.UserName));
             }
 
+            if (settings.ApiKeys.Any(k => string.IsNullOrWhiteSpace(k.Value) || string.IsNullOrWhiteSpace(k.UserName)))
+            {
+                throw new ArgumentNullException("One or more API Keys contain null values");
+            }
+
             builder.Services.Configure<ApiKeySettings>(section);
 
             builder.AddScheme<ApiKeySettings, ApiKeyAuthenticationHandler>(settings.SchemeName, options =>
@@ -148,6 +153,7 @@ public static class SimpleAuthenticationExtensions
                 options.QueryStringKey = settings.QueryStringKey;
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.UserName = settings.UserName;
+                options.ApiKeys = settings.ApiKeys;
             });
         }
 
@@ -171,12 +177,18 @@ public static class SimpleAuthenticationExtensions
                 ArgumentNullException.ThrowIfNull(settings.UserName, nameof(BasicAuthenticationSettings.UserName));
             }
 
+            if (settings.Credentials.Any(c => string.IsNullOrWhiteSpace(c.UserName) || string.IsNullOrWhiteSpace(c.Password)))
+            {
+                throw new ArgumentNullException("One or more credentials contain null values");
+            }
+
             builder.Services.Configure<BasicAuthenticationSettings>(options =>
             {
                 options.SchemeName = settings.SchemeName;
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
-                options.IsEnabled = true;
+                options.Credentials = settings.Credentials;
+                options.IsConfigured = true;
             });
 
             builder.AddScheme<BasicAuthenticationSettings, BasicAuthenticationHandler>(settings.SchemeName, options =>
@@ -184,6 +196,8 @@ public static class SimpleAuthenticationExtensions
                 options.SchemeName = settings.SchemeName;
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
+                options.Credentials = settings.Credentials;
+                options.IsConfigured = true;
             });
         }
     }

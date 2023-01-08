@@ -34,9 +34,9 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
             request.Query.TryGetValue(Options.QueryStringKey ?? string.Empty, out value);
         }
 
-        if (string.IsNullOrWhiteSpace(Options.ApiKeyValue))
+        if (!Options.ApiKeys.Any())
         {
-            // There is no fixed value, so it tries to get an external service to validate the API Key.
+            // There is no fixed values, so it tries to get an external service to validate the API Key.
             var validator = serviceProvider.GetService<IApiKeyValidator>();
             if (validator is null)
             {
@@ -46,15 +46,16 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
             var validationResult = await validator.ValidateAsync(value.ToString());
             if (validationResult.Succeeded)
             {
-                return CreateAuthenticationSuccessResult(validationResult.UserName!, validationResult.Claims);
+                return CreateAuthenticationSuccessResult(validationResult.UserName, validationResult.Claims);
             }
 
-            return AuthenticateResult.Fail(validationResult.FailureMessage!);
+            return AuthenticateResult.Fail(validationResult.FailureMessage);
         }
 
-        if (value == Options.ApiKeyValue)
+        var apiKey = Options.ApiKeys.FirstOrDefault(c => c.Value == value);
+        if (apiKey is not null)
         {
-            return CreateAuthenticationSuccessResult(Options.UserName!);
+            return CreateAuthenticationSuccessResult(apiKey.UserName);
         }
 
         return AuthenticateResult.Fail("Invalid API Key");
