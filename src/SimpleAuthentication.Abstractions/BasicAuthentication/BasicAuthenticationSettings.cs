@@ -49,8 +49,6 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
 
         internal set => credentials = value ?? new HashSet<Credential>();
     }
-
-    internal bool IsConfigured { get; set; }
 }
 
 /// <summary>

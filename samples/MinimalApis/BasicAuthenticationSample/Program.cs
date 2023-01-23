@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
@@ -40,9 +41,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
+
+app.UseStatusCodePages();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
