@@ -41,29 +41,8 @@ internal class AuthenticationOperationFilter : IOperationFilter
 
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
-            var hasJwtBearerAuthentication = !string.IsNullOrWhiteSpace(jwtBearerSettings.SecurityKey);
-            CheckAddSecurityRequirement(operation, hasJwtBearerAuthentication ? jwtBearerSettings.SchemeName : null);
-
-            var hasApiKeyHeaderAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.HeaderName);
-            var hasApiKeyQueryAuthentication = !string.IsNullOrWhiteSpace(apiKeySettings.QueryStringKey);
-            CheckAddSecurityRequirement(operation, hasApiKeyHeaderAuthentication ? $"{apiKeySettings.SchemeName} in Header" : null);
-            CheckAddSecurityRequirement(operation, hasApiKeyQueryAuthentication ? $"{apiKeySettings.SchemeName} in Query String" : null);
-
-            var hasBasicAuthentication = basicAuthenticationSettings.IsConfigured;
-            CheckAddSecurityRequirement(operation, hasBasicAuthentication ? basicAuthenticationSettings.SchemeName : null);
-
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), Helpers.CreateResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), Helpers.CreateResponse(HttpStatusCode.Forbidden.ToString()));
-        }
-
-        static void CheckAddSecurityRequirement(OpenApiOperation operation, string? name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return;
-            }
-
-            operation.Security.Add(Helpers.CreateSecurityRequirement(name));
         }
     }
 }

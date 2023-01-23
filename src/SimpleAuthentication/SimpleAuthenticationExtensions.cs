@@ -182,14 +182,7 @@ public static class SimpleAuthenticationExtensions
                 throw new ArgumentNullException("One or more credentials contain null values");
             }
 
-            builder.Services.Configure<BasicAuthenticationSettings>(options =>
-            {
-                options.SchemeName = settings.SchemeName;
-                options.UserName = settings.UserName;
-                options.Password = settings.Password;
-                options.Credentials = settings.Credentials;
-                options.IsConfigured = true;
-            });
+            builder.Services.Configure<BasicAuthenticationSettings>(section);
 
             builder.AddScheme<BasicAuthenticationSettings, BasicAuthenticationHandler>(settings.SchemeName, options =>
             {
@@ -197,7 +190,6 @@ public static class SimpleAuthenticationExtensions
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
                 options.Credentials = settings.Credentials;
-                options.IsConfigured = true;
             });
         }
     }
@@ -286,19 +278,13 @@ public static class SimpleAuthenticationExtensions
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(sectionName);
-        ArgumentNullException.ThrowIfNull(additionalSecurityRequirements);
-
-        var hasAdditionalSecurityRequirements = additionalSecurityRequirements.Any();
 
         // Adds a security definition for each authentication method that has been configured.
-        // If we have additional security requirements, a corresponding security requirement will be added for each authentication method.
-        // Otherwise, we use an operation filter that adds security requirements only to endpoints that actually require authentication
-        // based on the "Authentication" section configuration.
-        CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"), hasAdditionalSecurityRequirements);
-        CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"), hasAdditionalSecurityRequirements);
-        CheckAddBasicAuthentication(options, configuration.GetSection($"{sectionName}:Basic"), hasAdditionalSecurityRequirements);
+        CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));
+        CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"));
+        CheckAddBasicAuthentication(options, configuration.GetSection($"{sectionName}:Basic"));
 
-        if (hasAdditionalSecurityRequirements)
+        if (additionalSecurityRequirements?.Any() ?? false)
         {
             // Adds all the other security requirements that have been specified.
             foreach (var securityRequirement in additionalSecurityRequirements)
@@ -306,15 +292,11 @@ public static class SimpleAuthenticationExtensions
                 options.AddSecurityRequirement(securityRequirement);
             }
         }
-        else
-        {
-            // This filters automatically adds a security requirement to each endpoint that requires authentication.
-            options.OperationFilter<AuthenticationOperationFilter>();
-        }
 
+        options.OperationFilter<AuthenticationOperationFilter>();
         options.DocumentFilter<ProblemDetailsDocumentFilter>();
 
-        static void CheckAddJwtBearer(SwaggerGenOptions options, IConfigurationSection section, bool addSecurityRequirement)
+        static void CheckAddJwtBearer(SwaggerGenOptions options, IConfigurationSection section)
         {
             var settings = section.Get<JwtBearerSettings>();
             if (settings is null)
@@ -323,10 +305,10 @@ public static class SimpleAuthenticationExtensions
             }
 
             AddSecurityDefinition(options, settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token");
-            CheckAddSecurityRequirement(options, addSecurityRequirement ? settings.SchemeName : null);
+            AddSecurityRequirement(options, settings.SchemeName);
         }
 
-        static void CheckAddApiKey(SwaggerGenOptions options, IConfigurationSection section, bool addSecurityRequirement)
+        static void CheckAddApiKey(SwaggerGenOptions options, IConfigurationSection section)
         {
             var settings = section.Get<ApiKeySettings>();
             if (settings is null)
@@ -337,17 +319,17 @@ public static class SimpleAuthenticationExtensions
             if (!string.IsNullOrWhiteSpace(settings.HeaderName))
             {
                 AddSecurityDefinition(options, $"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
-                CheckAddSecurityRequirement(options, addSecurityRequirement ? $"{settings.SchemeName} in Header" : null);
+                AddSecurityRequirement(options, $"{settings.SchemeName} in Header");
             }
 
             if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
                 AddSecurityDefinition(options, $"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
-                CheckAddSecurityRequirement(options, addSecurityRequirement ? $"{settings.SchemeName} in Query String" : null);
+                AddSecurityRequirement(options, $"{settings.SchemeName} in Query String");
             }
         }
 
-        static void CheckAddBasicAuthentication(SwaggerGenOptions options, IConfigurationSection section, bool addSecurityRequirement)
+        static void CheckAddBasicAuthentication(SwaggerGenOptions options, IConfigurationSection section)
         {
             var settings = section.Get<BasicAuthenticationSettings>();
             if (settings is null)
@@ -356,7 +338,7 @@ public static class SimpleAuthenticationExtensions
             }
 
             AddSecurityDefinition(options, settings.SchemeName, SecuritySchemeType.Http, BasicAuthenticationDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert user name and password");
-            CheckAddSecurityRequirement(options, addSecurityRequirement ? settings.SchemeName : null);
+            AddSecurityRequirement(options, settings.SchemeName);
         }
 
         static void AddSecurityDefinition(SwaggerGenOptions options, string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description)
@@ -369,14 +351,7 @@ public static class SimpleAuthenticationExtensions
                 Scheme = scheme
             });
 
-        static void CheckAddSecurityRequirement(SwaggerGenOptions options, string? name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return;
-            }
-
-            options.AddSecurityRequirement(Helpers.CreateSecurityRequirement(name));
-        }
+        static void AddSecurityRequirement(SwaggerGenOptions options, string name)
+            => options.AddSecurityRequirement(Helpers.CreateSecurityRequirement(name));
     }
 }
