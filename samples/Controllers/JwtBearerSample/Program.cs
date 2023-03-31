@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using JwtBearerSample.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using SimpleAuthentication;
+using SimpleAuthentication.Permissions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddSimpleAuthentication(builder.Configuration);
+builder.Services.AddPermissions<ScopeClaimPermissionService>();
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -61,3 +64,25 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public class MyPermissionService : IPermissionService
+{
+    public Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions)
+    {
+        bool isGranted;
+
+        if (!permissions?.Any() ?? true)
+        {
+            isGranted = true;
+        }
+        else
+        {
+            var permissionClaim = user.FindFirstValue("permissions");
+            var scopes = permissionClaim?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? Enumerable.Empty<string>();
+
+            isGranted = scopes.Intersect(permissions!).Any();
+        }
+
+        return Task.FromResult(isGranted);
+    }
+}
