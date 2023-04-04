@@ -11,6 +11,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 
+// Add authentication services.
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
 //builder.Services.AddAuthorization(options =>

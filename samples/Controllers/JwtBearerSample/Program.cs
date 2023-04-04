@@ -11,7 +11,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 
+// Add authentication services.
 builder.Services.AddSimpleAuthentication(builder.Configuration);
+
+// Enable permission-based authorization.
 builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
 
 //builder.Services.AddAuthorization(options =>
