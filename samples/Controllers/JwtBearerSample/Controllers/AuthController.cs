@@ -2,6 +2,7 @@ using System.Net.Mime;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAuthentication.JwtBearer;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace JwtBearerSample.Controllers;
 
@@ -20,6 +21,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
+    [SwaggerOperation(description: "Insert permissions in the scope property (for example: 'profile people_admin')")]
     public ActionResult<LoginResponse> Login(LoginRequest loginRequest, DateTime? expiration = null)
     {
         // Check for login rights...

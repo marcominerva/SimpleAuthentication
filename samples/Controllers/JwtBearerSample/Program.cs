@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddSimpleAuthentication(builder.Configuration);
-builder.Services.AddPermissions<ScopeClaimPermissionService>();
+builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -37,6 +37,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.EnableAnnotations();
     options.AddSimpleAuthentication(builder.Configuration);
 });
 
@@ -65,7 +66,7 @@ app.MapControllers();
 
 app.Run();
 
-public class MyPermissionService : IPermissionService
+public class MyPermissionService : IPermissionHandler
 {
     public Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions)
     {

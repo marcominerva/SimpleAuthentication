@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace SimpleAuthentication.Permissions;
 
-public class PermissionAuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
+internal class PermissionAuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
 {
     public PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
         : base(options)

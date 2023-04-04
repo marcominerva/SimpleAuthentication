@@ -2,8 +2,14 @@
 
 namespace SimpleAuthentication.Permissions;
 
-public class ScopeClaimPermissionService : IPermissionService
+/// <summary>
+/// Checks for permissions reading the claim <em>scope</em> of the <seealso cref="ClaimsPrincipal"/> that represents the current user.
+/// </summary>
+/// <seealso cref="ClaimsPrincipal"/>
+/// <seealso cref="Claim"/>
+public class ScopeClaimPermissionHandler : IPermissionHandler
 {
+    /// <inheritdoc/>
     public Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions)
     {
         bool isGranted;

@@ -2,7 +2,7 @@
 
 namespace SimpleAuthentication.Permissions;
 
-public class PermissionRequirement : IAuthorizationRequirement
+internal class PermissionRequirement : IAuthorizationRequirement
 {
     public IEnumerable<string> Permissions { get; }
 
