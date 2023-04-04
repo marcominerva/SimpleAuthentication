@@ -2,6 +2,7 @@ using System.Net.Mime;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAuthentication.JwtBearer;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace JwtBearerSample.Controllers;
 
@@ -20,16 +21,17 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
+    [SwaggerOperation(description: "Insert permissions in the scope property (for example: 'profile people:admin')")]
     public ActionResult<LoginResponse> Login(LoginRequest loginRequest, DateTime? expiration = null)
     {
         // Check for login rights...
 
         // Add custom claims (optional).
-        var claims = new List<Claim>
+        var claims = new List<Claim>();
+        if (loginRequest.Scopes?.Any() ?? false)
         {
-            new(ClaimTypes.GivenName, "Marco"),
-            new(ClaimTypes.Surname, "Minerva")
-        };
+            claims.Add(new("scope", loginRequest.Scopes));
+        }
 
         var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
         return new LoginResponse(token);
@@ -60,6 +62,6 @@ public class AuthController : ControllerBase
     }
 }
 
-public record class LoginRequest(string UserName, string Password);
+public record class LoginRequest(string UserName, string Password, string Scopes);
 
 public record class LoginResponse(string Token);

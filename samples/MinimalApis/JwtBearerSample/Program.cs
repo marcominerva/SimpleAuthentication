@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SimpleAuthentication;
 using SimpleAuthentication.JwtBearer;
+using SimpleAuthentication.Permissions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 
+// Add authentication services.
 builder.Services.AddSimpleAuthentication(builder.Configuration);
+
+// Enable permission-based authorization.
+builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
 
 //builder.Services.AddAuthorization(options =>
 //{
@@ -47,12 +52,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-app.UseStatusCodePages();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
 }
+
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
@@ -70,16 +75,20 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
     // Check for login rights...
 
     // Add custom claims (optional).
-    var claims = new List<Claim>
+    var claims = new List<Claim>();
+    if (loginRequest.Scopes?.Any() ?? false)
     {
-        new(ClaimTypes.GivenName, "Marco"),
-        new(ClaimTypes.Surname, "Minerva")
-    };
+        claims.Add(new("scope", loginRequest.Scopes));
+    }
 
     var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
     return TypedResults.Ok(new LoginResponse(token));
 })
-.WithOpenApi();
+.WithOpenApi(operation =>
+{
+    operation.Description = "Insert permissions in the scope property (for example: 'profile people:admin')";
+    return operation;
+});
 
 authApiGroup.MapPost("validate", Results<Ok<User>, BadRequest> (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
 {
@@ -105,12 +114,17 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
     return TypedResults.Ok(new User(user.Identity!.Name));
 })
 .RequireAuthorization()
-.WithOpenApi();
+.RequirePermissions("profile")
+.WithOpenApi(operation =>
+{
+    operation.Description = "This endpoint requires the 'profile' permission";
+    return operation;
+});
 
 app.Run();
 
 public record class User(string? UserName);
 
-public record class LoginRequest(string UserName, string Password);
+public record class LoginRequest(string UserName, string Password, string Scopes);
 
 public record class LoginResponse(string Token);

@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 
+// Add authentication services.
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
 //builder.Services.AddAuthorization(options =>
@@ -45,12 +46,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-app.UseStatusCodePages();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
 }
+
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {

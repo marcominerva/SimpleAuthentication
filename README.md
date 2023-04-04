@@ -194,6 +194,39 @@ If you need to implement custom authentication login, for example validating cre
         }
     }
 
+**Permission-based authorization**
+
+The library provides services for adding permission-based authorization to an ASP.NET Core project. Just use the following registration at startup:
+
+    // Enable permission-based authorization.
+    builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
+
+The **AddPermissions** extension method requires an implementation of the [IPermissionHandler interface](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/IPermissionHandler.cs), that is responsible to check if the user owns the required permissions:
+
+    public interface IPermissionHandler
+    {
+        Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions);
+    }
+
+In the sample above, we're using the built-in [ScopeClaimPermissionHandler class](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs), that checks for permissions reading the _scope_ claim of the current user. Based on your scenario, you can provide your own implementation, for example reading different claims or using external services (database, HTTP calls, etc.) to get user permissions.
+
+Then, just use the [PermissionsAttribute](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/PermissionsAttribute.cs) or the [RequirePermissions](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/PermissionAuthorizationExtensions.cs#L57) extension method:
+
+    // In a Controller
+    [Permissions("profile")]
+    public ActionResult<User> Get() => new User(User.Identity!.Name);
+
+    // In a Minimal API
+    app.MapGet("api/me", (ClaimsPrincipal user) =>
+    {
+        return TypedResults.Ok(new User(user.Identity!.Name));
+    })
+    .RequirePermissions("profile")
+
+With the [ScopeClaimPermissionHandler](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs) mentioned above, this invocation succeeds if the user has a _scope_ claim that contains the _profile_ value, for example:
+
+    "scope": "profile email calendar:read"
+
 **Samples**
 
 - JWT Bearer ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/JwtBearerSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/JwtBearerSample))
