@@ -86,7 +86,7 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
 })
 .WithOpenApi(operation =>
 {
-    operation.Description = "Insert permissions in the scope property (for example: 'profile people_admin')";
+    operation.Description = "Insert permissions in the scope property (for example: 'profile people:admin')";
     return operation;
 });
 

@@ -21,7 +21,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
-    [SwaggerOperation(description: "Insert permissions in the scope property (for example: 'profile people_admin')")]
+    [SwaggerOperation(description: "Insert permissions in the scope property (for example: 'profile people:admin')")]
     public ActionResult<LoginResponse> Login(LoginRequest loginRequest, DateTime? expiration = null)
     {
         // Check for login rights...
