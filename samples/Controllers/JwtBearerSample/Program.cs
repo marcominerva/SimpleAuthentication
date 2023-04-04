@@ -69,7 +69,7 @@ app.MapControllers();
 
 app.Run();
 
-public class MyPermissionService : IPermissionHandler
+public class CustomPermissionHandler : IPermissionHandler
 {
     public Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions)
     {
@@ -82,9 +82,9 @@ public class MyPermissionService : IPermissionHandler
         else
         {
             var permissionClaim = user.FindFirstValue("permissions");
-            var scopes = permissionClaim?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? Enumerable.Empty<string>();
+            var userPermissions = permissionClaim?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? Enumerable.Empty<string>();
 
-            isGranted = scopes.Intersect(permissions!).Any();
+            isGranted = userPermissions.Intersect(permissions!).Any();
         }
 
         return Task.FromResult(isGranted);

@@ -3,7 +3,7 @@
 namespace SimpleAuthentication.Permissions;
 
 /// <summary>
-/// Checks for permissions reading the claim <em>scope</em> of the <seealso cref="ClaimsPrincipal"/> that represents the current user.
+/// Checks for permissions reading the <em>scope</em> claim of the <seealso cref="ClaimsPrincipal"/> that represents the current user.
 /// </summary>
 /// <seealso cref="ClaimsPrincipal"/>
 /// <seealso cref="Claim"/>

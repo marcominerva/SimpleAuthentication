@@ -48,7 +48,7 @@ public class PeopleController : ControllerBase
 
 public static class Permissions
 {
-    public const string PeopleRead = "people_read";
-    public const string PeopleWrite = "people_write";
-    public const string PeopleAdmin = "people_admin";
+    public const string PeopleRead = "people:read";
+    public const string PeopleWrite = "people:write";
+    public const string PeopleAdmin = "people:admin";
 }
