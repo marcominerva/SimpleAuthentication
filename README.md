@@ -199,7 +199,7 @@ If you need to implement custom authentication login, for example validating cre
 The library provides services for adding permission-based authorization to an ASP.NET Core project. Just use the following registration at startup:
 
     // Enable permission-based authorization.
-    builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
+    builder.Services.AddPermissions<T>();
 
 The **AddPermissions** extension method requires an implementation of the [IPermissionHandler interface](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/IPermissionHandler.cs), that is responsible to check if the user owns the required permissions:
 
@@ -208,12 +208,17 @@ The **AddPermissions** extension method requires an implementation of the [IPerm
         Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions);
     }
 
-In the sample above, we're using the built-in [ScopeClaimPermissionHandler class](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs), that checks for permissions reading the _scope_ claim of the current user. Based on your scenario, you can provide your own implementation, for example reading different claims or using external services (database, HTTP calls, etc.) to get user permissions.
+The library provides the built-in [ScopeClaimPermissionHandler class](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs), that checks for permissions reading the default **scope** claims of the current user (_scp_ or _http://schemas.microsoft.com/identity/claims/scope_). To use this default handler, we can just write this:
 
-Then, just use the [PermissionsAttribute](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/PermissionsAttribute.cs) or the [RequirePermissions](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/PermissionAuthorizationExtensions.cs#L57) extension method:
+    builder.Services.AddScopePermissions(); 
+    // The line above is equivalent to builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
+
+Based on the scenario, we can provide our own implementation, for example reading different claims or using external services (database, HTTP calls, etc.) to get user permissions.
+
+Then, just use the [PermissionAttribute](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/PermissionAttribute.cs) or the [RequirePermission](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/PermissionAuthorizationExtensions.cs#L98) extension method:
 
     // In a Controller
-    [Permissions("profile")]
+    [Permission("profile")]
     public ActionResult<User> Get() => new User(User.Identity!.Name);
 
     // In a Minimal API
@@ -221,11 +226,33 @@ Then, just use the [PermissionsAttribute](https://github.com/marcominerva/Simple
     {
         return TypedResults.Ok(new User(user.Identity!.Name));
     })
-    .RequirePermissions("profile")
+    .RequirePermission("profile")
 
-With the [ScopeClaimPermissionHandler](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs) mentioned above, this invocation succeeds if the user has a _scope_ claim that contains the _profile_ value, for example:
+With the [ScopeClaimPermissionHandler](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs) mentioned above, the invocation succeeds if the user has a _scp_ or _http://schemas.microsoft.com/identity/claims/scope_ claim that contains the _profile_ value, for example:
 
-    "scope": "profile email calendar:read"
+    "scp": "profile email calendar:read"
+
+It is also possible to explicitly create a policy that requires the one or more permissions:
+
+    builder.Services.AddAuthorization(options =>
+    {
+        // Define permissions using a policy.
+        options.AddPolicy("UserProfile", builder => builder.RequirePermission("profile"));
+    });
+
+    // ...
+
+    // In a Controller
+    [Authorize(Policy = "UserProfile")] 
+    public ActionResult<User> Get() => new User(User.Identity!.Name);
+
+    // In a Minimal API
+    app.MapGet("api/me", (ClaimsPrincipal user) =>
+    {
+        return TypedResults.Ok(new User(user.Identity!.Name));
+    })
+    .RequireAuthorization(policyNames: "UserProfile")
+
 
 **Samples**
 

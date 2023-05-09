@@ -17,19 +17,25 @@ builder.Services.AddProblemDetails();
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
 // Enable permission-based authorization.
-builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
+builder.Services.AddScopePermissions(); // This is equivalent to builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser()
-//                                .Build();
+// Define a custom handler for permission handling.
+//builder.Services.AddPermissions<CustomPermissionHandler>();
 
-//    options.AddPolicy("Bearer", policy => policy
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser());
-//});
+builder.Services.AddAuthorization(options =>
+{
+    // Define permissions using a policy.
+    options.AddPolicy("PeopleRead", builder => builder.RequirePermission(Permissions.PeopleRead, Permissions.PeopleAdmin));
+
+    //options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
+    //                            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    //                            .RequireAuthenticatedUser()
+    //                            .Build();
+
+    //options.AddPolicy("Bearer", policy => policy
+    //                            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    //                            .RequireAuthenticatedUser());
+});
 
 // Uncomment the following line if you have multiple authentication schemes and
 // you need to determine the authentication scheme at runtime (for example, you don't want to use the default authentication scheme).
@@ -78,7 +84,7 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
     var claims = new List<Claim>();
     if (loginRequest.Scopes?.Any() ?? false)
     {
-        claims.Add(new("scope", loginRequest.Scopes));
+        claims.Add(new("scp", loginRequest.Scopes));
     }
 
     var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
@@ -114,10 +120,21 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
     return TypedResults.Ok(new User(user.Identity!.Name));
 })
 .RequireAuthorization()
-.RequirePermissions("profile")
+.RequirePermission("profile")
 .WithOpenApi(operation =>
 {
     operation.Description = "This endpoint requires the 'profile' permission";
+    return operation;
+});
+
+app.MapGet("api/people", () =>
+{
+    return TypedResults.NoContent();
+})
+.RequireAuthorization(policyNames: "PeopleRead")
+.WithOpenApi(operation =>
+{
+    operation.Description = $"This endpoint requires the '{Permissions.PeopleRead}' or '{Permissions.PeopleAdmin}' permissions";
     return operation;
 });
 
@@ -125,6 +142,35 @@ app.Run();
 
 public record class User(string? UserName);
 
-public record class LoginRequest(string UserName, string Password, string Scopes);
+public record class LoginRequest(string UserName, string Password, string? Scopes);
 
 public record class LoginResponse(string Token);
+
+public class CustomPermissionHandler : IPermissionHandler
+{
+    public Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions)
+    {
+        bool isGranted;
+
+        if (!permissions?.Any() ?? true)
+        {
+            isGranted = true;
+        }
+        else
+        {
+            var permissionClaim = user.FindFirstValue("permissions");
+            var userPermissions = permissionClaim?.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? Enumerable.Empty<string>();
+
+            isGranted = userPermissions.Intersect(permissions!).Any();
+        }
+
+        return Task.FromResult(isGranted);
+    }
+}
+
+public static class Permissions
+{
+    public const string PeopleRead = "people:read";
+    public const string PeopleWrite = "people:write";
+    public const string PeopleAdmin = "people:admin";
+}

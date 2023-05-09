@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         var claims = new List<Claim>();
         if (loginRequest.Scopes?.Any() ?? false)
         {
-            claims.Add(new("scope", loginRequest.Scopes));
+            claims.Add(new("scp", loginRequest.Scopes));
         }
 
         var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
@@ -62,6 +62,6 @@ public class AuthController : ControllerBase
     }
 }
 
-public record class LoginRequest(string UserName, string Password, string Scopes);
+public record class LoginRequest(string UserName, string Password, string? Scopes);
 
 public record class LoginResponse(string Token);

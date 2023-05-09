@@ -9,6 +9,9 @@ namespace SimpleAuthentication.Permissions;
 /// <seealso cref="Claim"/>
 public class ScopeClaimPermissionHandler : IPermissionHandler
 {
+    private const string Scp = "scp";
+    private const string Scope = "http://schemas.microsoft.com/identity/claims/scope";
+
     /// <inheritdoc/>
     public Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions)
     {
@@ -20,9 +23,9 @@ public class ScopeClaimPermissionHandler : IPermissionHandler
         }
         else
         {
-            var scopeClaim = user.FindFirstValue("scope");
-            var scopes = scopeClaim?.Split(" ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? Enumerable.Empty<string>();
+            var scopeClaims = user.FindAll(Scp).Union(user.FindAll(Scope)).ToList();
 
+            var scopes = scopeClaims.SelectMany(s => s.Value.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
             isGranted = scopes.Intersect(permissions!).Any();
         }
 
