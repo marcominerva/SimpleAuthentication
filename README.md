@@ -208,7 +208,7 @@ The **AddPermissions** extension method requires an implementation of the [IPerm
         Task<bool> IsGrantedAsync(ClaimsPrincipal user, IEnumerable<string> permissions);
     }
 
-The library provides the built-in [ScopeClaimPermissionHandler class](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs), that checks for permissions reading the default **scope** claims of the current user (_scp_ or _http:\//schemas.microsoft.com/identity/claims/scope_). To use this default handler, we can just write this:
+The library provides the built-in [ScopeClaimPermissionHandler class](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs), that checks for permissions reading the default **scope** claims of the current user (_scp_ or _http://schemas.microsoft.com/identity/claims/scope_). To use this default handler, we can just write this:
 
     builder.Services.AddScopePermissions(); 
     // The line above is equivalent to builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
@@ -228,11 +228,11 @@ Then, just use the [PermissionAttribute](https://github.com/marcominerva/SimpleA
     })
     .RequirePermission("profile")
 
-With the [ScopeClaimPermissionHandler](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs) mentioned above, this invocation succeeds if the user has a _scp_ or _http:\//schemas.microsoft.com/identity/claims/scope_ claim that contains the _profile_ value, for example:
+With the [ScopeClaimPermissionHandler](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication/Permissions/ScopeClaimPermissionHandler.cs) mentioned above, the invocation succeeds if the user has a _scp_ or _http://schemas.microsoft.com/identity/claims/scope_ claim that contains the _profile_ value, for example:
 
     "scp": "profile email calendar:read"
 
-It is also possible to explicitly create a policy that requires the specified permissions:
+It is also possible to explicitly create a policy that requires the one or more permissions:
 
     builder.Services.AddAuthorization(options =>
     {
