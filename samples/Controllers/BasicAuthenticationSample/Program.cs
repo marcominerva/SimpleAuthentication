@@ -47,12 +47,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-app.UseStatusCodePages();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
 }
+
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {

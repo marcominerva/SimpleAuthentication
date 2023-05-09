@@ -12,12 +12,12 @@ namespace JwtBearerSample.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class PeopleController : ControllerBase
 {
-    [Permissions(Permissions.PeopleRead, Permissions.PeopleAdmin)]
+    [Authorize(Policy = "PeopleRead")] // [Permissions(Permissions.PeopleRead, Permissions.PeopleAdmin)]
     [HttpGet]
     [SwaggerOperation(description: $"This endpoint requires the '{Permissions.PeopleRead}' or '{Permissions.PeopleAdmin}' permissions")]
     public IActionResult GetList() => NoContent();
 
-    [Permissions(Permissions.PeopleRead, Permissions.PeopleAdmin)]
+    [Authorize(Policy = "PeopleRead")] // [Permissions(Permissions.PeopleRead, Permissions.PeopleAdmin)]
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesDefaultResponseType]

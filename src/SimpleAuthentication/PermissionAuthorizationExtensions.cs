@@ -12,7 +12,7 @@ namespace SimpleAuthentication;
 public static class PermissionAuthorizationExtensions
 {
     /// <summary>
-    /// Registers services required by permission-based authorization, using the specified <typeparamref name="T"/> implementation to validates permissions.
+    /// Registers services required by permission-based authorization, using the specified <typeparamref name="T"/> implementation to validate permissions.
     /// </summary>
     /// <typeparam name="T">The type implementing <see cref="IPermissionHandler"/> to register.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
@@ -32,6 +32,16 @@ public static class PermissionAuthorizationExtensions
     }
 
     /// <summary>
+    /// Registers services required by permission-based authorization, using the default <see cref="ScopeClaimPermissionHandler"/> implementation that uses scopes to validate permissions.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
+    /// <seealso cref="ScopeClaimPermissionHandler"/>
+    public static IServiceCollection AddScopePermissions(this IServiceCollection services)
+        => services.AddPermissions<ScopeClaimPermissionHandler>();
+
+    /// <summary>
     /// Registers services required by permission-based authorization, using the specified <typeparamref name="T"/> implementation to validates permissions.
     /// </summary>
     /// <typeparam name="T">The type implementing <see cref="IPermissionHandler"/> to register.</typeparam>
@@ -47,6 +57,37 @@ public static class PermissionAuthorizationExtensions
     }
 
     /// <summary>
+    /// Registers services required by permission-based authorization, using the default <see cref="ScopeClaimPermissionHandler"/> implementation that uses scopes to validate permissions.
+    /// </summary>
+    /// <param name="builder">The <see cref="AuthenticationBuilder"/> to add services to.</param>
+    /// <returns>An <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
+    /// <seealso cref="IPermissionHandler"/>
+    /// <seealso cref="ScopeClaimPermissionHandler"/>
+    /// <seealso cref="AuthenticationBuilder"/>    
+    public static AuthenticationBuilder AddScopePermissions(this AuthenticationBuilder builder)
+    {
+        builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="PermissionRequirement"/> to the <see cref="AuthorizationPolicyBuilder.Requirements"/> for this instance.
+    /// </summary>
+    /// <param name="builder">The <see cref="AuthorizationPolicyBuilder"/> to add policy to.</param>
+    /// <param name="permissions">The list of permissions to add.</param>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
+    /// <seealso cref="AuthorizationPolicyBuilder"/>
+    /// <seealso cref="PermissionRequirement"/>
+    public static AuthorizationPolicyBuilder RequirePermission(this AuthorizationPolicyBuilder builder, params string[] permissions)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        return builder.AddRequirements(new PermissionRequirement(permissions));
+    }
+
+    /// <summary>
     /// Adds permission-based authorization policy to the endpoint(s).
     /// </summary>
     /// <param name="builder">The <see cref="IEndpointConventionBuilder"/> to add policy to.</param>
@@ -54,7 +95,7 @@ public static class PermissionAuthorizationExtensions
     /// <returns>The original <see cref="IEndpointConventionBuilder"/> parameter.</returns>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IEndpointConventionBuilder"/>
-    public static TBuilder RequirePermissions<TBuilder>(this TBuilder builder, params string[] permissions) where TBuilder : IEndpointConventionBuilder
+    public static TBuilder RequirePermission<TBuilder>(this TBuilder builder, params string[] permissions) where TBuilder : IEndpointConventionBuilder
     {
         ArgumentNullException.ThrowIfNull(builder);
 

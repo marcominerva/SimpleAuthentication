@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using JwtBearerSample.Authentication;
+using JwtBearerSample.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using SimpleAuthentication;
 using SimpleAuthentication.Permissions;
@@ -15,19 +16,25 @@ builder.Services.AddProblemDetails();
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
 // Enable permission-based authorization.
-builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
+builder.Services.AddScopePermissions(); // This is equivalent to builder.Services.AddPermissions<ScopeClaimPermissionHandler>();
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser()
-//                                .Build();
+// Define a custom handler for permission handling.
+//builder.Services.AddPermissions<CustomPermissionHandler>();
 
-//    options.AddPolicy("Bearer", policy => policy
-//                                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser());
-//});
+builder.Services.AddAuthorization(options =>
+{
+    // Define permissions using a policy.
+    options.AddPolicy("PeopleRead", builder => builder.RequirePermission(Permissions.PeopleRead, Permissions.PeopleAdmin));
+
+    //options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
+    //                            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    //                            .RequireAuthenticatedUser()
+    //                            .Build();
+
+    //options.AddPolicy("Bearer", policy => policy
+    //                            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    //                            .RequireAuthenticatedUser());
+});
 
 // Uncomment the following line if you have multiple authentication schemes and
 // you need to determine the authentication scheme at runtime (for example, you don't want to use the default authentication scheme).
@@ -49,12 +56,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-app.UseStatusCodePages();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
 }
+
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {
