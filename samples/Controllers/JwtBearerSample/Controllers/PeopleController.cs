@@ -24,21 +24,21 @@ public class PeopleController : ControllerBase
     [SwaggerOperation(description: $"This endpoint requires the '{Permissions.PeopleRead}' or '{Permissions.PeopleAdmin}' permissions")]
     public IActionResult GetPerson(int id) => NoContent();
 
-    [Permissions(Permissions.PeopleWrite)]
+    [Permission(Permissions.PeopleWrite)]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesDefaultResponseType]
     [SwaggerOperation(description: $"This endpoint requires the '{Permissions.PeopleWrite}' permission")]
     public IActionResult Insert() => NoContent();
 
-    [Permissions(Permissions.PeopleWrite)]
+    [Permission(Permissions.PeopleWrite)]
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesDefaultResponseType]
     [SwaggerOperation(description: $"This endpoint requires the '{Permissions.PeopleWrite}' permission")]
     public IActionResult Update() => NoContent();
 
-    [Permissions(Permissions.PeopleAdmin)]
+    [Permission(Permissions.PeopleAdmin)]
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesDefaultResponseType]
