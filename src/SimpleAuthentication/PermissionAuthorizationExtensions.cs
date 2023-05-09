@@ -99,6 +99,6 @@ public static class PermissionAuthorizationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.RequireAuthorization(new PermissionsAttribute(permissions));
+        return builder.RequireAuthorization(new PermissionAttribute(permissions));
     }
 }

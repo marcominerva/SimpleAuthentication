@@ -12,7 +12,7 @@ namespace JwtBearerSample.Controllers;
 public class MeController : ControllerBase
 {
     [Authorize]
-    [Permissions("profile")]
+    [Permission("profile")]
     [HttpGet]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
