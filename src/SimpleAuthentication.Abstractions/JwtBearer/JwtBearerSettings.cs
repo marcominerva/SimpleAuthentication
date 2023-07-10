@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -47,6 +48,25 @@ public class JwtBearerSettings
     /// </summary>
     /// <seealso cref="TokenValidationParameters.ClockSkew"/>
     public TimeSpan ClockSkew { get; set; } = TokenValidationParameters.DefaultClockSkew;
+
+    /// <summary>
+    /// Gets or sets a <see cref="string"/> that defines the <see cref="ClaimsIdentity.NameClaimType"/>.
+    /// </summary>
+    /// <remarks>
+    /// Controls the value <see cref="ClaimsIdentity.Name"/> returns. It will return the first <see cref="Claim.Value"/> where the <see cref="Claim.Type"/> equals <see cref="NameClaimType"/>.
+    /// The default is <see cref="ClaimsIdentity.DefaultNameClaimType"/>.
+    /// </remarks>
+    public string NameClaimType { get; set; } = ClaimsIdentity.DefaultNameClaimType;
+
+    /// <summary>
+    /// Gets or sets the <see cref="string"/> that defines the <see cref="ClaimsIdentity.RoleClaimType"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>Controls the results of <see cref="ClaimsPrincipal.IsInRole( string )"/>.</para>
+    /// <para>Each <see cref="Claim"/> where <see cref="Claim.Type"/> == <see cref="RoleClaimType"/> will be checked for a match against the 'string' passed to <see cref="ClaimsPrincipal.IsInRole(string)"/>.</para>
+    /// The default is <see cref="ClaimsIdentity.DefaultRoleClaimType"/>.
+    /// </remarks>
+    public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
 
     /// <summary>
     /// <see langword="true"/> to register the <see cref="IJwtBearerService"/> service in the <see cref="IServiceCollection"/> (Default: true).
