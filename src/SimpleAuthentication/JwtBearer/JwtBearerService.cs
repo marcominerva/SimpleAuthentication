@@ -18,7 +18,7 @@ internal class JwtBearerService : IJwtBearerService
     public string CreateToken(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {
         claims ??= new List<Claim>();
-        claims.Update(ClaimTypes.Name, userName);
+        claims.Update(jwtBearerSettings.NameClaimType, userName);
         claims.Update(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
         claims.Remove(JwtRegisteredClaimNames.Aud);
 
@@ -42,6 +42,8 @@ internal class JwtBearerService : IJwtBearerService
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
+            NameClaimType = jwtBearerSettings.NameClaimType,
+            RoleClaimType = jwtBearerSettings.RoleClaimType,
             ValidateIssuer = jwtBearerSettings.Issuers?.Any() ?? false,
             ValidIssuers = jwtBearerSettings.Issuers,
             ValidateAudience = jwtBearerSettings.Audiences?.Any() ?? false,
@@ -69,7 +71,7 @@ internal class JwtBearerService : IJwtBearerService
         var principal = ValidateToken(token, validateLifetime);
         var claims = (principal.Identity as ClaimsIdentity)!.Claims.ToList();
 
-        var userName = claims.First(c => c.Type == ClaimTypes.Name).Value;
+        var userName = claims.First(c => c.Type == jwtBearerSettings.NameClaimType).Value;
         var issuer = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iss)?.Value;
         var audience = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud)?.Value;
 

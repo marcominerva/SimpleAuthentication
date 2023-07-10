@@ -96,6 +96,8 @@ public static class SimpleAuthenticationExtensions
             {
                 options.TokenValidationParameters = new()
                 {
+                    NameClaimType = settings.NameClaimType,
+                    RoleClaimType = settings.RoleClaimType,
                     ValidateIssuer = settings.Issuers?.Any() ?? false,
                     ValidIssuers = settings.Issuers,
                     ValidateAudience = settings.Audiences?.Any() ?? false,

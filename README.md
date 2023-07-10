@@ -8,19 +8,19 @@
 
 A library to easily integrate Authentication in ASP.NET Core projects. Currently it supports JWT Bearer, API Key and Basic Authentication in both Controller-based and Minimal API projects.
 
-**Installation**
+## Installation
 
 The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search for *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
 
     dotnet add package SimpleAuthenticationTools
 
-**Usage Video**
+## Usage video
 
 Take a look to a quick demo showing how to integrate the library:
 
 [![Simple Authentication for ASP.NET Core](https://raw.githubusercontent.com/marcominerva/SimpleAuthentication/master/Screenshot.jpg)](https://www.youtube.com/watch?v=SVZuaPE2yNc)
 
-**Configuration**
+## Configuration
 
 Authentication can be totally configured adding an _Authentication_ section in the _appsettings.json_ file:
 
@@ -28,6 +28,8 @@ Authentication can be totally configured adding an _Authentication_ section in t
       "DefaultScheme": "Bearer", // Optional
       "JwtBearer": {
           "SchemeName": "Bearer" // Default: Bearer
+          //"NameClaimType": "user_name", // Default: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+          //"RoleClaimType": "role", // Default: http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
           "SecurityKey": "supersecretsecuritykey42!", // Required
           "Algorithm": "HS256", // Default: HS256
           "Issuers": [ "issuer" ], // Optional
@@ -194,7 +196,7 @@ If you need to implement custom authentication login, for example validating cre
         }
     }
 
-**Permission-based authorization**
+## Permission-based authorization
 
 The library provides services for adding permission-based authorization to an ASP.NET Core project. Just use the following registration at startup:
 
@@ -254,12 +256,12 @@ It is also possible to explicitly create a policy that requires the one or more 
     .RequireAuthorization(policyNames: "UserProfile")
 
 
-**Samples**
+## Samples
 
 - JWT Bearer ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/JwtBearerSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/JwtBearerSample))
 - API Key ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/ApiKeySample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/ApiKeySample))
 - Basic Authentication ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/BasicAuthenticationSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/BasicAuthenticationSample))
 
-**Contribute**
+## Contribute
 
 The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
