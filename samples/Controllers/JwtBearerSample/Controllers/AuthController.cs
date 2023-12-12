@@ -9,17 +9,10 @@ namespace JwtBearerSample.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-public class AuthController : ControllerBase
+public class AuthController(IJwtBearerService jwtBearerService) : ControllerBase
 {
-    private readonly IJwtBearerService jwtBearerService;
-
-    public AuthController(IJwtBearerService jwtBearerService)
-    {
-        this.jwtBearerService = jwtBearerService;
-    }
-
     [HttpPost("login")]
-    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     [SwaggerOperation(description: "Insert permissions in the scope property (for example: 'profile people:admin')")]
     public ActionResult<LoginResponse> Login(LoginRequest loginRequest, DateTime? expiration = null)
@@ -38,22 +31,21 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("validate")]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType<User>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public ActionResult<User> Validate(string token, bool validateLifetime = true)
     {
-        var isValid = jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal);
-        if (!isValid)
+        if (jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal))
         {
-            return BadRequest();
+            return new User(claimsPrincipal.Identity!.Name);
         }
 
-        return new User(claimsPrincipal.Identity!.Name);
+        return BadRequest();
     }
 
     [HttpPost("refresh")]
-    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     public ActionResult<LoginResponse> Refresh(string token, bool validateLifetime = true, DateTime? expiration = null)
     {

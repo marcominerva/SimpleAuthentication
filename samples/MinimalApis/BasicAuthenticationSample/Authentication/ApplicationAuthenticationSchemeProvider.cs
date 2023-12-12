@@ -5,28 +5,15 @@ using SimpleAuthentication.JwtBearer;
 
 namespace BasicAuthenticationSample.Authentication;
 
-public class ApplicationAuthenticationSchemeProvider : AuthenticationSchemeProvider
+public class ApplicationAuthenticationSchemeProvider(IHttpContextAccessor httpContextAccessor, IOptions<AuthenticationOptions> options,
+    IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions) : AuthenticationSchemeProvider(options)
 {
-    private readonly IHttpContextAccessor httpContextAccessor;
-    private readonly JwtBearerSettings jwtBearerSettings;
-    private readonly ApiKeySettings apiKeySettings;
-
-    public ApplicationAuthenticationSchemeProvider(IHttpContextAccessor httpContextAccessor, IOptions<AuthenticationOptions> options,
-        IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions)
-        : base(options)
-    {
-        this.httpContextAccessor = httpContextAccessor;
-        jwtBearerSettings = jwtBearerSettingsOptions.Value;
-        apiKeySettings = apiKeySettingsOptions.Value;
-    }
+    private readonly JwtBearerSettings jwtBearerSettings = jwtBearerSettingsOptions.Value;
+    private readonly ApiKeySettings apiKeySettings = apiKeySettingsOptions.Value;
 
     private async Task<AuthenticationScheme?> GetRequestSchemeAsync()
     {
-        var request = httpContextAccessor.HttpContext?.Request;
-        if (request is null)
-        {
-            throw new ArgumentNullException("The HTTP request cannot be retrieved.");
-        }
+        var request = (httpContextAccessor.HttpContext?.Request) ?? throw new ArgumentNullException("The HTTP request cannot be retrieved.");
 
         // For API requests, use Jwt Bearer Authentication.
         if (request.IsApiRequest())

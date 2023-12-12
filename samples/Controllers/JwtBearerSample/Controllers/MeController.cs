@@ -14,7 +14,7 @@ public class MeController : ControllerBase
     [Authorize]
     [Permission("profile")]
     [HttpGet]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType<User>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     [SwaggerOperation(description: "This endpoint requires the 'profile' permission")]
     public ActionResult<User> Get()
