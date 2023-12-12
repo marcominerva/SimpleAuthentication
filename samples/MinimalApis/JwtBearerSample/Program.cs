@@ -21,20 +21,19 @@ builder.Services.AddScopePermissions(); // This is equivalent to builder.Service
 // Define a custom handler for permission handling.
 //builder.Services.AddPermissions<CustomPermissionHandler>();
 
-builder.Services.AddAuthorization(options =>
-{
+builder.Services.AddAuthorizationBuilder()
     // Define permissions using a policy.
-    options.AddPolicy("PeopleRead", builder => builder.RequirePermission(Permissions.PeopleRead, Permissions.PeopleAdmin));
-
-    //options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-    //                            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-    //                            .RequireAuthenticatedUser()
-    //                            .Build();
-
-    //options.AddPolicy("Bearer", policy => policy
-    //                            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-    //                            .RequireAuthenticatedUser());
-});
+    .AddPolicy("PeopleRead", builder => builder.RequirePermission(Permissions.PeopleRead, Permissions.PeopleAdmin))
+    //.AddPolicy("Bearer", builder => builder.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme).RequireAuthenticatedUser())
+    //.SetDefaultPolicy(new AuthorizationPolicyBuilder()
+    //    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    //    .RequireAuthenticatedUser()
+    //    .Build())
+    //.SetFallbackPolicy(new AuthorizationPolicyBuilder()
+    //    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    //    .RequireAuthenticatedUser()
+    //    .Build())
+    ;
 
 // Uncomment the following line if you have multiple authentication schemes and
 // you need to determine the authentication scheme at runtime (for example, you don't want to use the default authentication scheme).
@@ -95,13 +94,12 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
 
 authApiGroup.MapPost("validate", Results<Ok<User>, BadRequest> (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
 {
-    var isValid = jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal);
-    if (!isValid)
+    if (jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal))
     {
-        return TypedResults.BadRequest();
+        return TypedResults.Ok(new User(claimsPrincipal.Identity!.Name));
     }
 
-    return TypedResults.Ok(new User(claimsPrincipal.Identity!.Name));
+    return TypedResults.BadRequest();
 })
 .WithOpenApi();
 

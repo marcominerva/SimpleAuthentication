@@ -13,17 +13,16 @@ builder.Services.AddProblemDetails();
 // Add authentication services.
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser()
-//                                .Build();
-
-//    options.AddPolicy("Basic", policy => policy
-//                                .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser());
-//});
+//builder.Services.AddAuthorizationBuilder()
+//    .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+//        .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
+//        .RequireAuthenticatedUser()
+//        .Build())
+//    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+//        .AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme)
+//        .RequireAuthenticatedUser()
+//        .Build())
+//    .AddPolicy("Basic", builder => builder.AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme).RequireAuthenticatedUser());
 
 builder.Services.AddTransient<IBasicAuthenticationValidator, CustomBasicAuthenticationValidator>();
 

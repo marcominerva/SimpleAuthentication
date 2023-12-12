@@ -11,7 +11,7 @@ public class MeController : ControllerBase
 {
     [Authorize]
     [HttpGet]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType<User>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     public ActionResult<User> Get()
         => new User(User.Identity!.Name);

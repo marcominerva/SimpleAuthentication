@@ -13,17 +13,16 @@ builder.Services.AddProblemDetails();
 // Add authentication services.
 builder.Services.AddSimpleAuthentication(builder.Configuration);
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = options.DefaultPolicy = new AuthorizationPolicyBuilder()
-//                                .AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser()
-//                                .Build();
-
-//    options.AddPolicy("ApiKey", policy => policy
-//                                .AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme)
-//                                .RequireAuthenticatedUser());
-//});
+//builder.Services.AddAuthorizationBuilder()
+//    .SetDefaultPolicy(new AuthorizationPolicyBuilder()
+//        .AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme)
+//        .RequireAuthenticatedUser()
+//        .Build())
+//    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+//        .AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme)
+//        .RequireAuthenticatedUser()
+//        .Build())
+//    .AddPolicy("ApiKey", builder => builder.AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme).RequireAuthenticatedUser());
 
 builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
 
