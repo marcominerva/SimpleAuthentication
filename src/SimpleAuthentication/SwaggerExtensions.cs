@@ -50,7 +50,7 @@ public static class SwaggerExtensions
     public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName, IEnumerable<string>? additionalSecurityDefinitionNames)
     {
         var securityRequirements = additionalSecurityDefinitionNames?.Select(Helpers.CreateSecurityRequirement).ToArray();
-        options.AddSimpleAuthentication(configuration, sectionName, securityRequirements ?? Array.Empty<OpenApiSecurityRequirement>());
+        options.AddSimpleAuthentication(configuration, sectionName, securityRequirements ?? []);
     }
 
     /// <summary>

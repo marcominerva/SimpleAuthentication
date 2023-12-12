@@ -6,14 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace SimpleAuthentication.JwtBearer;
 
-internal class JwtBearerService : IJwtBearerService
+internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptions) : IJwtBearerService
 {
-    private readonly JwtBearerSettings jwtBearerSettings;
-
-    public JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptions)
-    {
-        jwtBearerSettings = jwtBearerSettingsOptions.Value;
-    }
+    private readonly JwtBearerSettings jwtBearerSettings = jwtBearerSettingsOptions.Value;
 
     public string CreateToken(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {

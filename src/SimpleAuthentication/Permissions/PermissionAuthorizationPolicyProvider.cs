@@ -3,13 +3,8 @@ using Microsoft.Extensions.Options;
 
 namespace SimpleAuthentication.Permissions;
 
-internal class PermissionAuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
+internal class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options) : DefaultAuthorizationPolicyProvider(options)
 {
-    public PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
-        : base(options)
-    {
-    }
-
     public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
         var policy = await base.GetPolicyAsync(policyName);

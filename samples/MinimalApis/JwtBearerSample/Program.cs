@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using JwtBearerSample.Authentication;
-using JwtBearerSample.Swagger;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SimpleAuthentication;
@@ -48,8 +47,6 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.OperationFilter<MissingSchemasOperationFilter>();
-
     options.AddSimpleAuthentication(builder.Configuration);
 });
 
@@ -104,7 +101,7 @@ authApiGroup.MapPost("validate", Results<Ok<User>, BadRequest> (string token, bo
         return TypedResults.BadRequest();
     }
 
-    return TypedResults.Ok(new User(claimsPrincipal!.Identity!.Name));
+    return TypedResults.Ok(new User(claimsPrincipal.Identity!.Name));
 })
 .WithOpenApi();
 
