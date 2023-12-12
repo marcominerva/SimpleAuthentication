@@ -49,7 +49,7 @@ public class AuthController : ControllerBase
             return BadRequest();
         }
 
-        return new User(claimsPrincipal!.Identity!.Name);
+        return new User(claimsPrincipal.Identity!.Name);
     }
 
     [HttpPost("refresh")]

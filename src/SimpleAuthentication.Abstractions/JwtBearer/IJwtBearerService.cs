@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -95,7 +96,7 @@ public interface IJwtBearerService
     /// <exception cref="SecurityTokenNotYetValidException"><paramref name="token"/> 'nbf' claim is &gt; DateTime.UtcNow.</exception>
     /// <exception cref="SecurityTokenReplayAddFailedException"><paramref name="token"/> could not be added to the <see cref="TokenValidationParameters.TokenReplayCache"/>.</exception>
     /// <exception cref="SecurityTokenReplayDetectedException"><paramref name="token"/> is found in the cache.</exception>
-    bool TryValidateToken(string token, out ClaimsPrincipal? claimsPrincipal)
+    bool TryValidateToken(string token, [NotNullWhen(true)] out ClaimsPrincipal? claimsPrincipal)
         => TryValidateToken(token, true, out claimsPrincipal);
 
     /// <summary>
@@ -122,7 +123,7 @@ public interface IJwtBearerService
     /// <exception cref="SecurityTokenNotYetValidException"><paramref name="token"/> 'nbf' claim is &gt; DateTime.UtcNow.</exception>
     /// <exception cref="SecurityTokenReplayAddFailedException"><paramref name="token"/> could not be added to the <see cref="TokenValidationParameters.TokenReplayCache"/>.</exception>
     /// <exception cref="SecurityTokenReplayDetectedException"><paramref name="token"/> is found in the cache.</exception>
-    bool TryValidateToken(string token, bool validateLifetime, out ClaimsPrincipal? claimsPrincipal)
+    bool TryValidateToken(string token, bool validateLifetime, [NotNullWhen(true)] out ClaimsPrincipal? claimsPrincipal)
     {
         try
         {

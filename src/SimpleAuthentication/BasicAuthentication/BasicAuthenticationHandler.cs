@@ -14,8 +14,13 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
 {
     private readonly IServiceProvider serviceProvider;
 
+#if NET8_0_OR_GREATER
+    public BasicAuthenticationHandler(IOptionsMonitor<BasicAuthenticationSettings> options, ILoggerFactory logger, UrlEncoder encoder, IServiceProvider serviceProvider)
+        : base(options, logger, encoder)
+#else
     public BasicAuthenticationHandler(IOptionsMonitor<BasicAuthenticationSettings> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IServiceProvider serviceProvider)
         : base(options, logger, encoder, clock)
+#endif
     {
         this.serviceProvider = serviceProvider;
     }
@@ -53,11 +58,7 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
         if (!Options.Credentials.Any())
         {
             // There is no fixed values, so it tries to get an external service to validate user name and password.
-            var validator = serviceProvider.GetService<IBasicAuthenticationValidator>();
-            if (validator is null)
-            {
-                throw new InvalidOperationException("There isn't a default user name and password for authentication and no custom validator has been provided");
-            }
+            var validator = serviceProvider.GetService<IBasicAuthenticationValidator>() ?? throw new InvalidOperationException("There isn't a default user name and password for authentication and no custom validator has been provided");
 
             var validationResult = await validator.ValidateAsync(userName, password);
             if (validationResult.Succeeded)

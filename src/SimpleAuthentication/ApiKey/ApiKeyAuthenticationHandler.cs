@@ -11,8 +11,13 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
 {
     private readonly IServiceProvider serviceProvider;
 
+#if NET8_0_OR_GREATER
+    public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeySettings> options, ILoggerFactory logger, UrlEncoder encoder, IServiceProvider serviceProvider)
+        : base(options, logger, encoder)
+#else
     public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeySettings> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IServiceProvider serviceProvider)
         : base(options, logger, encoder, clock)
+#endif
     {
         this.serviceProvider = serviceProvider;
     }
@@ -37,11 +42,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
         if (!Options.ApiKeys.Any())
         {
             // There is no fixed values, so it tries to get an external service to validate the API Key.
-            var validator = serviceProvider.GetService<IApiKeyValidator>();
-            if (validator is null)
-            {
-                throw new InvalidOperationException("There isn't a default value for API Key and no custom validator has been provided");
-            }
+            var validator = serviceProvider.GetService<IApiKeyValidator>() ?? throw new InvalidOperationException("There isn't a default value for API Key and no custom validator has been provided");
 
             var validationResult = await validator.ValidateAsync(value.ToString());
             if (validationResult.Succeeded)
