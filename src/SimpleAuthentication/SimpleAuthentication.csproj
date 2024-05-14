@@ -31,8 +31,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="2.0.11" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="2.0.12" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.6.1" />
     </ItemGroup>
 
     <ItemGroup>
