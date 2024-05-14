@@ -63,7 +63,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeySetting
 
         AuthenticateResult CreateAuthenticationSuccessResult(string userName, IList<Claim>? claims = null)
         {
-            claims ??= new List<Claim>();
+            claims ??= [];
             claims.Update(ClaimTypes.Name, userName);
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);
