@@ -37,6 +37,7 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
+            AuthenticationType = jwtBearerSettings.SchemeName,
             NameClaimType = jwtBearerSettings.NameClaimType,
             RoleClaimType = jwtBearerSettings.RoleClaimType,
             ValidateIssuer = jwtBearerSettings.Issuers?.Any() ?? false,
