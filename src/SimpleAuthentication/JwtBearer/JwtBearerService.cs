@@ -12,7 +12,7 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
 
     public string CreateToken(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {
-        claims ??= new List<Claim>();
+        claims ??= [];
         claims.Update(jwtBearerSettings.NameClaimType, userName);
         claims.Update(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
         claims.Remove(JwtRegisteredClaimNames.Aud);
@@ -37,6 +37,7 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
+            AuthenticationType = jwtBearerSettings.SchemeName,
             NameClaimType = jwtBearerSettings.NameClaimType,
             RoleClaimType = jwtBearerSettings.RoleClaimType,
             ValidateIssuer = jwtBearerSettings.Issuers?.Any() ?? false,
