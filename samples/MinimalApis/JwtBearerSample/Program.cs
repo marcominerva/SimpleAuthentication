@@ -72,7 +72,7 @@ app.UseAuthorization();
 
 var authApiGroup = app.MapGroup("api/auth");
 
-authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, IJwtBearerService jwtBearerService) =>
+authApiGroup.MapPost("login", async (LoginRequest loginRequest, DateTime? expiration, IJwtBearerService jwtBearerService) =>
 {
     // Check for login rights...
 
@@ -83,7 +83,7 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
         claims.Add(new("scp", loginRequest.Scopes));
     }
 
-    var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
+    var token = await jwtBearerService.CreateTokenAsync(loginRequest.UserName, claims, absoluteExpiration: expiration);
     return TypedResults.Ok(new LoginResponse(token));
 })
 .WithOpenApi(operation =>
@@ -92,20 +92,22 @@ authApiGroup.MapPost("login", (LoginRequest loginRequest, DateTime? expiration, 
     return operation;
 });
 
-authApiGroup.MapPost("validate", Results<Ok<User>, BadRequest> (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
+authApiGroup.MapPost("validate", async Task<Results<Ok<User>, BadRequest>> (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
 {
-    if (jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal))
+    var result = await jwtBearerService.TryValidateTokenAsync(token, validateLifetime);
+
+    if (!result.IsValid)
     {
-        return TypedResults.Ok(new User(claimsPrincipal.Identity!.Name));
+        return TypedResults.BadRequest();
     }
 
-    return TypedResults.BadRequest();
+    return TypedResults.Ok(new User(result.Principal.Identity!.Name));
 })
 .WithOpenApi();
 
-authApiGroup.MapPost("refresh", (string token, bool validateLifetime, DateTime? expiration, IJwtBearerService jwtBearerService) =>
+authApiGroup.MapPost("refresh", async (string token, bool validateLifetime, DateTime? expiration, IJwtBearerService jwtBearerService) =>
 {
-    var newToken = jwtBearerService.RefreshToken(token, validateLifetime, expiration);
+    var newToken = await jwtBearerService.RefreshTokenAsync(token, validateLifetime, expiration);
     return TypedResults.Ok(new LoginResponse(newToken));
 })
 .WithOpenApi();

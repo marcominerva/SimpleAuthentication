@@ -1,7 +1,7 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace SimpleAuthentication.JwtBearer;
@@ -10,31 +10,40 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
 {
     private readonly JwtBearerSettings jwtBearerSettings = jwtBearerSettingsOptions.Value;
 
-    public string CreateToken(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
+    public Task<string> CreateTokenAsync(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {
         claims ??= [];
         claims.Update(jwtBearerSettings.NameClaimType, userName);
         claims.Update(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
-        claims.Remove(JwtRegisteredClaimNames.Aud);
 
         var now = DateTime.UtcNow;
 
-        var jwtSecurityToken = new JwtSecurityToken(
-            issuer ?? jwtBearerSettings.Issuers?.FirstOrDefault(),
-            audience ?? jwtBearerSettings.Audiences?.FirstOrDefault(),
-            claims,
-            now,
-            absoluteExpiration ?? (jwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? now.Add(jwtBearerSettings.ExpirationTime!.Value) : DateTime.MaxValue),
-            new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerSettings.SecurityKey)), jwtBearerSettings.Algorithm));
+        var securityTokenDescriptor = new SecurityTokenDescriptor()
+        {
+            Subject = new ClaimsIdentity(claims, jwtBearerSettings.SchemeName, jwtBearerSettings.NameClaimType, jwtBearerSettings.RoleClaimType),
+            Issuer = issuer ?? jwtBearerSettings.Issuers?.FirstOrDefault(),
+            Audience = audience ?? jwtBearerSettings.Audiences?.FirstOrDefault(),
+            IssuedAt = now,
+            NotBefore = now.Add(-jwtBearerSettings.ClockSkew),
+            Expires = absoluteExpiration ?? (jwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? now.Add(jwtBearerSettings.ExpirationTime!.Value) : DateTime.MaxValue),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerSettings.SecurityKey)), jwtBearerSettings.Algorithm)
+        };
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.WriteToken(jwtSecurityToken);
+        var tokenHandler = new JsonWebTokenHandler();
+        var token = tokenHandler.CreateToken(securityTokenDescriptor);
 
-        return token;
+        return Task.FromResult(token);
     }
 
-    public ClaimsPrincipal ValidateToken(string token, bool validateLifetime)
+    public async Task<ClaimsPrincipal> ValidateTokenAsync(string token, bool validateLifetime = true)
     {
+        var tokenHandler = new JsonWebTokenHandler();
+
+        if (!tokenHandler.CanReadToken(token))
+        {
+            throw new SecurityTokenException("Token is not a well formed Json Web Token (JWT)");
+        }
+
         var tokenValidationParameters = new TokenValidationParameters
         {
             AuthenticationType = jwtBearerSettings.SchemeName,
@@ -51,27 +60,27 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
             ClockSkew = jwtBearerSettings.ClockSkew
         };
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+        var validationResult = await tokenHandler.ValidateTokenAsync(token, tokenValidationParameters);
 
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || jwtSecurityToken.Header.Alg != jwtBearerSettings.Algorithm)
+        if (!validationResult.IsValid || validationResult.SecurityToken is not JsonWebToken jsonWebToken || jsonWebToken.Alg != jwtBearerSettings.Algorithm)
         {
-            throw new SecurityTokenException("Token is not a JWT or uses an unexpected algorithm.");
+            throw new SecurityTokenException("Token is expired or invalid", validationResult.Exception);
         }
 
+        var principal = new ClaimsPrincipal(validationResult.ClaimsIdentity);
         return principal;
     }
 
-    public string RefreshToken(string token, bool validateLifetime, DateTime? absoluteExpiration = null)
+    public async Task<string> RefreshTokenAsync(string token, bool validateLifetime, DateTime? absoluteExpiration = null)
     {
-        var principal = ValidateToken(token, validateLifetime);
+        var principal = await ValidateTokenAsync(token, validateLifetime);
         var claims = (principal.Identity as ClaimsIdentity)!.Claims.ToList();
 
         var userName = claims.First(c => c.Type == jwtBearerSettings.NameClaimType).Value;
         var issuer = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iss)?.Value;
         var audience = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud)?.Value;
 
-        var newToken = CreateToken(userName, claims, issuer, audience, absoluteExpiration);
+        var newToken = await CreateTokenAsync(userName, claims, issuer, audience, absoluteExpiration);
         return newToken;
     }
 }

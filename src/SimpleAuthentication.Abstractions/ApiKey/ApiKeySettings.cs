@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace SimpleAuthentication.ApiKey;
 
@@ -40,7 +41,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// <seealso cref="ApiKeyValue"/>
     public string? UserName { get; set; }
 
-    private ICollection<ApiKey> apiKeys = new HashSet<ApiKey>();
+    private ICollection<ApiKey> apiKeys = [];
     /// <summary>
     /// The collection of valid API keys.
     /// </summary>
@@ -52,14 +53,33 @@ public class ApiKeySettings : AuthenticationSchemeOptions
             if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
             {
                 // If necessary, add the API Key from the base properties.
-                apiKeys.Add(new ApiKey(ApiKeyValue, UserName));
+                apiKeys.Add(new(ApiKeyValue, UserName));
             }
 
             return apiKeys;
         }
 
-        internal set => apiKeys = value ?? new HashSet<ApiKey>();
+        internal set => apiKeys = value ?? [];
     }
+
+    /// <summary>
+    /// Gets or sets a <see cref="string"/> that defines the <see cref="ClaimsIdentity.NameClaimType"/>.
+    /// </summary>
+    /// <remarks>
+    /// Controls the value <see cref="ClaimsIdentity.Name"/> returns. It will return the first <see cref="Claim.Value"/> where the <see cref="Claim.Type"/> equals <see cref="NameClaimType"/>.
+    /// The default is <see cref="ClaimsIdentity.DefaultNameClaimType"/>.
+    /// </remarks>
+    public string NameClaimType { get; set; } = ClaimsIdentity.DefaultNameClaimType;
+
+    /// <summary>
+    /// Gets or sets the <see cref="string"/> that defines the <see cref="ClaimsIdentity.RoleClaimType"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>Controls the results of <see cref="ClaimsPrincipal.IsInRole( string )"/>.</para>
+    /// <para>Each <see cref="Claim"/> where <see cref="Claim.Type"/> == <see cref="RoleClaimType"/> will be checked for a match against the 'string' passed to <see cref="ClaimsPrincipal.IsInRole(string)"/>.</para>
+    /// The default is <see cref="ClaimsIdentity.DefaultRoleClaimType"/>.
+    /// </remarks>
+    public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
 }
 
 /// <summary>

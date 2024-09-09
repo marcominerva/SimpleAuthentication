@@ -29,7 +29,7 @@ Authentication can be totally configured adding an _Authentication_ section in t
       "JwtBearer": {
           "SchemeName": "Bearer" // Default: Bearer
           //"NameClaimType": "user_name", // Default: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
-          //"RoleClaimType": "role", // Default: http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          //"RoleClaimType": "user_role", // Default: http://schemas.microsoft.com/ws/2008/06/identity/claims/role
           "SecurityKey": "supersecretsecuritykey42!", // Required
           "Algorithm": "HS256", // Default: HS256
           "Issuers": [ "issuer" ], // Optional
@@ -39,10 +39,12 @@ Authentication can be totally configured adding an _Authentication_ section in t
           "EnableJwtBearerService": true // Default: true
       },
       "ApiKey": {
-          "SchemeName": "MyApiKeyScheme", // Default: ApiKey
+          "SchemeName": "ApiKey", // Default: ApiKey
           // You can specify either HeaderName, QueryStringKey or both
           "HeaderName": "x-api-key",
           "QueryStringKey": "code",
+          //"NameClaimType": "user_name", // Default: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+          //"RoleClaimType": "user_role", // Default: http://schemas.microsoft.com/ws/2008/06/identity/claims/role
           // Uncomment this line if you want to validate the API Key against a fixed value.
           // Otherwise, you need to register an IApiKeyValidator implementation that will be used
           // to validate the API Key.
@@ -51,6 +53,8 @@ Authentication can be totally configured adding an _Authentication_ section in t
       },
       "Basic": {
           "SchemeName": "Basic", // Default: Basic
+          //"NameClaimType": "user_name", // Default: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+          //"RoleClaimType": "user_role", // Default: http://schemas.microsoft.com/ws/2008/06/identity/claims/role
           // Uncomment the following lines if you want to validate user name and password
           // against fixed values.
           // Otherwise, you need to register an IBasicAuthenticationValidator implementation
@@ -87,7 +91,7 @@ The _DefaultScheme_ attribute is used to specify what kind of authentication mus
     var app = builder.Build();
 
     //...
-    // The following middlewares aren't strictly necessary in .NET 7.0, because they are automatically
+    // The following middlewares aren't strictly necessary in .NET 7.0 or higher, because they are automatically
     // added when detecting that the corresponding services have been registered. However, you may
     // need to call them explicitly if the default middlewares configuration is not correct for your
     // app, for example when you need to use CORS.
