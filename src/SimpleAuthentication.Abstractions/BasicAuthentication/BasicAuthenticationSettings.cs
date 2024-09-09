@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 
 namespace SimpleAuthentication.BasicAuthentication;
 
@@ -29,7 +30,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// <seealso cref="IBasicAuthenticationValidator"/>
     public string? Password { get; set; }
 
-    private ICollection<Credential> credentials = new HashSet<Credential>();
+    private ICollection<Credential> credentials = [];
     /// <summary>
     /// The collection of authorization credentials.
     /// </summary>
@@ -47,8 +48,28 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
             return credentials;
         }
 
-        internal set => credentials = value ?? new HashSet<Credential>();
+        internal set => credentials = value ?? [];
     }
+
+    /// <summary>
+    /// Gets or sets a <see cref="string"/> that defines the <see cref="ClaimsIdentity.NameClaimType"/>.
+    /// </summary>
+    /// <remarks>
+    /// Controls the value <see cref="ClaimsIdentity.Name"/> returns. It will return the first <see cref="Claim.Value"/> where the <see cref="Claim.Type"/> equals <see cref="NameClaimType"/>.
+    /// The default is <see cref="ClaimsIdentity.DefaultNameClaimType"/>.
+    /// </remarks>
+    public string NameClaimType { get; set; } = ClaimsIdentity.DefaultNameClaimType;
+
+    /// <summary>
+    /// Gets or sets the <see cref="string"/> that defines the <see cref="ClaimsIdentity.RoleClaimType"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>Controls the results of <see cref="ClaimsPrincipal.IsInRole( string )"/>.</para>
+    /// <para>Each <see cref="Claim"/> where <see cref="Claim.Type"/> == <see cref="RoleClaimType"/> will be checked for a match against the 'string' passed to <see cref="ClaimsPrincipal.IsInRole(string)"/>.</para>
+    /// The default is <see cref="ClaimsIdentity.DefaultRoleClaimType"/>.
+    /// </remarks>
+    public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
+
 }
 
 /// <summary>

@@ -170,6 +170,8 @@ public static class SimpleAuthenticationExtensions
             }
 
             ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(BasicAuthenticationSettings.SchemeName));
+            ArgumentNullException.ThrowIfNull(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
+            ArgumentNullException.ThrowIfNull(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
 
             if (!string.IsNullOrWhiteSpace(settings.UserName))
             {
@@ -194,6 +196,8 @@ public static class SimpleAuthenticationExtensions
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
                 options.Credentials = settings.Credentials;
+                options.NameClaimType = settings.NameClaimType;
+                options.RoleClaimType = settings.RoleClaimType;
             });
         }
     }

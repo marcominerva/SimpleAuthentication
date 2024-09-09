@@ -80,9 +80,9 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
         AuthenticateResult CreateAuthenticationSuccessResult(string userName, IList<Claim>? claims = null)
         {
             claims ??= [];
-            claims.Update(ClaimTypes.Name, userName);
+            claims.Update(Options.NameClaimType, userName);
 
-            var identity = new ClaimsIdentity(claims, Scheme.Name);
+            var identity = new ClaimsIdentity(claims, Scheme.Name, Options.NameClaimType, Options.RoleClaimType);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
