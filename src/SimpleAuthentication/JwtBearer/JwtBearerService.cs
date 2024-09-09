@@ -20,7 +20,7 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
 
         var securityTokenDescriptor = new SecurityTokenDescriptor()
         {
-            Subject = new ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity(claims, jwtBearerSettings.SchemeName, jwtBearerSettings.NameClaimType, jwtBearerSettings.RoleClaimType),
             Issuer = issuer ?? jwtBearerSettings.Issuers?.FirstOrDefault(),
             Audience = audience ?? jwtBearerSettings.Audiences?.FirstOrDefault(),
             IssuedAt = now,

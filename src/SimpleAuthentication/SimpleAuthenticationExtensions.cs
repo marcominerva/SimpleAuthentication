@@ -128,6 +128,8 @@ public static class SimpleAuthenticationExtensions
             }
 
             ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(ApiKeySettings.SchemeName));
+            ArgumentNullException.ThrowIfNull(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
+            ArgumentNullException.ThrowIfNull(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
 
             if (string.IsNullOrWhiteSpace(settings.HeaderName) && string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
@@ -154,6 +156,8 @@ public static class SimpleAuthenticationExtensions
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.UserName = settings.UserName;
                 options.ApiKeys = settings.ApiKeys;
+                options.NameClaimType = settings.NameClaimType;
+                options.RoleClaimType = settings.RoleClaimType;
             });
         }
 
