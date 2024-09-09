@@ -15,7 +15,7 @@ public class AuthController(IJwtBearerService jwtBearerService) : ControllerBase
     [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     [SwaggerOperation(description: "Insert permissions in the scope property (for example: 'profile people:admin')")]
-    public ActionResult<LoginResponse> Login(LoginRequest loginRequest, DateTime? expiration = null)
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginRequest, DateTime? expiration = null)
     {
         // Check for login rights...
 
@@ -26,7 +26,7 @@ public class AuthController(IJwtBearerService jwtBearerService) : ControllerBase
             claims.Add(new("scp", loginRequest.Scopes));
         }
 
-        var token = jwtBearerService.CreateToken(loginRequest.UserName, claims, absoluteExpiration: expiration);
+        var token = await jwtBearerService.CreateTokenAsync(loginRequest.UserName, claims, absoluteExpiration: expiration);
         return new LoginResponse(token);
     }
 
@@ -34,22 +34,24 @@ public class AuthController(IJwtBearerService jwtBearerService) : ControllerBase
     [ProducesResponseType<User>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
-    public ActionResult<User> Validate(string token, bool validateLifetime = true)
+    public async Task<ActionResult<User>> Validate(string token, bool validateLifetime = true)
     {
-        if (jwtBearerService.TryValidateToken(token, validateLifetime, out var claimsPrincipal))
+        var result = await jwtBearerService.TryValidateTokenAsync(token, validateLifetime);
+
+        if (!result.IsValid)
         {
-            return new User(claimsPrincipal.Identity!.Name);
+            return BadRequest();
         }
 
-        return BadRequest();
+        return new User(result.Principal.Identity!.Name);
     }
 
     [HttpPost("refresh")]
     [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
-    public ActionResult<LoginResponse> Refresh(string token, bool validateLifetime = true, DateTime? expiration = null)
+    public async Task<ActionResult<LoginResponse>> Refresh(string token, bool validateLifetime = true, DateTime? expiration = null)
     {
-        var newToken = jwtBearerService.RefreshToken(token, validateLifetime, expiration);
+        var newToken = await jwtBearerService.RefreshTokenAsync(token, validateLifetime, expiration);
         return new LoginResponse(newToken);
     }
 }

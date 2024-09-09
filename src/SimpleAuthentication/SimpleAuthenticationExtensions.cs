@@ -89,6 +89,8 @@ public static class SimpleAuthenticationExtensions
             ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(JwtBearerSettings.SchemeName));
             ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
             ArgumentNullException.ThrowIfNull(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
+            ArgumentNullException.ThrowIfNull(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
+            ArgumentNullException.ThrowIfNull(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
 
             builder.Services.Configure<JwtBearerSettings>(section);
 
