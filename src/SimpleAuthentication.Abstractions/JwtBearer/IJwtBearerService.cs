@@ -32,9 +32,9 @@ public interface IJwtBearerService
     /// <param name="issuer">The issuer of the bearer. If <see langword="null"/>, the first issuer specified in the configuration will be used, if any.</param>
     /// <param name="audience">The audience of the bearer. If <see langword="null"/>, the first audience specified in the configuration will be used, if any.</param>
     /// <param name="absoluteExpiration">The absolute expiration of the token. If <see langword="null"/>, the expiration time specified in the configuration will be used, if any.</param>
-    /// <returns>The JWT bearer token.</returns>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>    /// <returns>The JWT bearer token.</returns>
     /// <exception cref="ArgumentException"><paramref name="absoluteExpiration"/> is &lt; DateTime.UtcNow.</exception>    
-    Task<string> CreateTokenAsync(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null);
+    Task<string> CreateTokenAsync(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Reads and validates a 'JSON Web Token' (JWT) encoded as a JWS or JWE in Compact Serialized Format.
@@ -51,10 +51,21 @@ public interface IJwtBearerService
     /// Reads and validates a 'JSON Web Token' (JWT) encoded as a JWS or JWE in Compact Serialized Format.
     /// </summary>
     /// <param name="token">The JWT encoded as JWE or JWS.</param>
-    /// <param name="validateLifetime"><see langword="true"/> to validate the lifetime of the token.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="ClaimsPrincipal"/> from the JWT. Does not include claims found in the JWT header.</returns>
     /// <exception cref="SecurityTokenException"><paramref name="token"/> is expired or invalid.</exception>
-    Task<ClaimsPrincipal> ValidateTokenAsync(string token, bool validateLifetime = true);
+    Task<ClaimsPrincipal> ValidateTokenAsync(string token, CancellationToken cancellationToken = default)
+        => ValidateTokenAsync(token, true, cancellationToken);
+
+    /// <summary>
+    /// Reads and validates a 'JSON Web Token' (JWT) encoded as a JWS or JWE in Compact Serialized Format.
+    /// </summary>
+    /// <param name="token">The JWT encoded as JWE or JWS.</param>
+    /// <param name="validateLifetime"><see langword="true"/> to validate the lifetime of the token.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="ClaimsPrincipal"/> from the JWT. Does not include claims found in the JWT header.</returns>
+    /// <exception cref="SecurityTokenException"><paramref name="token"/> is expired or invalid.</exception>
+    Task<ClaimsPrincipal> ValidateTokenAsync(string token, bool validateLifetime, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Try to read and validate a bearer token.
@@ -93,16 +104,27 @@ public interface IJwtBearerService
     /// Try to read and validate a bearer token.
     /// </summary>
     /// <param name="token">The JWT encoded as JWE or JWS.</param>
-    /// <param name="validateLifetime"><see langword="true"/> to validate the lifetime of the token.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="JwtBearerValidationResult"/> that contains the result of the validation.</returns>
     /// <see cref="JwtBearerValidationResult"/>
-    async Task<JwtBearerValidationResult> TryValidateTokenAsync(string token, bool validateLifetime = true)
+    Task<JwtBearerValidationResult> TryValidateTokenAsync(string token, CancellationToken cancellationToken = default)
+        => TryValidateTokenAsync(token, true, cancellationToken);
+
+    /// <summary>
+    /// Try to read and validate a bearer token.
+    /// </summary>
+    /// <param name="token">The JWT encoded as JWE or JWS.</param>
+    /// <param name="validateLifetime"><see langword="true"/> to validate the lifetime of the token.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="JwtBearerValidationResult"/> that contains the result of the validation.</returns>
+    /// <see cref="JwtBearerValidationResult"/>
+    async Task<JwtBearerValidationResult> TryValidateTokenAsync(string token, bool validateLifetime, CancellationToken cancellationToken = default)
     {
         var result = new JwtBearerValidationResult();
 
         try
         {
-            var principal = await ValidateTokenAsync(token, validateLifetime);
+            var principal = await ValidateTokenAsync(token, validateLifetime, cancellationToken);
             result = new JwtBearerValidationResult { IsValid = true, Principal = principal };
         }
         catch (Exception ex)
@@ -141,10 +163,11 @@ public interface IJwtBearerService
     /// </summary>
     /// <param name="token">The JWT encoded as JWE or JWS.</param>
     /// <param name="absoluteExpiration">The absolute expiration of the token. If <see langword="null"/>, the expiration time specified in the configuration will be used, if any.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>The JWT bearer containing all the information of the input <paramref name="token"/>, with an extended expiration.</returns>
     /// <exception cref="SecurityTokenException"><paramref name="token"/> is expired or invalid.</exception>
-    Task<string> RefreshTokenAsync(string token, DateTime? absoluteExpiration = null)
-        => RefreshTokenAsync(token, true, absoluteExpiration);
+    Task<string> RefreshTokenAsync(string token, DateTime? absoluteExpiration = null, CancellationToken cancellationToken = default)
+        => RefreshTokenAsync(token, true, absoluteExpiration, cancellationToken);
 
     /// <summary>
     /// Refresh a valid token, extending its expiration.
@@ -152,7 +175,8 @@ public interface IJwtBearerService
     /// <param name="token">The JWT encoded as JWE or JWS.</param>
     /// <param name="validateLifetime"><see langword="true"/> to validate the lifetime of the token.</param>
     /// <param name="absoluteExpiration">The absolute expiration of the token. If <see langword="null"/>, the expiration time specified in the configuration will be used, if any.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>The JWT bearer containing all the information of the input <paramref name="token"/>, with an extended expiration.</returns>
     /// <exception cref="SecurityTokenException"><paramref name="token"/> is expired or invalid.</exception>
-    Task<string> RefreshTokenAsync(string token, bool validateLifetime, DateTime? absoluteExpiration = null);
+    Task<string> RefreshTokenAsync(string token, bool validateLifetime, DateTime? absoluteExpiration = null, CancellationToken cancellationToken = default);
 }

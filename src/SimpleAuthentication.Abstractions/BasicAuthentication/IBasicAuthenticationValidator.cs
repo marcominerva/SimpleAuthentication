@@ -10,7 +10,8 @@ public interface IBasicAuthenticationValidator
     /// </summary>
     /// <param name="userName">The user name to validate.</param>
     /// <param name="password">The password to validate.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="BasicAuthenticationValidationResult"/> that contains the validation result.</returns>
     /// <seealso cref="BasicAuthenticationValidationResult"/>
-    Task<BasicAuthenticationValidationResult> ValidateAsync(string userName, string password);
+    Task<BasicAuthenticationValidationResult> ValidateAsync(string userName, string password, CancellationToken cancellationToken = default);
 }
