@@ -93,7 +93,7 @@ public static class SwaggerExtensions
             }
         }
 
-        options.OperationFilter<AuthenticationOperationFilter>();
+        options.OperationAsyncFilter<AuthenticationOperationFilter>();
         options.DocumentFilter<ProblemDetailsDocumentFilter>();
 
         static void CheckAddJwtBearer(SwaggerGenOptions options, IConfigurationSection section)
