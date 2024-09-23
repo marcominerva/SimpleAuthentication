@@ -2,36 +2,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SimpleAuthentication.ApiKey;
-using SimpleAuthentication.BasicAuthentication;
-using SimpleAuthentication.JwtBearer;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SimpleAuthentication.Swagger;
 
-internal class AuthenticationOperationFilter : IOperationFilter
+internal class AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider) : IOperationAsyncFilter
 {
-    private readonly IAuthorizationPolicyProvider authorizationPolicyProvider;
-    private readonly JwtBearerSettings jwtBearerSettings;
-    private readonly ApiKeySettings apiKeySettings;
-    private readonly BasicAuthenticationSettings basicAuthenticationSettings;
-
-    public AuthenticationOperationFilter(IAuthorizationPolicyProvider authorizationPolicyProvider,
-        IOptions<JwtBearerSettings> jwtBearerSettingsOptions, IOptions<ApiKeySettings> apiKeySettingsOptions, IOptions<BasicAuthenticationSettings> basicAuthenticationSettingsOptions)
-    {
-        this.authorizationPolicyProvider = authorizationPolicyProvider;
-
-        jwtBearerSettings = jwtBearerSettingsOptions.Value;
-        apiKeySettings = apiKeySettingsOptions.Value;
-        basicAuthenticationSettings = basicAuthenticationSettingsOptions.Value;
-    }
-
-    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    public async Task ApplyAsync(OpenApiOperation operation, OperationFilterContext context, CancellationToken cancellationToken)
     {
         // If the method requires authorization, automatically add 401 and 403 response (if not explicitly specified).
-        var fallbackPolicy = authorizationPolicyProvider.GetFallbackPolicyAsync().GetAwaiter().GetResult();
+        var fallbackPolicy = await authorizationPolicyProvider.GetFallbackPolicyAsync();
         var requireAuthenticatedUser = fallbackPolicy?.Requirements.Any(r => r is DenyAnonymousAuthorizationRequirement) ?? false;
 
         var endpointMetadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;

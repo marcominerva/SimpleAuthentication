@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace SimpleAuthentication.Swagger;
@@ -32,7 +31,7 @@ internal static class Helpers
             Description = description,
             Content = new Dictionary<string, OpenApiMediaType>
             {
-                [MediaTypeNames.Application.Json] = new()
+                ["application/problem+json"] = new()
                 {
                     Schema = new()
                     {
