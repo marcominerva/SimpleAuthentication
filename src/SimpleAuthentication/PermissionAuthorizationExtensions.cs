@@ -17,6 +17,7 @@ public static class PermissionAuthorizationExtensions
     /// <typeparam name="T">The type implementing <see cref="IPermissionHandler"/> to register.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <remarks>The <see cref="IPermissionHandler"/> implementation is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IPermissionHandler"/>
     public static IServiceCollection AddPermissions<T>(this IServiceCollection services) where T : class, IPermissionHandler
@@ -36,6 +37,7 @@ public static class PermissionAuthorizationExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <remarks>The <see cref="ScopeClaimPermissionHandler"/> is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="ScopeClaimPermissionHandler"/>
     public static IServiceCollection AddScopePermissions(this IServiceCollection services)
@@ -47,6 +49,7 @@ public static class PermissionAuthorizationExtensions
     /// <typeparam name="T">The type implementing <see cref="IPermissionHandler"/> to register.</typeparam>
     /// <param name="builder">The <see cref="AuthenticationBuilder"/> to add services to.</param>
     /// <returns>An <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <remarks>The <see cref="IPermissionHandler"/> implementation is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IPermissionHandler"/>
     /// <seealso cref="AuthenticationBuilder"/>
@@ -61,6 +64,7 @@ public static class PermissionAuthorizationExtensions
     /// </summary>
     /// <param name="builder">The <see cref="AuthenticationBuilder"/> to add services to.</param>
     /// <returns>An <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
+    /// <remarks>The <see cref="ScopeClaimPermissionHandler"/> is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
     /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IPermissionHandler"/>
     /// <seealso cref="ScopeClaimPermissionHandler"/>
