@@ -21,7 +21,7 @@ public class AuthController(IJwtBearerService jwtBearerService) : ControllerBase
 
         // Add custom claims (optional).
         var claims = new List<Claim>();
-        if (loginRequest.Scopes?.Any() ?? false)
+        if (!string.IsNullOrWhiteSpace(loginRequest.Scopes))
         {
             claims.Add(new("scp", loginRequest.Scopes));
         }
