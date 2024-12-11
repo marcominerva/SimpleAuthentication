@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtBearerSample", "samples\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleAuthentication.Swashbuckle", "src\SimpleAuthentication.Swashbuckle\SimpleAuthentication.Swashbuckle.csproj", "{2B13BC55-EA62-47F4-9857-968DED3488CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net8JwtBearerSample", "samples\MinimalApis\Net8JwtBearerSample\Net8JwtBearerSample.csproj", "{C987694E-87DA-44E1-BED0-CE155B2301BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{2B13BC55-EA62-47F4-9857-968DED3488CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B13BC55-EA62-47F4-9857-968DED3488CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B13BC55-EA62-47F4-9857-968DED3488CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C987694E-87DA-44E1-BED0-CE155B2301BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C987694E-87DA-44E1-BED0-CE155B2301BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C987694E-87DA-44E1-BED0-CE155B2301BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C987694E-87DA-44E1-BED0-CE155B2301BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{D46FF74A-2392-46D7-B35D-725D3B15ED21} = {01B848F6-9AB2-41F8-985A-46C62E0EBFCF}
 		{8C0B7F84-A413-4370-86C9-96F97CB3616D} = {01B848F6-9AB2-41F8-985A-46C62E0EBFCF}
 		{14A175D5-1AA7-4B31-809F-BB47014E9B20} = {01B848F6-9AB2-41F8-985A-46C62E0EBFCF}
+		{C987694E-87DA-44E1-BED0-CE155B2301BA} = {01B848F6-9AB2-41F8-985A-46C62E0EBFCF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02046913-4C76-4691-912A-75826EC29E5C}

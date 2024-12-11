@@ -9,24 +9,20 @@ namespace SimpleAuthentication.OpenApi;
 internal static class Helpers
 {
     public static OpenApiSecurityRequirement CreateSecurityRequirement(string name)
-    {
-        var requirement = new OpenApiSecurityRequirement()
-        {
+        => new()
             {
-                new()
                 {
-                    Reference = new()
+                    new()
                     {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = name
-                    }
-                },
-                []
-            }
-        };
-
-        return requirement;
-    }
+                        Reference = new()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = name
+                        }
+                    },
+                    []
+                }
+            };
 
     public static OpenApiResponse CreateResponse(string description)
         => new()

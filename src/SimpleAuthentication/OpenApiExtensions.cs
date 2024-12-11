@@ -14,12 +14,12 @@ using SimpleAuthentication.OpenApi;
 namespace SimpleAuthentication;
 
 /// <summary>
-/// Provides extension methods for adding authentication support in Swagger.
+/// Provides extension methods for adding authentication support in Open API.
 /// </summary>
-public static class SwaggerExtensions
+public static class OpenApiExtensions
 {
     /// <summary>
-    /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -30,7 +30,7 @@ public static class SwaggerExtensions
         => options.AddSimpleAuthentication(configuration, sectionName, Array.Empty<OpenApiSecurityRequirement>());
 
     /// <summary>
-    /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from a section named <strong>Authentication</strong> in <see cref="IConfiguration"/> source.
+    /// Adds authentication support in Open API, reading configuration from a section named <strong>Authentication</strong> in <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -41,7 +41,7 @@ public static class SwaggerExtensions
         => options.AddSimpleAuthentication(configuration, "Authentication", additionalSecurityDefinitionNames);
 
     /// <summary>
-    /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -56,7 +56,7 @@ public static class SwaggerExtensions
     }
 
     /// <summary>
-    /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -67,7 +67,7 @@ public static class SwaggerExtensions
         => options.AddSimpleAuthentication(configuration, "Authentication", securityRequirements);
 
     /// <summary>
-    /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
