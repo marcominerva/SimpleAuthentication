@@ -8,6 +8,10 @@
 
 A library to easily integrate Authentication in ASP.NET Core projects. Currently it supports JWT Bearer, API Key and Basic Authentication in both Controller-based and Minimal API projects.
 
+> [!IMPORTANT]
+> **Update from Version 2.x to 3.x**
+> Swashbuckle (Swagger) support has been moved out from SimpleAuthentication. If you're using the `AddSimpleAuthentication` extension method with `AddSwaggerGen`, now you need to install the [SimpleAuthentication.Swashbuckle](https://github.com/marcominerva/SimpleAuthentication/tree/master/src/SimpleAuthentication.Swashbuckle) package.
+
 ## Installation
 
 The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search for *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
