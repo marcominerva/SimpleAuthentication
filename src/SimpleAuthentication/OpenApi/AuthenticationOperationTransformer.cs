@@ -1,20 +1,11 @@
 ﻿#if NET9_0_OR_GREATER
 
 using System.Net;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using SimpleAuthentication.ApiKey;
-using SimpleAuthentication.BasicAuthentication;
-using SimpleAuthentication.JwtBearer;
 
 namespace SimpleAuthentication.OpenApi;
 
