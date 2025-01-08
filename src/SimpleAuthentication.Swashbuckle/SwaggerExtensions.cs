@@ -153,7 +153,7 @@ public static class SwaggerExtensions
     }
 
     /// <summary>
-    /// Adds OAuth2 authentication support in Swagger, for example for example to integrate with Microsoft.Identity.Web.
+    /// Adds OAuth2 custom authentication support in Swagger, for example for example to integrate with Microsoft.Identity.Web.
     /// </summary>
     /// <param name="options">The <see cref="SwaggerGenOptions"/> to add configuration to.</param>
     /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
@@ -178,7 +178,7 @@ public static class SwaggerExtensions
     }
 
     /// <summary>
-    /// Adds OAuth2 authentication support in Open API, for example for example to integrate with Microsoft.Identity.Web.
+    /// Adds OAuth2 custom authentication support in Swagger, for example for example to integrate with Microsoft.Identity.Web.
     /// </summary>
     /// <param name="options">The <see cref="SwaggerGenOptions"/> to add configuration to.</param>
     /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>

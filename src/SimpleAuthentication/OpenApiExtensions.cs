@@ -8,12 +8,12 @@ using SimpleAuthentication.OpenApi;
 namespace SimpleAuthentication;
 
 /// <summary>
-/// Provides extension methods for adding authentication support in Open API.
+/// Provides extension methods for adding authentication support in OpenAPI.
 /// </summary>
 public static class OpenApiExtensions
 {
     /// <summary>
-    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in OpenAPI, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -24,7 +24,7 @@ public static class OpenApiExtensions
         => options.AddSimpleAuthentication(configuration, sectionName, Array.Empty<OpenApiSecurityRequirement>());
 
     /// <summary>
-    /// Adds authentication support in Open API, reading configuration from a section named <strong>Authentication</strong> in <see cref="IConfiguration"/> source.
+    /// Adds authentication support in OpenAPI, reading configuration from a section named <strong>Authentication</strong> in <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -35,7 +35,7 @@ public static class OpenApiExtensions
         => options.AddSimpleAuthentication(configuration, "Authentication", additionalSecurityDefinitionNames);
 
     /// <summary>
-    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in OpenAPI, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -50,7 +50,7 @@ public static class OpenApiExtensions
     }
 
     /// <summary>
-    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in OpenAPI, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -61,7 +61,7 @@ public static class OpenApiExtensions
         => options.AddSimpleAuthentication(configuration, "Authentication", securityRequirements);
 
     /// <summary>
-    /// Adds authentication support in Open API, reading configuration from the specified <see cref="IConfiguration"/> source.
+    /// Adds authentication support in OpenAPI, reading configuration from the specified <see cref="IConfiguration"/> source.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
@@ -80,7 +80,7 @@ public static class OpenApiExtensions
     }
 
     /// <summary>
-    /// Adds OAuth2 custom authentication support in Open API, for example to integrate with Microsoft.Identity.Web.
+    /// Adds OAuth2 authentication support in OpenAPI, for example to integrate with Microsoft.Identity.Web.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
@@ -105,7 +105,7 @@ public static class OpenApiExtensions
     }
 
     /// <summary>
-    /// Adds OAuth2 custom authentication support in Open API, for example to integrate with Microsoft.Identity.Web.
+    /// Adds OAuth2 authentication support in OpenAPI, for example to integrate with Microsoft.Identity.Web.
     /// </summary>
     /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
     /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
