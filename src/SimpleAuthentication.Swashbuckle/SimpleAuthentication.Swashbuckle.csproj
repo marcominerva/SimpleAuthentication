@@ -5,17 +5,18 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <DocumentationFile>SimpleAuthentication.xml</DocumentationFile>
+        <RootNamespace>SimpleAuthentication</RootNamespace>
+        <DocumentationFile>SimpleAuthentication.Swashbuckle.xml</DocumentationFile>
         <Authors>Marco Minerva</Authors>
         <Company>Marco Minerva</Company>
-        <Product>Simple Authentication for ASP.NET Core</Product>
-        <Title>Simple Authentication for ASP.NET Core</Title>
+        <Product>Swashbuckle extensions for Simple Authentication for ASP.NET Core</Product>
+        <Title>Swashbuckle extensions for Simple Authentication for ASP.NET Core</Title>
         <Description>A library to easily integrate Authentication in ASP.NET Core projects</Description>
-        <PackageId>SimpleAuthenticationTools</PackageId>
+        <PackageId>SimpleAuthenticationTools.Swashbuckle</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/marcominerva/SimpleAuthentication</PackageProjectUrl>
         <PackageIcon>Toolbox.png</PackageIcon>
-        <PackageTags>csharp visualstudio aspnetcore webapi minimal-api authentication jwt jwt-bearer apikey apikey-authentication basic-authentication utilities helpers</PackageTags>
+        <PackageTags>csharp visualstudio aspnetcore webapi minimal-api authentication jwt jwt-bearer apikey apikey-authentication basic-authentication utilities helpers swashbuckle openapi</PackageTags>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/marcominerva/SimpleAuthentication.git</RepositoryUrl>
         <RepositoryBranch>master</RepositoryBranch>
@@ -23,19 +24,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="SimpleAuthentication.xml" />
+        <None Remove="SimpleAuthentication.Swashbuckle.xml" />
     </ItemGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
-    </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
     </ItemGroup>
 
     <ItemGroup>

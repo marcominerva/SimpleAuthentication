@@ -1,29 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace SimpleAuthentication.Swagger;
 
-internal static class Helpers
+internal static class OpenApiHelpers
 {
     public static OpenApiSecurityRequirement CreateSecurityRequirement(string name)
-    {
-        var requirement = new OpenApiSecurityRequirement()
-        {
+        => new()
             {
-                new()
                 {
-                    Reference = new()
+                    new()
                     {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = name
-                    }
-                },
-                Array.Empty<string>()
-            }
-        };
-
-        return requirement;
-    }
+                        Reference = new()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = name
+                        }
+                    },
+                    []
+                }
+            };
 
     public static OpenApiResponse CreateResponse(string description)
         => new()
@@ -31,7 +28,7 @@ internal static class Helpers
             Description = description,
             Content = new Dictionary<string, OpenApiMediaType>
             {
-                ["application/problem+json"] = new()
+                [MediaTypeNames.Application.ProblemJson] = new()
                 {
                     Schema = new()
                     {

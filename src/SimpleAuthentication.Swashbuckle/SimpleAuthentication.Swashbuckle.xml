@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SimpleAuthentication.Swashbuckle</name>
+    </assembly>
+    <members>
+        <member name="T:SimpleAuthentication.SwaggerExtensions">
+            <summary>
+            Provides extension methods for adding authentication support in Swagger.
+            </summary>
+        </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddSimpleAuthentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,Microsoft.Extensions.Configuration.IConfiguration,System.String)">
+            <summary>
+            Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> source.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="configuration">The <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> being bound.</param>
+            <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+            <seealso cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>
+        </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddSimpleAuthentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,Microsoft.Extensions.Configuration.IConfiguration,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from a section named <strong>Authentication</strong> in <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> source.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="configuration">The <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> being bound.</param>
+            <param name="additionalSecurityDefinitionNames">The name of additional security definitions that have been defined in Swagger.</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+            <seealso cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>
+        </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddSimpleAuthentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,Microsoft.Extensions.Configuration.IConfiguration,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> source.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="configuration">The <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> being bound.</param>
+            <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+            <param name="additionalSecurityDefinitionNames">The name of additional security definitions that have been defined in Swagger.</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+            <seealso cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>
+        </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddSimpleAuthentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.OpenApi.Models.OpenApiSecurityRequirement[])">
+            <summary>
+            Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> source.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="configuration">The <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> being bound.</param>
+            <param name="securityRequirements">Additional security requirements to be added to Swagger definition.</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+            <seealso cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>
+        </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddSimpleAuthentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,Microsoft.Extensions.Configuration.IConfiguration,System.String,Microsoft.OpenApi.Models.OpenApiSecurityRequirement[])">
+            <summary>
+            Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> source.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="configuration">The <see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/> being bound.</param>
+            <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
+            <param name="additionalSecurityRequirements">Additional security requirements to be added to Swagger definition.</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+            <seealso cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>
+        </member>
+    </members>
+</doc>
