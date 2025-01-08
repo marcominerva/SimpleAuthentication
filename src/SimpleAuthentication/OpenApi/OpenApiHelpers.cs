@@ -1,10 +1,12 @@
-﻿using System.Net.Mime;
+﻿#if NET9_0_OR_GREATER
+
+using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
-namespace SimpleAuthentication.Swagger;
+namespace SimpleAuthentication.OpenApi;
 
-internal static class Helpers
+internal static class OpenApiHelpers
 {
     public static OpenApiSecurityRequirement CreateSecurityRequirement(string name)
         => new()
@@ -42,3 +44,5 @@ internal static class Helpers
             }
         };
 }
+
+#endif

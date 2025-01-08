@@ -49,7 +49,7 @@ public static class SwaggerExtensions
     /// <seealso cref="IConfiguration"/>
     public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName, IEnumerable<string>? additionalSecurityDefinitionNames)
     {
-        var securityRequirements = additionalSecurityDefinitionNames?.Select(Helpers.CreateSecurityRequirement).ToArray();
+        var securityRequirements = additionalSecurityDefinitionNames?.Select(OpenApiHelpers.CreateSecurityRequirement).ToArray();
         options.AddSimpleAuthentication(configuration, sectionName, securityRequirements ?? []);
     }
 
@@ -150,8 +150,59 @@ public static class SwaggerExtensions
                 Type = securitySchemeType,
                 Scheme = scheme
             });
-
-        static void AddSecurityRequirement(SwaggerGenOptions options, string name)
-            => options.AddSecurityRequirement(Helpers.CreateSecurityRequirement(name));
     }
+
+    /// <summary>
+    /// Adds OAuth2 authentication support in Swagger, for example for example to integrate with Microsoft.Identity.Web.
+    /// </summary>
+    /// <param name="options">The <see cref="SwaggerGenOptions"/> to add configuration to.</param>
+    /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
+    /// <param name="authorizationUrl">The Authorization Url for OAuth2 authorization.</param>
+    /// <param name="tokenUrl">The Token Url for OAuth2 authorization.</param>
+    /// <param name="scopes">The list of scopes.</param>
+    /// <seealso cref="SwaggerGenOptions"/>
+    public static void AddOAuth2Authentication(this SwaggerGenOptions options, string name, string authorizationUrl, string tokenUrl, IDictionary<string, string> scopes)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorizationUrl);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenUrl);
+        ArgumentNullException.ThrowIfNull(scopes);
+
+        options.AddOAuth2Authentication(name, new()
+        {
+            AuthorizationUrl = new(authorizationUrl),
+            TokenUrl = new(tokenUrl),
+            Scopes = scopes
+        });
+    }
+
+    /// <summary>
+    /// Adds OAuth2 authentication support in Open API, for example for example to integrate with Microsoft.Identity.Web.
+    /// </summary>
+    /// <param name="options">The <see cref="SwaggerGenOptions"/> to add configuration to.</param>
+    /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
+    /// <param name="authFlow">The <see cref="OpenApiOAuthFlow">object</see> that describes the authorization flow.</param>
+    /// <seealso cref="SwaggerGenOptions"/>
+    /// <seealso cref="OpenApiOAuthFlow"/>
+    public static void AddOAuth2Authentication(this SwaggerGenOptions options, string name, OpenApiOAuthFlow authFlow)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(authFlow);
+
+        options.AddSecurityDefinition(name, new()
+        {
+            Type = SecuritySchemeType.OAuth2,
+            Flows = new()
+            {
+                Implicit = authFlow
+            }
+        });
+
+        AddSecurityRequirement(options, name);
+    }
+
+    private static void AddSecurityRequirement(SwaggerGenOptions options, string name)
+        => options.AddSecurityRequirement(OpenApiHelpers.CreateSecurityRequirement(name));
 }

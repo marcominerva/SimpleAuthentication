@@ -24,8 +24,8 @@ internal class AuthenticationOperationTransformer(IAuthorizationPolicyProvider a
 
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
-            operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), Helpers.CreateResponse(HttpStatusCode.Unauthorized.ToString()));
-            operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), Helpers.CreateResponse(HttpStatusCode.Forbidden.ToString()));
+            operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), OpenApiHelpers.CreateResponse(HttpStatusCode.Unauthorized.ToString()));
+            operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), OpenApiHelpers.CreateResponse(HttpStatusCode.Forbidden.ToString()));
         }
     }
 }

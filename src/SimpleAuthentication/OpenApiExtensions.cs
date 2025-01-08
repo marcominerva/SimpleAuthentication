@@ -1,14 +1,8 @@
 ﻿#if NET9_0_OR_GREATER
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
-using SimpleAuthentication.ApiKey;
-using SimpleAuthentication.BasicAuthentication;
-using SimpleAuthentication.JwtBearer;
 using SimpleAuthentication.OpenApi;
 
 namespace SimpleAuthentication;
@@ -51,7 +45,7 @@ public static class OpenApiExtensions
     /// <seealso cref="IConfiguration"/>
     public static void AddSimpleAuthentication(this OpenApiOptions options, IConfiguration configuration, string sectionName, params IEnumerable<string> additionalSecurityDefinitionNames)
     {
-        var securityRequirements = additionalSecurityDefinitionNames?.Select(Helpers.CreateSecurityRequirement).ToArray();
+        var securityRequirements = additionalSecurityDefinitionNames?.Select(OpenApiHelpers.CreateSecurityRequirement).ToArray();
         options.AddSimpleAuthentication(configuration, sectionName, securityRequirements ?? []);
     }
 
@@ -83,6 +77,47 @@ public static class OpenApiExtensions
 
         options.AddDocumentTransformer(new AuthenticationDocumentTransformer(configuration, sectionName, additionalSecurityRequirements));
         options.AddOperationTransformer<AuthenticationOperationTransformer>();
+    }
+
+    /// <summary>
+    /// Adds OAuth2 custom authentication support in Open API, for example to integrate with Microsoft.Identity.Web.
+    /// </summary>
+    /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
+    /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
+    /// <param name="authorizationUrl">The Authorization Url for OAuth2 authorization.</param>
+    /// <param name="tokenUrl">The Token Url for OAuth2 authorization.</param>
+    /// <param name="scopes">The list of scopes.</param>
+    /// <seealso cref="OpenApiOptions"/>
+    public static void AddOAuth2Authentication(this OpenApiOptions options, string name, string authorizationUrl, string tokenUrl, IDictionary<string, string> scopes)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorizationUrl);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tokenUrl);
+        ArgumentNullException.ThrowIfNull(scopes);
+
+        options.AddOAuth2Authentication(name, new()
+        {
+            AuthorizationUrl = new(authorizationUrl),
+            TokenUrl = new(tokenUrl),
+            Scopes = scopes
+        });
+    }
+
+    /// <summary>
+    /// Adds OAuth2 custom authentication support in Open API, for example to integrate with Microsoft.Identity.Web.
+    /// </summary>
+    /// <param name="options">The <see cref="OpenApiOptions"/> to add configuration to.</param>
+    /// <param name="name">The name of the OAuth2 authentication scheme to add.</param>
+    /// <param name="authFlow">The <see cref="OpenApiOAuthFlow">object</see> that describes the authorization flow.</param>
+    /// <seealso cref="OpenApiOptions"/>
+    /// <seealso cref="OpenApiOAuthFlow"/>
+    public static void AddOAuth2Authentication(this OpenApiOptions options, string name, OpenApiOAuthFlow authFlow)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(authFlow);
+
+        options.AddDocumentTransformer(new OAuth2AuthenticationDocumentTransformer(name, authFlow));
     }
 }
 

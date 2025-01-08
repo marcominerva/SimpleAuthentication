@@ -88,16 +88,12 @@ internal class AuthenticationDocumentTransformer(IConfiguration configuration, s
             Name = parameterName,
             Description = description,
             Type = securitySchemeType,
-            Scheme = scheme,
-            //Reference = new()
-            //{
-            //    Id = name,
-            //    Type = ReferenceType.SecurityScheme
-            //}
+            Scheme = scheme
         });
     }
-    private static void AddSecurityRequirement(OpenApiDocument document, string name)
-        => AddSecurityRequirement(document, Helpers.CreateSecurityRequirement(name));
+
+    internal static void AddSecurityRequirement(OpenApiDocument document, string name)
+        => AddSecurityRequirement(document, OpenApiHelpers.CreateSecurityRequirement(name));
 
     private static void AddSecurityRequirement(OpenApiDocument document, OpenApiSecurityRequirement requirement)
     {
