@@ -351,3 +351,4 @@ MigrationBackup/
 
 /src/SimpleAuthentication/SimpleAuthentication.xml
 /src/SimpleAuthentication.Abstractions/SimpleAuthentication.Abstractions.xml
+/src/SimpleAuthentication.Swashbuckle/SimpleAuthentication.Swashbuckle.xml
