@@ -61,5 +61,26 @@
             <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
             <seealso cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>
         </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddOAuth2Authentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.String,System.String,System.String,System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Adds OAuth2 custom authentication support in Swagger, for example for example to integrate with Microsoft.Identity.Web.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="name">The name of the OAuth2 authentication scheme to add.</param>
+            <param name="authorizationUrl">The Authorization Url for OAuth2 authorization.</param>
+            <param name="tokenUrl">The Token Url for OAuth2 authorization.</param>
+            <param name="scopes">The list of scopes.</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+        </member>
+        <member name="M:SimpleAuthentication.SwaggerExtensions.AddOAuth2Authentication(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions,System.String,Microsoft.OpenApi.Models.OpenApiOAuthFlow)">
+            <summary>
+            Adds OAuth2 custom authentication support in Swagger, for example for example to integrate with Microsoft.Identity.Web.
+            </summary>
+            <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> to add configuration to.</param>
+            <param name="name">The name of the OAuth2 authentication scheme to add.</param>
+            <param name="authFlow">The <see cref="T:Microsoft.OpenApi.Models.OpenApiOAuthFlow">object</see> that describes the authorization flow.</param>
+            <seealso cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/>
+            <seealso cref="T:Microsoft.OpenApi.Models.OpenApiOAuthFlow"/>
+        </member>
     </members>
 </doc>
