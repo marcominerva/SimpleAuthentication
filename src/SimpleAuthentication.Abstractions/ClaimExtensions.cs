@@ -101,6 +101,15 @@ public static class ClaimExtensions
         return hasClaim;
     }
 
+    /// <summary>
+    /// Adds a collection of string values in the list of claims with the same claim type
+    /// </summary>
+    /// <param name="claims">The claims list</param>
+    /// <param name="type">The type of the claims that will be added</param>
+    /// <param name="values">The collection of values</param>
+    public static IList<Claim> Union(this IList<Claim> claims, string type, IEnumerable<string> values)
+        => claims.Union(values.Select(value => new Claim(type, value))).ToList();
+
     private static T? Convert<T>(string value)
         => (T?)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(value);
 }
