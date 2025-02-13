@@ -137,21 +137,6 @@ builder.Services.AddOpenApi(options =>
 });
 ```
 
-> [!IMPORTANT]  
-> ***Known issue***
-> Currently, to make the `AddSimpleAuthentication` extension method work with `AddOpenApi`, you need to have at least one endpoint that produces a **Problem** response, for example:
-
-```csharp
-app.MapPost("api/auth/login", () =>
-{
-    // ...
-
-})
-.ProducesProblem(StatusCodes.Status400BadRequest);
-```
-
-This is a workaround that will be fixed in the next release.
-
 **Creating a JWT Bearer**
 
 When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:

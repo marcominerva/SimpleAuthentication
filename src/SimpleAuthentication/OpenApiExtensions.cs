@@ -76,6 +76,7 @@ public static class OpenApiExtensions
         ArgumentNullException.ThrowIfNull(sectionName);
 
         options.AddDocumentTransformer(new AuthenticationDocumentTransformer(configuration, sectionName, additionalSecurityRequirements));
+        options.AddDocumentTransformer<DefaultResponseDocumentTransformer>();
         options.AddOperationTransformer<AuthenticationOperationTransformer>();
     }
 
