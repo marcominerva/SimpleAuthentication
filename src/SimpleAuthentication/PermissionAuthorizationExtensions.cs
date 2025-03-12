@@ -18,7 +18,6 @@ public static class PermissionAuthorizationExtensions
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
     /// <remarks>The <see cref="IPermissionHandler"/> implementation is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
-    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IPermissionHandler"/>
     public static IServiceCollection AddPermissions<T>(this IServiceCollection services) where T : class, IPermissionHandler
     {
@@ -38,7 +37,6 @@ public static class PermissionAuthorizationExtensions
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
     /// <remarks>The <see cref="ScopeClaimPermissionHandler"/> is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
-    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="ScopeClaimPermissionHandler"/>
     public static IServiceCollection AddScopePermissions(this IServiceCollection services)
         => services.AddPermissions<ScopeClaimPermissionHandler>();
@@ -50,7 +48,6 @@ public static class PermissionAuthorizationExtensions
     /// <param name="builder">The <see cref="AuthenticationBuilder"/> to add services to.</param>
     /// <returns>An <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
     /// <remarks>The <see cref="IPermissionHandler"/> implementation is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
-    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IPermissionHandler"/>
     /// <seealso cref="AuthenticationBuilder"/>
     public static AuthenticationBuilder AddPermissions<T>(this AuthenticationBuilder builder) where T : class, IPermissionHandler
@@ -65,7 +62,6 @@ public static class PermissionAuthorizationExtensions
     /// <param name="builder">The <see cref="AuthenticationBuilder"/> to add services to.</param>
     /// <returns>An <see cref="AuthenticationBuilder"/> that can be used to further customize authentication.</returns>
     /// <remarks>The <see cref="ScopeClaimPermissionHandler"/> is registered as <see cref="ServiceLifetime.Transient"/>.</remarks>
-    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IPermissionHandler"/>
     /// <seealso cref="ScopeClaimPermissionHandler"/>
     /// <seealso cref="AuthenticationBuilder"/>    
@@ -81,7 +77,6 @@ public static class PermissionAuthorizationExtensions
     /// <param name="builder">The <see cref="AuthorizationPolicyBuilder"/> to add policy to.</param>
     /// <param name="permissions">The list of permissions to add.</param>
     /// <returns>A reference to this instance after the operation has completed.</returns>
-    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="AuthorizationPolicyBuilder"/>
     /// <seealso cref="PermissionRequirement"/>
     public static AuthorizationPolicyBuilder RequirePermission(this AuthorizationPolicyBuilder builder, params string[] permissions)
@@ -97,7 +92,6 @@ public static class PermissionAuthorizationExtensions
     /// <param name="builder">The <see cref="IEndpointConventionBuilder"/> to add policy to.</param>
     /// <param name="permissions">The permission list to require for authorization.</param>
     /// <returns>The original <see cref="IEndpointConventionBuilder"/> parameter.</returns>
-    /// <exception cref="ArgumentNullException">One or more required configuration settings are missing.</exception>
     /// <seealso cref="IEndpointConventionBuilder"/>
     public static TBuilder RequirePermission<TBuilder>(this TBuilder builder, params string[] permissions) where TBuilder : IEndpointConventionBuilder
     {
