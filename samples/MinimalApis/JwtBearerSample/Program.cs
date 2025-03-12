@@ -78,7 +78,11 @@ authApiGroup.MapPost("login", async (LoginRequest loginRequest, DateTime? expira
     // Check for login rights...
 
     // Add custom claims (optional).
-    var claims = new List<Claim>();
+    var claims = new List<Claim>
+    {
+        new(ClaimTypes.Role, "Administrator")
+    };
+
     if (!string.IsNullOrWhiteSpace(loginRequest.Scopes))
     {
         claims.Add(new("scp", loginRequest.Scopes));
