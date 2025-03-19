@@ -33,7 +33,7 @@
 
     <ItemGroup>
         <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.5" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.3.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
