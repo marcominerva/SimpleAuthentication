@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.6" />
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.7" />
     </ItemGroup>
 
     <ItemGroup>
