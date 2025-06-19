@@ -118,14 +118,18 @@ public static class SwaggerExtensions
 
             if (!string.IsNullOrWhiteSpace(settings.HeaderName))
             {
-                AddSecurityDefinition(options, $"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
-                AddSecurityRequirement(options, $"{settings.SchemeName} in Header");
+                var schemeName = $"{settings.SchemeName}-Header";
+
+                AddSecurityDefinition(options, schemeName, SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
+                AddSecurityRequirement(options, schemeName);
             }
 
             if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                AddSecurityDefinition(options, $"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
-                AddSecurityRequirement(options, $"{settings.SchemeName} in Query String");
+                var schemeName = $"{settings.SchemeName}-QueryString";
+
+                AddSecurityDefinition(options, schemeName, SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
+                AddSecurityRequirement(options, schemeName);
             }
         }
 
