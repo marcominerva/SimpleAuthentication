@@ -53,14 +53,18 @@ internal class AuthenticationDocumentTransformer(IConfiguration configuration, s
 
             if (!string.IsNullOrWhiteSpace(settings.HeaderName))
             {
-                AddSecurityScheme(document, $"{settings.SchemeName} in Header", SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
-                AddSecurityRequirement(document, $"{settings.SchemeName} in Header");
+                var schemeName = $"{settings.SchemeName}-Header";
+
+                AddSecurityScheme(document, schemeName, SecuritySchemeType.ApiKey, null, ParameterLocation.Header, settings.HeaderName, "Insert the API Key");
+                AddSecurityRequirement(document, schemeName);
             }
 
             if (!string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
-                AddSecurityScheme(document, $"{settings.SchemeName} in Query String", SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
-                AddSecurityRequirement(document, $"{settings.SchemeName} in Query String");
+                var schemeName = $"{settings.SchemeName}-QueryString";
+
+                AddSecurityScheme(document, schemeName, SecuritySchemeType.ApiKey, null, ParameterLocation.Query, settings.QueryStringKey, "Insert the API Key");
+                AddSecurityRequirement(document, schemeName);
             }
         }
 
