@@ -1,4 +1,9 @@
 name: Publish Abstractions on NuGet
+
+permissions:
+  contents: read
+  packages: write
+  actions: write
  
 on:
   push:
@@ -20,12 +25,12 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
         
     - name: Setup .NET SDK ${{ env.NET_VERSION }}
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.NET_VERSION }}
         dotnet-quality: 'ga'

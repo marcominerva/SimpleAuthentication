@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.3" />
     </ItemGroup>
 
     <ItemGroup>
