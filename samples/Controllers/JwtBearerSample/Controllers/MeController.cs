@@ -2,7 +2,6 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleAuthentication.Permissions;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace JwtBearerSample.Controllers;
 
@@ -16,7 +15,7 @@ public class MeController : ControllerBase
     [HttpGet]
     [ProducesResponseType<User>(StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
-    [SwaggerOperation(description: "This endpoint requires the 'profile' permission")]
+    [EndpointDescription(description: "This endpoint requires the 'profile' permission")]
     public ActionResult<User> Get()
         => new User(User.Identity!.Name);
 }

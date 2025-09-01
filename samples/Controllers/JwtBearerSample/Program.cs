@@ -41,12 +41,8 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddOpenApi(options =>
 {
-    options.EnableAnnotations();
     options.AddSimpleAuthentication(builder.Configuration);
 });
 
@@ -55,18 +51,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler();
-}
-
+app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-if (app.Environment.IsDevelopment())
+app.MapOpenApi();
+
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint("/openapi/v1.json", app.Environment.ApplicationName);
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
