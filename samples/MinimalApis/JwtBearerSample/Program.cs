@@ -51,22 +51,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler();
-}
-
+app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
+app.MapOpenApi();
 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/openapi/v1.json", builder.Environment.ApplicationName);
-    });
-}
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", builder.Environment.ApplicationName);
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
