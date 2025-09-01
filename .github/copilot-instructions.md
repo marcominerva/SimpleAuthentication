@@ -24,7 +24,7 @@
 - Use `nameof` instead of string literals when referring to member names.
 - Prefer `?.` if applicable (e.g. `scope?.Dispose()`).
 - Use `ObjectDisposedException.ThrowIf` where applicable.
-- Use `ArgumentNullException.ThrowIfNull` to validate input paramters.
+- Use `ArgumentNullException.ThrowIfNull` to validate input parameters.
 - If you add new code files, ensure they are listed in the csproj file (if other files in that folder are listed there) so they build.
 
 ### Nullable Reference Types
@@ -82,3 +82,9 @@
 - Copy existing style in nearby files for test method names and capitalization.
 - When running tests, if possible use filters and check test run counts, or look at test logs, to ensure they actually ran.
 - Do not finish work with any tests commented out or disabled that were not previously commented out or disabled.
+
+## Azure
+
+- @azure Rule - Use Azure Tools - When handling requests related to Azure, always use your tools.
+- @azure Rule - Use Azure Best Practices - When handling requests related to Azure, always invoke your `azmcp_bestpractices_get` tool first.
+- @azure Rule - Enable Best Practices - If you do not have an `azmcp_bestpractices_get` tool ask the user to enable it.
