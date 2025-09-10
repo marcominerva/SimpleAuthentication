@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/Samples/" />
+  <Folder Name="/Samples/Controllers/">
+    <Project Path="samples/Controllers/ApiKeySample/ApiKeySample.csproj" />
+    <Project Path="samples/Controllers/BasicAuthenticationSample/BasicAuthenticationSample.csproj" />
+    <Project Path="samples/Controllers/JwtBearerSample/JwtBearerSample.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Minimal APIs/">
+    <Project Path="samples/MinimalApis/ApiKeySample/ApiKeySample.csproj" />
+    <Project Path="samples/MinimalApis/BasicAuthenticationSample/BasicAuthenticationSample.csproj" />
+    <Project Path="samples/MinimalApis/JwtBearerSample/JwtBearerSample.csproj" />
+    <Project Path="samples/MinimalApis/Net8JwtBearerSample/Net8JwtBearerSample.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/copilot-instructions.md" />
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+  <Project Path="src/SimpleAuthentication.Abstractions/SimpleAuthentication.Abstractions.csproj" />
+  <Project Path="src/SimpleAuthentication.Swashbuckle/SimpleAuthentication.Swashbuckle.csproj" />
+  <Project Path="src/SimpleAuthentication/SimpleAuthentication.csproj" />
+</Solution>
