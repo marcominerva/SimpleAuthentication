@@ -57,14 +57,23 @@ app.UseAuthorization();
 
 app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
-    return TypedResults.Ok(new User(user.Identity!.Name));
+    var roles = user.FindAll(ClaimTypes.Role).Select(c => c.Value);
+    return TypedResults.Ok(new User(user.Identity!.Name, roles));
 })
 .RequireAuthorization()
 .WithOpenApi();
 
+app.MapGet("api/admin", () => "Admin access granted")
+.RequireAuthorization(policy => policy.RequireRole("Admin"))
+.WithOpenApi();
+
+app.MapGet("api/user", () => "User access granted")
+.RequireAuthorization(policy => policy.RequireRole("User"))
+.WithOpenApi();
+
 app.Run();
 
-public record class User(string? UserName);
+public record class User(string? UserName, IEnumerable<string> Roles);
 
 public class CustomBasicAuthenticationValidator : IBasicAuthenticationValidator
 {
