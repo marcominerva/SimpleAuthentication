@@ -199,6 +199,57 @@ When using API Key or Basic Authentication, you can specify multiple fixed value
 
 With this configuration, authentication will succedd if any of these credentials are provided.
 
+**Assigning roles to API Keys and Basic Authentication credentials**
+
+You can optionally specify roles for each API Key or Basic Authentication credential. When authentication succeeds, the specified roles will be automatically added as role claims to the user's identity:
+
+```json
+"Authentication": {
+    "ApiKey": {
+        "ApiKeys": [
+            {
+                "Value": "key-1",
+                "UserName": "UserName1",
+                "Roles": ["Admin", "User"]
+            },
+            {
+                "Value": "key-2",
+                "UserName": "UserName2",
+                "Roles": ["User"]
+            }
+        ]
+    },
+    "Basic": {
+        "Credentials": [
+            {
+                "UserName": "UserName1",
+                "Password": "Password1",
+                "Roles": ["Manager", "User"]
+            },
+            {
+                "UserName": "UserName2",
+                "Password": "Password2",
+                "Roles": ["User"]
+            }
+        ]
+    }
+}
+```
+
+The `Roles` parameter is optional. If omitted, no role claims will be added to the user's identity. You can then use the standard ASP.NET Core authorization features to check for roles:
+
+```csharp
+[Authorize(Roles = "Admin")]
+public IActionResult AdminEndpoint()
+{
+    return Ok("Admin access granted");
+}
+
+// Or with minimal APIs
+app.MapGet("/admin", () => "Admin access granted")
+   .RequireAuthorization(policy => policy.RequireRole("Admin"));
+```
+
 **Custom Authentication logic for API Keys and Basic Authentication**
 
 If you need to implement custom authentication login, for example validating credentials with dynamic values and adding claims to identity, you can omit all the credentials in the _appsettings.json_ file and then provide an implementation of [IApiKeyValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/ApiKey/IApiKeyValidator.cs) or [IBasicAuthenticationValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/BasicAuthentication/IBasicAuthenticationValidator.cs):
