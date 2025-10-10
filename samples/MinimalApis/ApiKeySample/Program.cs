@@ -61,16 +61,13 @@ app.MapGet("api/me", (ClaimsPrincipal user, IOptions<ApiKeySettings> options) =>
     var roles = user.FindAll(options.Value.RoleClaimType).Select(c => c.Value);
     return TypedResults.Ok(new User(user.Identity!.Name, roles));
 })
-.RequireAuthorization()
-.WithOpenApi();
+.RequireAuthorization();
 
 app.MapGet("api/admin", () => "Administrator access granted")
-.RequireAuthorization(policy => policy.RequireRole("Administrator"))
-.WithOpenApi();
+.RequireAuthorization(policy => policy.RequireRole("Administrator"));
 
 app.MapGet("api/user", () => "User access granted")
-.RequireAuthorization(policy => policy.RequireRole("User"))
-.WithOpenApi();
+.RequireAuthorization(policy => policy.RequireRole("User"));
 
 app.Run();
 
