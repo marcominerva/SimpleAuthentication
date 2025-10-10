@@ -41,8 +41,7 @@ Authentication can be totally configured adding an _Authentication_ section in t
         "Issuers": [ "issuer" ], // Optional
         "Audiences": [ "audience" ], // Optional
         "ExpirationTime": "01:00:00", // Default: No expiration
-        "ClockSkew": "00:02:00", // Default: 5 minutes
-        "EnableJwtBearerService": true // Default: true
+        "ClockSkew": "00:02:00" // Default: 5 minutes
     },
     "ApiKey": {
         "SchemeName": "ApiKey", // Default: ApiKey
@@ -139,7 +138,7 @@ builder.Services.AddOpenApi(options =>
 
 **Creating a JWT Bearer**
 
-When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
+When using JWT Bearer authentication, an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface is automatically registered to create a valid JWT Bearer, according to the settings you have specified in the _appsettings.json_ file:
 
 ```csharp
 app.MapPost("api/auth/login", (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
