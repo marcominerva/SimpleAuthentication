@@ -46,7 +46,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// </summary>
     /// <seealso cref="ApiKeyValue"/>
     /// <seealso cref="UserName"/>
-    public IEnumerable<string>? Roles { get; set; }
+    public IEnumerable<string> Roles { get; set; } = [];
 
     private ICollection<ApiKey> apiKeys = [];
     /// <summary>

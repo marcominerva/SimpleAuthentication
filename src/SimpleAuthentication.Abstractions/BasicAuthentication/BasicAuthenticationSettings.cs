@@ -35,7 +35,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// </summary>
     /// <seealso cref="UserName"/>
     /// <seealso cref="Password"/>
-    public IEnumerable<string>? Roles { get; set; }
+    public IEnumerable<string> Roles { get; set; } = [];
 
     private ICollection<Credential> credentials = [];
     /// <summary>
