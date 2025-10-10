@@ -201,7 +201,26 @@ With this configuration, authentication will succedd if any of these credentials
 
 **Assigning roles to API Keys and Basic Authentication credentials**
 
-You can optionally specify roles for each API Key or Basic Authentication credential. When authentication succeeds, the specified roles will be automatically added as role claims to the user's identity:
+You can optionally specify roles for each API Key or Basic Authentication credential. When authentication succeeds, the specified roles will be automatically added as role claims to the user's identity.
+
+For single credentials, you can specify roles directly:
+
+```json
+"Authentication": {
+    "ApiKey": {
+        "ApiKeyValue": "f1I7S5GXa4wQDgLQWgz0",
+        "UserName": "ApiUser",
+        "Roles": ["Administrator"]
+    },
+    "Basic": {
+        "UserName": "marco",
+        "Password": "P@$$w0rd",
+        "Roles": ["Administrator"]
+    }
+}
+```
+
+For multiple credentials, you can specify roles for each credential:
 
 ```json
 "Authentication": {
@@ -210,7 +229,7 @@ You can optionally specify roles for each API Key or Basic Authentication creden
             {
                 "Value": "key-1",
                 "UserName": "UserName1",
-                "Roles": ["Admin", "User"]
+                "Roles": ["Administrator", "User"]
             },
             {
                 "Value": "key-2",
@@ -239,15 +258,15 @@ You can optionally specify roles for each API Key or Basic Authentication creden
 The `Roles` parameter is optional. If omitted, no role claims will be added to the user's identity. You can then use the standard ASP.NET Core authorization features to check for roles:
 
 ```csharp
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Administrator")]
 public IActionResult AdminEndpoint()
 {
-    return Ok("Admin access granted");
+    return Ok("Administrator access granted");
 }
 
 // Or with minimal APIs
-app.MapGet("/admin", () => "Admin access granted")
-   .RequireAuthorization(policy => policy.RequireRole("Admin"));
+app.MapGet("/admin", () => "Administrator access granted")
+   .RequireAuthorization(policy => policy.RequireRole("Administrator"));
 ```
 
 **Custom Authentication logic for API Keys and Basic Authentication**
