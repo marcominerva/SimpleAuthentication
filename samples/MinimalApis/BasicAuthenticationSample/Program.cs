@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BasicAuthenticationSample.Authentication;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Options;
 using SimpleAuthentication;
 using SimpleAuthentication.BasicAuthentication;
 
@@ -55,16 +56,16 @@ app.UseSwaggerUI(options =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("api/me", (ClaimsPrincipal user) =>
+app.MapGet("api/me", (ClaimsPrincipal user, IOptions<BasicAuthenticationSettings> options) =>
 {
-    var roles = user.FindAll(ClaimTypes.Role).Select(c => c.Value);
+    var roles = user.FindAll(options.Value.RoleClaimType).Select(c => c.Value);
     return TypedResults.Ok(new User(user.Identity!.Name, roles));
 })
 .RequireAuthorization()
 .WithOpenApi();
 
-app.MapGet("api/admin", () => "Admin access granted")
-.RequireAuthorization(policy => policy.RequireRole("Admin"))
+app.MapGet("api/admin", () => "Administrator access granted")
+.RequireAuthorization(policy => policy.RequireRole("Administrator"))
 .WithOpenApi();
 
 app.MapGet("api/user", () => "User access granted")

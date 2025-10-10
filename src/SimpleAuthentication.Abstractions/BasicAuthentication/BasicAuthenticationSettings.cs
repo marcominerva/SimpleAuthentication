@@ -30,6 +30,13 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// <seealso cref="IBasicAuthenticationValidator"/>
     public string? Password { get; set; }
 
+    /// <summary>
+    /// Gets or sets the optional list of roles to assign to the user when using <see cref="UserName"/> and <see cref="Password"/>.
+    /// </summary>
+    /// <seealso cref="UserName"/>
+    /// <seealso cref="Password"/>
+    public string[]? Roles { get; set; }
+
     private ICollection<Credential> credentials = [];
     /// <summary>
     /// The collection of authorization credentials.
@@ -42,7 +49,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
             if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
             {
                 // If necessary, add the credentials from the base properties.
-                credentials.Add(new Credential(UserName, Password));
+                credentials.Add(new Credential(UserName, Password, Roles));
             }
 
             return credentials;
