@@ -1,7 +1,7 @@
 # Simple Authentication for ASP.NET Core
 
 [![Lint Code Base](https://github.com/marcominerva/SimpleAuthentication/actions/workflows/linter.yml/badge.svg)](https://github.com/marcominerva/SimpleAuthentication/actions/workflows/linter.yml)
-[![CodeQL](https://github.com/marcominerva/SimpleAuthentication/actions/workflows/codeql.yml/badge.svg)](https://github.com/marcominerva/SimpleAuthentication/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/marcominerva/SimpleAuthentication/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/marcominerva/SimpleAuthentication/actions/workflows/github-code-scanning/codeql)
 [![Nuget](https://img.shields.io/nuget/v/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
 [![Nuget](https://img.shields.io/nuget/dt/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/marcominerva/SimpleAuthentication/blob/master/LICENSE)
@@ -138,7 +138,7 @@ builder.Services.AddOpenApi(options =>
 
 **Creating a JWT Bearer**
 
-When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
+When using JWT Bearer authentication, an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface is automatically registered to create a valid JWT Bearer, according to the settings you have specified in the _appsettings.json_ file:
 
 ```csharp
 app.MapPost("api/auth/login", async (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
@@ -316,4 +316,4 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 
 ## Contribute
 
-The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can. 
+The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can.
