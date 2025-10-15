@@ -30,26 +30,11 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// <seealso cref="IBasicAuthenticationValidator"/>
     public string? Password { get; set; }
 
-    private ICollection<Credential> credentials = [];
     /// <summary>
     /// The collection of authorization credentials.
     /// </summary>
     /// <seealso cref="Credential"/>
-    public ICollection<Credential> Credentials
-    {
-        get
-        {
-            if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
-            {
-                // If necessary, add the credentials from the base properties.
-                credentials.Add(new Credential(UserName, Password));
-            }
-
-            return credentials;
-        }
-
-        internal set => credentials = value ?? [];
-    }
+    public IEnumerable<Credential> Credentials { get; set; } = [];
 
     /// <summary>
     /// Gets or sets a <see cref="string"/> that defines the <see cref="ClaimsIdentity.NameClaimType"/>.
@@ -70,11 +55,15 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// </remarks>
     public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
 
-}
+    internal IEnumerable<Credential> GetAllCredentials()
+    {
+        var credentials = (Credentials ?? []).ToHashSet();
+        if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
+        {
+            // If necessary, add the Credentials from the base properties.
+            credentials.Add(new(UserName, Password));
+        }
 
-/// <summary>
-/// Store credentials used for Basic Authentication.
-/// </summary>
-/// <param name="UserName">The user name</param>
-/// <param name="Password">The password</param>
-public record class Credential(string UserName, string Password);
+        return credentials;
+    }
+}

@@ -41,26 +41,11 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// <seealso cref="ApiKeyValue"/>
     public string? UserName { get; set; }
 
-    private ICollection<ApiKey> apiKeys = [];
     /// <summary>
     /// The collection of valid API keys.
     /// </summary>
     /// <seealso cref="ApiKey"/>
-    public ICollection<ApiKey> ApiKeys
-    {
-        get
-        {
-            if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
-            {
-                // If necessary, add the API Key from the base properties.
-                apiKeys.Add(new(ApiKeyValue, UserName));
-            }
-
-            return apiKeys;
-        }
-
-        internal set => apiKeys = value ?? [];
-    }
+    public IEnumerable<ApiKey> ApiKeys { get; set; } = [];
 
     /// <summary>
     /// Gets or sets a <see cref="string"/> that defines the <see cref="ClaimsIdentity.NameClaimType"/>.
@@ -80,11 +65,16 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// The default is <see cref="ClaimsIdentity.DefaultRoleClaimType"/>.
     /// </remarks>
     public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
-}
 
-/// <summary>
-/// Store API Keys for API Key Authentication
-/// </summary>
-/// <param name="Value">The API key value</param>
-/// <param name="UserName">The user name associated with the current key</param>
-public record class ApiKey(string Value, string UserName);
+    internal IEnumerable<ApiKey> GetAllApiKeys()
+    {
+        var apiKeys = (ApiKeys ?? []).ToHashSet();
+        if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
+        {
+            // If necessary, add the API Key from the base properties.
+            apiKeys.Add(new(ApiKeyValue, UserName));
+        }
+
+        return apiKeys;
+    }
+}

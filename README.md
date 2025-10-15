@@ -14,20 +14,20 @@ A library to easily integrate Authentication in ASP.NET Core projects. Currently
 
 ## Installation
 
-The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Just search for *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
+The library is available on [NuGet](https://www.nuget.org/packages/SimpleAuthenticationTools). Search for *SimpleAuthenticationTools* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
 
 ```shell
 dotnet add package SimpleAuthenticationTools
 ```
 ## Usage video
 
-Take a look to a quick demo showing how to integrate the library:
+Take a look at a quick demo showing how to integrate the library:
 
 [![Simple Authentication for ASP.NET Core](https://raw.githubusercontent.com/marcominerva/SimpleAuthentication/master/Screenshot.jpg)](https://www.youtube.com/watch?v=SVZuaPE2yNc)
 
 ## Configuration
 
-Authentication can be totally configured adding an _Authentication_ section in the _appsettings.json_ file:
+Authentication can be fully configured adding an _Authentication_ section in the _appsettings.json_ file:
 
 ```
 "Authentication": {
@@ -42,7 +42,6 @@ Authentication can be totally configured adding an _Authentication_ section in t
         "Audiences": [ "audience" ], // Optional
         "ExpirationTime": "01:00:00", // Default: No expiration
         "ClockSkew": "00:02:00", // Default: 5 minutes
-        "EnableJwtBearerService": true // Default: true
     },
     "ApiKey": {
         "SchemeName": "ApiKey", // Default: ApiKey
@@ -107,7 +106,7 @@ app.Run();
 
 **Integrating with Swashbuckle**
 
-If you're using Swashbuckle (Swagger) to document your API, you can integrate the authentication configuration with the Swagger documentation. Just search for *SimpleAuthenticationTools.Swashbuckle* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
+If you're using Swashbuckle (Swagger) to document your API, you can integrate the authentication configuration with the Swagger documentation. Search for *SimpleAuthenticationTools.Swashbuckle* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
 
 ```shell
 dotnet add package SimpleAuthenticationTools.Swashbuckle
@@ -126,7 +125,7 @@ builder.Services.AddSwaggerGen(options =>
 
 **Integrating with Microsoft.AspNetCore.OpenApi (.NET 9 or later)**
 
-Starting from version 9, .NET offer a built-in support for OpenAPI. If you're using the `AddOpenApi` extension method to provide OpenAPI support, you just need to add the corresponding extension method in its declaration (no extra package required):
+Starting from version 9, .NET offers built-in support for OpenAPI. If you're using the `AddOpenApi` extension method to provide OpenAPI support, you just need to add the corresponding extension method in its declaration (no extra package required):
 
 ```csharp
 builder.Services.AddOpenApi(options =>
@@ -142,7 +141,7 @@ builder.Services.AddOpenApi(options =>
 When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
 
 ```csharp
-app.MapPost("api/auth/login", (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
+app.MapPost("api/auth/login", async (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
 {
     // Check for login rights...
 
@@ -153,7 +152,7 @@ app.MapPost("api/auth/login", (LoginRequest loginRequest, IJwtBearerService jwtB
         new(ClaimTypes.Surname, "Minerva")
     };
 
-    var token = jwtBearerService.CreateToken(loginRequest.UserName, claims);
+    var token = await jwtBearerService.CreateTokenAsync(loginRequest.UserName, claims);
     return TypedResults.Ok(new LoginResponse(token));
 });
 
@@ -197,11 +196,11 @@ When using API Key or Basic Authentication, you can specify multiple fixed value
 }
 ```
 
-With this configuration, authentication will succedd if any of these credentials are provided.
+With this configuration, authentication will succeed if any of these credentials are provided.
 
 **Custom Authentication logic for API Keys and Basic Authentication**
 
-If you need to implement custom authentication login, for example validating credentials with dynamic values and adding claims to identity, you can omit all the credentials in the _appsettings.json_ file and then provide an implementation of [IApiKeyValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/ApiKey/IApiKeyValidator.cs) or [IBasicAuthenticationValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/BasicAuthentication/IBasicAuthenticationValidator.cs):
+If you need to implement custom authentication logic, for example validating credentials with dynamic values and adding claims to identity, you can omit all the credentials in the _appsettings.json_ file and then provide an implementation of [IApiKeyValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/ApiKey/IApiKeyValidator.cs) or [IBasicAuthenticationValidator.cs](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/BasicAuthentication/IBasicAuthenticationValidator.cs):
 
 ```csharp
 builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
@@ -247,7 +246,7 @@ The library provides services for adding permission-based authorization to an AS
 builder.Services.AddPermissions<T>();
 ```
 
-The **AddPermissions** extension method requires an implementation of the [IPermissionHandler interface](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/IPermissionHandler.cs), that is responsible to check if the user owns the required permissions:
+The **AddPermissions** extension method requires an implementation of the [IPermissionHandler interface](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/Permissions/IPermissionHandler.cs), which is responsible to check if the user owns the required permissions:
 
 ```csharp
 public interface IPermissionHandler
@@ -317,4 +316,4 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 
 ## Contribute
 
-The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repo and we'll address them as we can. 
+The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can. 
