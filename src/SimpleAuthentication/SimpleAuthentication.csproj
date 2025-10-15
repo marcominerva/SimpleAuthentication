@@ -31,11 +31,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.12" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,6 +40,10 @@
             <PackagePath></PackagePath>
         </None>
         <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SimpleAuthentication.Abstractions\SimpleAuthentication.Abstractions.csproj" />
     </ItemGroup>
     
 </Project>

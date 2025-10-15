@@ -316,4 +316,4 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 
 ## Contribute
 
-The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests on the repository, and we'll address them as we can. 
+The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can. 
