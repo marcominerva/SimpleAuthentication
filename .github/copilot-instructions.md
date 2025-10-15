@@ -59,7 +59,7 @@
 ### Implementation Guidelines
 
 - Write code that is secure by default. Avoid exposing potentially private or sensitive data.
-- Make code NativeAOT compatible when possible. This means avoiding dynamic code generation, reflection, and other features that are not compatible. with NativeAOT. If not possible, mark the code with an appropriate annotation or throw an exception.
+- Make code NativeAOT compatible when possible. This means avoiding dynamic code generation, reflection, and other features that are not compatible with NativeAOT. If not possible, mark the code with an appropriate annotation or throw an exception.
 
 ## Documentation
 
@@ -82,9 +82,3 @@
 - Copy existing style in nearby files for test method names and capitalization.
 - When running tests, if possible use filters and check test run counts, or look at test logs, to ensure they actually ran.
 - Do not finish work with any tests commented out or disabled that were not previously commented out or disabled.
-
-## Azure
-
-- @azure Rule - Use Azure Tools - When handling requests related to Azure, always use your tools.
-- @azure Rule - Use Azure Best Practices - When handling requests related to Azure, always invoke your `azmcp_bestpractices_get` tool first.
-- @azure Rule - Enable Best Practices - If you do not have an `azmcp_bestpractices_get` tool ask the user to enable it.

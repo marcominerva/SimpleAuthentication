@@ -37,26 +37,11 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// <seealso cref="Password"/>
     public IEnumerable<string> Roles { get; set; } = [];
 
-    private ICollection<Credential> credentials = [];
     /// <summary>
     /// The collection of authorization credentials.
     /// </summary>
     /// <seealso cref="Credential"/>
-    public ICollection<Credential> Credentials
-    {
-        get
-        {
-            if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
-            {
-                // If necessary, add the credentials from the base properties.
-                credentials.Add(new Credential(UserName, Password, Roles));
-            }
-
-            return credentials;
-        }
-
-        internal set => credentials = value ?? [];
-    }
+    public IEnumerable<Credential> Credentials { get; set; } = [];
 
     /// <summary>
     /// Gets or sets a <see cref="string"/> that defines the <see cref="ClaimsIdentity.NameClaimType"/>.
@@ -77,4 +62,15 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// </remarks>
     public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
 
+    internal IEnumerable<Credential> GetAllCredentials()
+    {
+        var credentials = (Credentials ?? []).ToHashSet();
+        if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
+        {
+            // If necessary, add the Credentials from the base properties.
+            credentials.Add(new(UserName, Password, Roles));
+        }
+
+        return credentials;
+    }
 }

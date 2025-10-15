@@ -10,21 +10,8 @@ using Microsoft.Net.Http.Headers;
 
 namespace SimpleAuthentication.BasicAuthentication;
 
-internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthenticationSettings>
+internal partial class BasicAuthenticationHandler(IOptionsMonitor<BasicAuthenticationSettings> options, ILoggerFactory logger, UrlEncoder encoder, IServiceProvider serviceProvider) : AuthenticationHandler<BasicAuthenticationSettings>(options, logger, encoder)
 {
-    private readonly IServiceProvider serviceProvider;
-
-#if NET8_0_OR_GREATER
-    public BasicAuthenticationHandler(IOptionsMonitor<BasicAuthenticationSettings> options, ILoggerFactory logger, UrlEncoder encoder, IServiceProvider serviceProvider)
-        : base(options, logger, encoder)
-#else
-    public BasicAuthenticationHandler(IOptionsMonitor<BasicAuthenticationSettings> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IServiceProvider serviceProvider)
-        : base(options, logger, encoder, clock)
-#endif
-    {
-        this.serviceProvider = serviceProvider;
-    }
-
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var request = Context.Request;
@@ -39,14 +26,12 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
 
         // Get Authorization header.
         var authorizationHeader = request.Headers.Authorization.ToString();
-        var authorizationHeaderRegex = new Regex(@"Basic (.*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        if (!authorizationHeaderRegex.IsMatch(authorizationHeader))
+        if (!BasicAuthorizationHeaderRegex().IsMatch(authorizationHeader))
         {
             return AuthenticateResult.Fail("Basic Authorization header is not properly formatted");
         }
 
-        var values = Encoding.UTF8.GetString(Convert.FromBase64String(authorizationHeaderRegex.Replace(authorizationHeader, "$1"))).Split(':', count: 2);
+        var values = Encoding.UTF8.GetString(Convert.FromBase64String(BasicAuthorizationHeaderRegex().Replace(authorizationHeader, "$1"))).Split(':', count: 2);
         var userName = values.ElementAtOrDefault(0);
         var password = values.ElementAtOrDefault(1);
 
@@ -55,7 +40,8 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
             return AuthenticateResult.Fail("Invalid user name or password");
         }
 
-        if (!Options.Credentials.Any())
+        var credentials = Options.GetAllCredentials();
+        if (!credentials.Any())
         {
             // There is no fixed values, so it tries to get an external service to validate user name and password.
             var validator = serviceProvider.GetService<IBasicAuthenticationValidator>() ?? throw new InvalidOperationException("There isn't a default user name and password for authentication and no custom validator has been provided");
@@ -69,7 +55,7 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
             return AuthenticateResult.Fail(validationResult.FailureMessage);
         }
 
-        var credential = Options.Credentials.FirstOrDefault(c => c.UserName == userName && c.Password == password);
+        var credential = credentials.FirstOrDefault(c => c.UserName == userName && c.Password == password);
         if (credential is not null)
         {
             var claims = new List<Claim>();
@@ -99,4 +85,7 @@ internal class BasicAuthenticationHandler : AuthenticationHandler<BasicAuthentic
             return result;
         }
     }
+
+    [GeneratedRegex(@"Basic (.*)", RegexOptions.IgnoreCase | RegexOptions.Compiled, "it-IT")]
+    private static partial Regex BasicAuthorizationHeaderRegex();
 }

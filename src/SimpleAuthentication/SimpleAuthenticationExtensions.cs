@@ -113,10 +113,7 @@ public static class SimpleAuthenticationExtensions
                 };
             });
 
-            if (settings.EnableJwtBearerService)
-            {
-                builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
-            }
+            builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
         }
 
         static void CheckAddApiKey(AuthenticationBuilder builder, IConfigurationSection section)
