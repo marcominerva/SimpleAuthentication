@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.13" />
+        <ProjectReference Include="..\SimpleAuthentication.Abstractions\SimpleAuthentication.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>

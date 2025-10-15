@@ -42,6 +42,13 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     public string? UserName { get; set; }
 
     /// <summary>
+    /// Gets or sets the optional list of roles to assign to the user when using <see cref="ApiKeyValue"/> and <see cref="UserName"/>.
+    /// </summary>
+    /// <seealso cref="ApiKeyValue"/>
+    /// <seealso cref="UserName"/>
+    public IEnumerable<string>? Roles { get; set; }
+
+    /// <summary>
     /// The collection of valid API keys.
     /// </summary>
     /// <seealso cref="ApiKey"/>
@@ -72,7 +79,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
         if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
         {
             // If necessary, add the API Key from the base properties.
-            apiKeys.Add(new(ApiKeyValue, UserName));
+            apiKeys.Add(new(ApiKeyValue, UserName, Roles));
         }
 
         return apiKeys;
