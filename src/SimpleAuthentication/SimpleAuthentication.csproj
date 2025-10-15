@@ -35,15 +35,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.0.13" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Include="..\..\Toolbox.png">
             <Pack>True</Pack>
             <PackagePath></PackagePath>
         </None>
         <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\SimpleAuthentication.Abstractions\SimpleAuthentication.Abstractions.csproj" />
     </ItemGroup>
     
 </Project>
