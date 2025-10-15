@@ -41,7 +41,7 @@ Authentication can be fully configured adding an _Authentication_ section in the
         "Issuers": [ "issuer" ], // Optional
         "Audiences": [ "audience" ], // Optional
         "ExpirationTime": "01:00:00", // Default: No expiration
-        "ClockSkew": "00:02:00" // Default: 5 minutes
+        "ClockSkew": "00:02:00", // Default: 5 minutes
     },
     "ApiKey": {
         "SchemeName": "ApiKey", // Default: ApiKey
