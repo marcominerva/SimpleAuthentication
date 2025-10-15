@@ -153,6 +153,7 @@ public static class SimpleAuthenticationExtensions
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.UserName = settings.UserName;
                 options.ApiKeys = settings.ApiKeys;
+                options.Roles = settings.Roles ?? [];
                 options.NameClaimType = settings.NameClaimType;
                 options.RoleClaimType = settings.RoleClaimType;
             });
@@ -192,6 +193,7 @@ public static class SimpleAuthenticationExtensions
                 options.SchemeName = settings.SchemeName;
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
+                options.Roles = settings.Roles ?? [];
                 options.Credentials = settings.Credentials;
                 options.NameClaimType = settings.NameClaimType;
                 options.RoleClaimType = settings.RoleClaimType;

@@ -23,7 +23,7 @@ public class BasicAuthenticationValidationResult
     /// <summary>
     /// Gets the claim list, if authentication was successful.
     /// </summary>
-    public IList<Claim>? Claims { get; }
+    public IList<Claim> Claims { get; } = [];
 
     /// <summary>
     /// Gets the failure message, if authentication was unsuccessful.
@@ -34,7 +34,7 @@ public class BasicAuthenticationValidationResult
     {
         Succeeded = true;
         UserName = userName;
-        Claims = claims;
+        Claims = claims ?? [];
     }
 
     private BasicAuthenticationValidationResult(string failureMessage)

@@ -45,14 +45,11 @@ internal class ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeySettings> optio
         if (apiKey is not null)
         {
             var claims = new List<Claim>();
-            if (apiKey.Roles is not null)
+            foreach (var role in apiKey.Roles)
             {
-                foreach (var role in apiKey.Roles)
-                {
-                    claims.Add(new Claim(Options.RoleClaimType, role));
-                }
+                claims.Add(new(Options.RoleClaimType, role));
             }
-            
+
             return CreateAuthenticationSuccessResult(apiKey.UserName, claims);
         }
 

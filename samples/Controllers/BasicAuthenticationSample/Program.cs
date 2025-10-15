@@ -25,6 +25,7 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //        .Build())
 //    .AddPolicy("Basic", builder => builder.AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme).RequireAuthenticatedUser());
 
+// This service is used when there isn't a fixed user/password value in the configuration.
 builder.Services.AddTransient<IBasicAuthenticationValidator, CustomBasicAuthenticationValidator>();
 
 // Uncomment the following line if you have multiple authentication schemes and

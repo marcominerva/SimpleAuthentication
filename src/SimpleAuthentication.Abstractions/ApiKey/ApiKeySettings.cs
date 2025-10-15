@@ -46,7 +46,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
     /// </summary>
     /// <seealso cref="ApiKeyValue"/>
     /// <seealso cref="UserName"/>
-    public IEnumerable<string>? Roles { get; set; }
+    public IEnumerable<string> Roles { get; set; } = [];
 
     /// <summary>
     /// The collection of valid API keys.
@@ -79,7 +79,7 @@ public class ApiKeySettings : AuthenticationSchemeOptions
         if (!string.IsNullOrWhiteSpace(ApiKeyValue) && !string.IsNullOrWhiteSpace(UserName))
         {
             // If necessary, add the API Key from the base properties.
-            apiKeys.Add(new(ApiKeyValue, UserName, Roles));
+            apiKeys.Add(new(ApiKeyValue, UserName, Roles ?? []));
         }
 
         return apiKeys;

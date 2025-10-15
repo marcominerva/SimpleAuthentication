@@ -24,6 +24,7 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //        .Build())
 //    .AddPolicy("ApiKey", builder => builder.AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme).RequireAuthenticatedUser());
 
+// This service is used when there isn't a fixed API Key value in the configuration.
 builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
 
 // Uncomment the following line if you have multiple authentication schemes and

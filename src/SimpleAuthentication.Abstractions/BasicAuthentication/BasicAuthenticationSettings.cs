@@ -35,7 +35,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
     /// </summary>
     /// <seealso cref="UserName"/>
     /// <seealso cref="Password"/>
-    public IEnumerable<string>? Roles { get; set; }
+    public IEnumerable<string> Roles { get; set; } = [];
 
     /// <summary>
     /// The collection of authorization credentials.
@@ -68,7 +68,7 @@ public class BasicAuthenticationSettings : AuthenticationSchemeOptions
         if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
         {
             // If necessary, add the Credentials from the base properties.
-            credentials.Add(new(UserName, Password, Roles));
+            credentials.Add(new(UserName, Password, Roles ?? []));
         }
 
         return credentials;

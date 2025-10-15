@@ -25,6 +25,7 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //        .Build())
 //    .AddPolicy("ApiKey", builder => builder.AddAuthenticationSchemes(ApiKeyDefaults.AuthenticationScheme).RequireAuthenticatedUser());
 
+// This service is used when there isn't a fixed API Key value in the configuration.
 builder.Services.AddTransient<IApiKeyValidator, CustomApiKeyValidator>();
 
 // Uncomment the following line if you have multiple authentication schemes and
@@ -63,10 +64,12 @@ app.MapGet("api/me", (ClaimsPrincipal user, IOptions<ApiKeySettings> options) =>
 })
 .RequireAuthorization();
 
-app.MapGet("api/admin", () => "Administrator access granted")
+app.MapGet("api/administrator", () => TypedResults.NoContent())
+.WithDescription("This endpoint requires the user to have the 'Administrator' role.")
 .RequireAuthorization(policy => policy.RequireRole("Administrator"));
 
-app.MapGet("api/user", () => "User access granted")
+app.MapGet("api/user", () => TypedResults.NoContent())
+.WithDescription("This endpoint requires the user to have the 'User' role.")
 .RequireAuthorization(policy => policy.RequireRole("User"));
 
 app.Run();
