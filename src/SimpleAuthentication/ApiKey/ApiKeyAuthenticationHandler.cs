@@ -44,7 +44,13 @@ internal class ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeySettings> optio
         var apiKey = apiKeys.FirstOrDefault(c => c.Value == value);
         if (apiKey is not null)
         {
-            return CreateAuthenticationSuccessResult(apiKey.UserName);
+            var claims = new List<Claim>();
+            foreach (var role in apiKey.Roles)
+            {
+                claims.Add(new(Options.RoleClaimType, role));
+            }
+
+            return CreateAuthenticationSuccessResult(apiKey.UserName, claims);
         }
 
         return AuthenticateResult.Fail("Invalid API Key");

@@ -58,7 +58,13 @@ internal partial class BasicAuthenticationHandler(IOptionsMonitor<BasicAuthentic
         var credential = credentials.FirstOrDefault(c => c.UserName == userName && c.Password == password);
         if (credential is not null)
         {
-            return CreateAuthenticationSuccessResult(credential.UserName);
+            var claims = new List<Claim>();
+            foreach (var role in credential.Roles)
+            {
+                claims.Add(new(Options.RoleClaimType, role));
+            }
+
+            return CreateAuthenticationSuccessResult(credential.UserName, claims);
         }
 
         return AuthenticateResult.Fail("Invalid user name or password");

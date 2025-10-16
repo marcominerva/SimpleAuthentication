@@ -77,7 +77,7 @@ public static class SwaggerExtensions
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentNullException.ThrowIfNull(sectionName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sectionName);
 
         // Adds a security definition for each authentication method that has been configured.
         CheckAddJwtBearer(options, configuration.GetSection($"{sectionName}:JwtBearer"));

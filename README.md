@@ -138,7 +138,7 @@ builder.Services.AddOpenApi(options =>
 
 **Creating a JWT Bearer**
 
-When using JWT Bearer authentication, you can set the _EnableJwtBearerService_ setting to _true_ to automatically register an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface to create a valid JWT Bearer, according to the setting you have specified in the _appsettings.json_ file:
+When using JWT Bearer authentication, an implementation of the [IJwtBearerService](https://github.com/marcominerva/SimpleAuthentication/blob/master/src/SimpleAuthentication.Abstractions/JwtBearer/IJwtBearerService.cs) interface is automatically registered to create a valid JWT Bearer, according to the settings you have specified in the _appsettings.json_ file:
 
 ```csharp
 app.MapPost("api/auth/login", async (LoginRequest loginRequest, IJwtBearerService jwtBearerService) =>
@@ -197,6 +197,76 @@ When using API Key or Basic Authentication, you can specify multiple fixed value
 ```
 
 With this configuration, authentication will succeed if any of these credentials are provided.
+
+**Assigning roles to API Keys and Basic Authentication credentials**
+
+You can optionally specify roles for each API Key or Basic Authentication credential. When authentication succeeds, the specified roles will be automatically added as role claims to the user's identity.
+
+For single credentials, you can specify roles directly:
+
+```json
+"Authentication": {
+    "ApiKey": {
+        "ApiKeyValue": "f1I7S5GXa4wQDgLQWgz0",
+        "UserName": "ApiUser",
+        "Roles": ["Administrator"]
+    },
+    "Basic": {
+        "UserName": "marco",
+        "Password": "P@$$w0rd",
+        "Roles": ["Administrator"]
+    }
+}
+```
+
+For multiple credentials, you can specify roles for each credential:
+
+```json
+"Authentication": {
+    "ApiKey": {
+        "ApiKeys": [
+            {
+                "Value": "key-1",
+                "UserName": "UserName1",
+                "Roles": ["Administrator", "User"]
+            },
+            {
+                "Value": "key-2",
+                "UserName": "UserName2",
+                "Roles": ["User"]
+            }
+        ]
+    },
+    "Basic": {
+        "Credentials": [
+            {
+                "UserName": "UserName1",
+                "Password": "Password1",
+                "Roles": ["Manager", "User"]
+            },
+            {
+                "UserName": "UserName2",
+                "Password": "Password2",
+                "Roles": ["User"]
+            }
+        ]
+    }
+}
+```
+
+The `Roles` parameter is optional. If omitted, no role claims will be added to the user's identity. You can then use the standard ASP.NET Core authorization features to check for roles:
+
+```csharp
+[Authorize(Roles = "Administrator")]
+public IActionResult AdminEndpoint()
+{
+    return Ok("Administrator access granted");
+}
+
+// Or with minimal APIs
+app.MapGet("/admin", () => "Administrator access granted")
+   .RequireAuthorization(policy => policy.RequireRole("Administrator"));
+```
 
 **Custom Authentication logic for API Keys and Basic Authentication**
 
@@ -316,4 +386,4 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 
 ## Contribute
 
-The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can. 
+The project is constantly evolving. Contributions are welcome. Feel free to file issues and pull requests in the repository, and we'll address them as we can.

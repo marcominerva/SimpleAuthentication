@@ -35,9 +35,13 @@ public static class SimpleAuthenticationExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentNullException.ThrowIfNull(sectionName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sectionName);
 
-        var defaultAuthenticationScheme = configuration.GetValue<string>($"{sectionName}:DefaultScheme");
+        var defaultAuthenticationScheme = configuration.GetValue<string?>($"{sectionName}:DefaultScheme");
+        if (string.IsNullOrWhiteSpace(defaultAuthenticationScheme))
+        {
+            defaultAuthenticationScheme = null; // treat empty/whitespace as no value.
+        }
 
         var builder = services.AddAuthentication(options =>
         {
@@ -65,7 +69,7 @@ public static class SimpleAuthenticationExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentNullException.ThrowIfNull(sectionName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sectionName);
 
         if (addAuthorizationServices)
         {
@@ -86,11 +90,11 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(JwtBearerSettings.SchemeName));
-            ArgumentNullException.ThrowIfNull(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
-            ArgumentNullException.ThrowIfNull(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
-            ArgumentNullException.ThrowIfNull(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
-            ArgumentNullException.ThrowIfNull(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.SchemeName, nameof(JwtBearerSettings.SchemeName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.SecurityKey, nameof(JwtBearerSettings.SecurityKey));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.Algorithm, nameof(JwtBearerSettings.Algorithm));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
 
             builder.Services.Configure<JwtBearerSettings>(section);
 
@@ -113,10 +117,7 @@ public static class SimpleAuthenticationExtensions
                 };
             });
 
-            if (settings.EnableJwtBearerService)
-            {
-                builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
-            }
+            builder.Services.TryAddSingleton<IJwtBearerService, JwtBearerService>();
         }
 
         static void CheckAddApiKey(AuthenticationBuilder builder, IConfigurationSection section)
@@ -127,9 +128,9 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(ApiKeySettings.SchemeName));
-            ArgumentNullException.ThrowIfNull(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
-            ArgumentNullException.ThrowIfNull(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.SchemeName, nameof(ApiKeySettings.SchemeName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
 
             if (string.IsNullOrWhiteSpace(settings.HeaderName) && string.IsNullOrWhiteSpace(settings.QueryStringKey))
             {
@@ -138,7 +139,7 @@ public static class SimpleAuthenticationExtensions
 
             if (!string.IsNullOrWhiteSpace(settings.ApiKeyValue))
             {
-                ArgumentNullException.ThrowIfNull(settings.UserName, nameof(ApiKeySettings.UserName));
+                ArgumentException.ThrowIfNullOrWhiteSpace(settings.UserName, nameof(ApiKeySettings.UserName));
             }
 
             if (settings.ApiKeys.Any(k => string.IsNullOrWhiteSpace(k.Value) || string.IsNullOrWhiteSpace(k.UserName)))
@@ -156,6 +157,7 @@ public static class SimpleAuthenticationExtensions
                 options.ApiKeyValue = settings.ApiKeyValue;
                 options.UserName = settings.UserName;
                 options.ApiKeys = settings.ApiKeys;
+                options.Roles = settings.Roles ?? [];
                 options.NameClaimType = settings.NameClaimType;
                 options.RoleClaimType = settings.RoleClaimType;
             });
@@ -169,18 +171,18 @@ public static class SimpleAuthenticationExtensions
                 return;
             }
 
-            ArgumentNullException.ThrowIfNull(settings.SchemeName, nameof(BasicAuthenticationSettings.SchemeName));
-            ArgumentNullException.ThrowIfNull(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
-            ArgumentNullException.ThrowIfNull(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.SchemeName, nameof(BasicAuthenticationSettings.SchemeName));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.NameClaimType, nameof(JwtBearerSettings.NameClaimType));
+            ArgumentException.ThrowIfNullOrWhiteSpace(settings.RoleClaimType, nameof(JwtBearerSettings.RoleClaimType));
 
             if (!string.IsNullOrWhiteSpace(settings.UserName))
             {
-                ArgumentNullException.ThrowIfNull(settings.Password, nameof(BasicAuthenticationSettings.Password));
+                ArgumentException.ThrowIfNullOrWhiteSpace(settings.Password, nameof(BasicAuthenticationSettings.Password));
             }
 
             if (!string.IsNullOrWhiteSpace(settings.Password))
             {
-                ArgumentNullException.ThrowIfNull(settings.UserName, nameof(BasicAuthenticationSettings.UserName));
+                ArgumentException.ThrowIfNullOrWhiteSpace(settings.UserName, nameof(BasicAuthenticationSettings.UserName));
             }
 
             if (settings.Credentials.Any(c => string.IsNullOrWhiteSpace(c.UserName) || string.IsNullOrWhiteSpace(c.Password)))
@@ -195,6 +197,7 @@ public static class SimpleAuthenticationExtensions
                 options.SchemeName = settings.SchemeName;
                 options.UserName = settings.UserName;
                 options.Password = settings.Password;
+                options.Roles = settings.Roles ?? [];
                 options.Credentials = settings.Credentials;
                 options.NameClaimType = settings.NameClaimType;
                 options.RoleClaimType = settings.RoleClaimType;

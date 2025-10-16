@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using BasicAuthenticationSample.Authentication;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Options;
 using SimpleAuthentication;
 using SimpleAuthentication.BasicAuthentication;
 
@@ -24,6 +25,7 @@ builder.Services.AddSimpleAuthentication(builder.Configuration);
 //        .Build())
 //    .AddPolicy("Basic", builder => builder.AddAuthenticationSchemes(BasicAuthenticationDefaults.AuthenticationScheme).RequireAuthenticatedUser());
 
+// This service is used when there isn't a fixed user/password value in the configuration.
 builder.Services.AddTransient<IBasicAuthenticationValidator, CustomBasicAuthenticationValidator>();
 
 // Uncomment the following line if you have multiple authentication schemes and
@@ -55,16 +57,24 @@ app.UseSwaggerUI(options =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("api/me", (ClaimsPrincipal user) =>
+app.MapGet("api/me", (ClaimsPrincipal user, IOptions<BasicAuthenticationSettings> options) =>
 {
-    return TypedResults.Ok(new User(user.Identity!.Name));
+    var roles = user.FindAll(options.Value.RoleClaimType).Select(c => c.Value);
+    return TypedResults.Ok(new User(user.Identity!.Name, roles));
 })
-.RequireAuthorization()
-.WithOpenApi();
+.RequireAuthorization();
+
+app.MapGet("api/administrator", () => TypedResults.NoContent())
+.WithDescription("This endpoint requires the user to have the 'Administrator' role")
+.RequireAuthorization(policy => policy.RequireRole("Administrator"));
+
+app.MapGet("api/user", () => TypedResults.NoContent())
+.WithDescription("This endpoint requires the user to have the 'User' role")
+.RequireAuthorization(policy => policy.RequireRole("User"));
 
 app.Run();
 
-public record class User(string? UserName);
+public record class User(string? UserName, IEnumerable<string> Roles);
 
 public class CustomBasicAuthenticationValidator : IBasicAuthenticationValidator
 {

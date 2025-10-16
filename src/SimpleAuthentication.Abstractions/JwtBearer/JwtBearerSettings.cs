@@ -67,10 +67,4 @@ public class JwtBearerSettings
     /// The default is <see cref="ClaimsIdentity.DefaultRoleClaimType"/>.
     /// </remarks>
     public string RoleClaimType { get; set; } = ClaimsIdentity.DefaultRoleClaimType;
-
-    /// <summary>
-    /// <see langword="true"/> to register the <see cref="IJwtBearerService"/> service in the <see cref="IServiceCollection"/> (Default: true).
-    /// </summary>
-    /// <seealso cref="IJwtBearerService"/>
-    public bool EnableJwtBearerService { get; set; } = true;
 }

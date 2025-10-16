@@ -23,18 +23,18 @@ public class ApiKeyValidationResult
     /// <summary>
     /// Gets the claim list, if authentication was successful.
     /// </summary>
-    public IList<Claim>? Claims { get; }
+    public IList<Claim> Claims { get; } = [];
 
     /// <summary>
     /// Gets the failure message, if authentication was unsuccessful.
     /// </summary>
     public string? FailureMessage { get; }
 
-    private ApiKeyValidationResult(string userName, IList<Claim>? claims)
+    private ApiKeyValidationResult(string userName, IList<Claim>? claims = null)
     {
         Succeeded = true;
         UserName = userName;
-        Claims = claims;
+        Claims = claims ?? [];
     }
 
     private ApiKeyValidationResult(string failureMessage)
