@@ -6,7 +6,7 @@ namespace SimpleAuthentication.BasicAuthentication;
 /// <param name="UserName">The user name</param>
 /// <param name="Password">The password</param>
 /// <param name="Roles">The list of roles to assign to the user</param>
-public record class Credential(string UserName, string Password, IEnumerable<string> Roles)
+public record class Credential(string UserName, string Password, IEnumerable<string>? Roles = null)
 {
     /// <inheritdoc />
     public virtual bool Equals(Credential? other)
@@ -25,8 +25,5 @@ public record class Credential(string UserName, string Password, IEnumerable<str
     }
 
     /// <inheritdoc />
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(UserName, Password);
-    }
+    public override int GetHashCode() => HashCode.Combine(UserName, Password);
 }
