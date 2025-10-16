@@ -6,7 +6,7 @@ namespace SimpleAuthentication.ApiKey;
 /// <param name="Value">The API key value</param>
 /// <param name="UserName">The user name associated with the current key</param>
 /// <param name="Roles">The list of roles to assign to the user</param>
-public record class ApiKey(string Value, string UserName, IEnumerable<string> Roles)
+public record class ApiKey(string Value, string UserName, IEnumerable<string>? Roles = null)
 {
     /// <inheritdoc />
     public virtual bool Equals(ApiKey? other)
@@ -25,8 +25,5 @@ public record class ApiKey(string Value, string UserName, IEnumerable<string> Ro
     }
 
     /// <inheritdoc />
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Value, UserName);
-    }
+    public override int GetHashCode() => HashCode.Combine(Value, UserName);
 }
