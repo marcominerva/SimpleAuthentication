@@ -59,9 +59,12 @@ internal partial class BasicAuthenticationHandler(IOptionsMonitor<BasicAuthentic
         if (credential is not null)
         {
             var claims = new List<Claim>();
-            foreach (var role in credential.Roles)
+            if (credential.Roles is not null)
             {
-                claims.Add(new(Options.RoleClaimType, role));
+                foreach (var role in credential.Roles)
+                {
+                    claims.Add(new(Options.RoleClaimType, role));
+                }
             }
 
             return CreateAuthenticationSuccessResult(credential.UserName, claims);
