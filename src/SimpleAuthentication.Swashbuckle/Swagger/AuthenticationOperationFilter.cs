@@ -22,6 +22,7 @@ internal class AuthenticationOperationFilter(IAuthorizationPolicyProvider author
 
         if ((requireAuthenticatedUser || requireAuthorization) && !allowAnonymous)
         {
+            operation.Responses ??= [];
             operation.Responses.TryAdd(StatusCodes.Status401Unauthorized.ToString(), OpenApiHelpers.CreateResponse(HttpStatusCode.Unauthorized.ToString()));
             operation.Responses.TryAdd(StatusCodes.Status403Forbidden.ToString(), OpenApiHelpers.CreateResponse(HttpStatusCode.Forbidden.ToString()));
         }
