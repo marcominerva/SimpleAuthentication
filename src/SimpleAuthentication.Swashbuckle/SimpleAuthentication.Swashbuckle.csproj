@@ -32,7 +32,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.1.4" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.6" />
     </ItemGroup>
 
@@ -42,6 +41,10 @@
             <PackagePath></PackagePath>
         </None>
         <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SimpleAuthentication.Abstractions\SimpleAuthentication.Abstractions.csproj" />
     </ItemGroup>
     
 </Project>
