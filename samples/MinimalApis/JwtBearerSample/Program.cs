@@ -103,8 +103,7 @@ authApiGroup.MapPost("refresh", async (string token, bool validateLifetime, Date
 {
     var newToken = await jwtBearerService.RefreshTokenAsync(token, validateLifetime, expiration);
     return TypedResults.Ok(new LoginResponse(newToken));
-})
-.WithOpenApi();
+});
 
 app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
