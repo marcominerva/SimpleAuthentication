@@ -2,6 +2,7 @@ using System.Security.Claims;
 using JwtBearerSample.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.OpenApi;
 using SimpleAuthentication;
 using SimpleAuthentication.JwtBearer;
 using SimpleAuthentication.Permissions;
@@ -57,7 +58,11 @@ app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-app.UseSwagger();
+app.UseSwagger(options =>
+{
+    options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+});
+
 app.UseSwaggerUI();
 
 app.UseAuthentication();
@@ -79,11 +84,7 @@ authApiGroup.MapPost("login", async (LoginRequest loginRequest, DateTime? expira
     var token = await jwtBearerService.CreateTokenAsync(loginRequest.UserName, claims, absoluteExpiration: expiration);
     return TypedResults.Ok(new LoginResponse(token));
 })
-.WithOpenApi(operation =>
-{
-    operation.Description = "Insert permissions in the scope property (for example: 'profile people:admin')";
-    return operation;
-});
+.WithDescription("Insert permissions in the scope property (for example: 'profile people:admin')");
 
 authApiGroup.MapPost("validate", async Task<Results<Ok<User>, BadRequest>> (string token, bool validateLifetime, IJwtBearerService jwtBearerService) =>
 {
@@ -95,15 +96,13 @@ authApiGroup.MapPost("validate", async Task<Results<Ok<User>, BadRequest>> (stri
     }
 
     return TypedResults.Ok(new User(result.Principal.Identity!.Name));
-})
-.WithOpenApi();
+});
 
 authApiGroup.MapPost("refresh", async (string token, bool validateLifetime, DateTime? expiration, IJwtBearerService jwtBearerService) =>
 {
     var newToken = await jwtBearerService.RefreshTokenAsync(token, validateLifetime, expiration);
     return TypedResults.Ok(new LoginResponse(newToken));
-})
-.WithOpenApi();
+});
 
 app.MapGet("api/me", (ClaimsPrincipal user) =>
 {
@@ -111,22 +110,14 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 })
 .RequireAuthorization()
 .RequirePermission("profile")
-.WithOpenApi(operation =>
-{
-    operation.Description = "This endpoint requires the 'profile' permission";
-    return operation;
-});
+.WithDescription("This endpoint requires the 'profile' permission");
 
 app.MapGet("api/people", () =>
 {
     return TypedResults.NoContent();
 })
 .RequireAuthorization(policyNames: "PeopleRead")
-.WithOpenApi(operation =>
-{
-    operation.Description = $"This endpoint requires the '{Permissions.PeopleRead}' or '{Permissions.PeopleAdmin}' permissions";
-    return operation;
-});
+.WithDescription($"This endpoint requires the '{Permissions.PeopleRead}' or '{Permissions.PeopleAdmin}' permissions");
 
 app.Run();
 

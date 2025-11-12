@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SimpleAuthentication.ApiKey;
 using SimpleAuthentication.BasicAuthentication;
 using SimpleAuthentication.JwtBearer;
@@ -25,7 +25,7 @@ public static class SwaggerExtensions
     /// <seealso cref="SwaggerGenOptions"/>
     /// <seealso cref="IConfiguration"/>
     public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName = "Authentication")
-        => options.AddSimpleAuthentication(configuration, sectionName, Array.Empty<OpenApiSecurityRequirement>());
+        => options.AddSimpleAuthentication(configuration, sectionName, [], []);
 
     /// <summary>
     /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from a section named <strong>Authentication</strong> in <see cref="IConfiguration"/> source.
@@ -35,7 +35,7 @@ public static class SwaggerExtensions
     /// <param name="additionalSecurityDefinitionNames">The name of additional security definitions that have been defined in Swagger.</param>
     /// <seealso cref="SwaggerGenOptions"/>
     /// <seealso cref="IConfiguration"/>
-    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, IEnumerable<string>? additionalSecurityDefinitionNames)
+    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, params IEnumerable<string> additionalSecurityDefinitionNames)
         => options.AddSimpleAuthentication(configuration, "Authentication", additionalSecurityDefinitionNames);
 
     /// <summary>
@@ -47,11 +47,7 @@ public static class SwaggerExtensions
     /// <param name="additionalSecurityDefinitionNames">The name of additional security definitions that have been defined in Swagger.</param>
     /// <seealso cref="SwaggerGenOptions"/>
     /// <seealso cref="IConfiguration"/>
-    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName, IEnumerable<string>? additionalSecurityDefinitionNames)
-    {
-        var securityRequirements = additionalSecurityDefinitionNames?.Select(OpenApiHelpers.CreateSecurityRequirement).ToArray();
-        options.AddSimpleAuthentication(configuration, sectionName, securityRequirements ?? []);
-    }
+    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName, params IEnumerable<string> additionalSecurityDefinitionNames) => options.AddSimpleAuthentication(configuration, sectionName, [], additionalSecurityDefinitionNames);
 
     /// <summary>
     /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
@@ -61,8 +57,8 @@ public static class SwaggerExtensions
     /// <param name="securityRequirements">Additional security requirements to be added to Swagger definition.</param>
     /// <seealso cref="SwaggerGenOptions"/>
     /// <seealso cref="IConfiguration"/>
-    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, params OpenApiSecurityRequirement[] securityRequirements)
-        => options.AddSimpleAuthentication(configuration, "Authentication", securityRequirements);
+    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, params IEnumerable<OpenApiSecurityRequirement> securityRequirements)
+        => options.AddSimpleAuthentication(configuration, "Authentication", securityRequirements, []);
 
     /// <summary>
     /// Adds authentication support in Swagger, enabling the Authorize button in the Swagger UI, reading configuration from the specified <see cref="IConfiguration"/> source.
@@ -71,9 +67,10 @@ public static class SwaggerExtensions
     /// <param name="configuration">The <see cref="IConfiguration"/> being bound.</param>
     /// <param name="sectionName">The name of the configuration section that holds authentication settings (default: Authentication).</param>
     /// <param name="additionalSecurityRequirements">Additional security requirements to be added to Swagger definition.</param>
+    /// <param name="additionalSecurityDefinitionNames">The name of additional security definitions that have been defined in OpenAPI.</param>
     /// <seealso cref="SwaggerGenOptions"/>
     /// <seealso cref="IConfiguration"/>
-    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName, params OpenApiSecurityRequirement[] additionalSecurityRequirements)
+    public static void AddSimpleAuthentication(this SwaggerGenOptions options, IConfiguration configuration, string sectionName, IEnumerable<OpenApiSecurityRequirement> additionalSecurityRequirements, IEnumerable<string> additionalSecurityDefinitionNames)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(configuration);
@@ -84,12 +81,21 @@ public static class SwaggerExtensions
         CheckAddApiKey(options, configuration.GetSection($"{sectionName}:ApiKey"));
         CheckAddBasicAuthentication(options, configuration.GetSection($"{sectionName}:Basic"));
 
-        if (additionalSecurityRequirements?.Any() ?? false)
+        if (additionalSecurityRequirements?.Any() == true)
         {
             // Adds all the other security requirements that have been specified.
             foreach (var securityRequirement in additionalSecurityRequirements)
             {
-                options.AddSecurityRequirement(securityRequirement);
+                AddSecurityRequirement(options, securityRequirement);
+            }
+        }
+
+        if (additionalSecurityDefinitionNames?.Any() == true)
+        {
+            // Adds all the other security definitions that have been specified.
+            foreach (var definitionName in additionalSecurityDefinitionNames)
+            {
+                AddSecurityRequirement(options, definitionName);
             }
         }
 
@@ -146,7 +152,7 @@ public static class SwaggerExtensions
         }
 
         static void AddSecurityDefinition(SwaggerGenOptions options, string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description)
-            => options.AddSecurityDefinition(name, new()
+            => options.AddSecurityDefinition(name, new OpenApiSecurityScheme()
             {
                 In = location,
                 Name = parameterName,
@@ -195,7 +201,7 @@ public static class SwaggerExtensions
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentNullException.ThrowIfNull(authFlow);
 
-        options.AddSecurityDefinition(name, new()
+        options.AddSecurityDefinition(name, new OpenApiSecurityScheme()
         {
             Type = SecuritySchemeType.OAuth2,
             Flows = new()
@@ -207,6 +213,9 @@ public static class SwaggerExtensions
         AddSecurityRequirement(options, name);
     }
 
+    private static void AddSecurityRequirement(SwaggerGenOptions options, OpenApiSecurityRequirement requirement)
+        => options.AddSecurityRequirement(_ => requirement);
+
     private static void AddSecurityRequirement(SwaggerGenOptions options, string name)
-        => options.AddSecurityRequirement(OpenApiHelpers.CreateSecurityRequirement(name));
+        => options.AddSecurityRequirement(document => OpenApiHelpers.CreateSecurityRequirement(name, document));
 }
