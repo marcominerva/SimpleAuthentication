@@ -70,13 +70,6 @@ internal static class OpenApiHelpers
                 [MediaTypeNames.Application.ProblemJson] = new()
                 {
                     Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
-                    {
-                        Reference = new()
-                        {
-                            Type = ReferenceType.Schema,
-                            Id = nameof(ProblemDetails)
-                        }
-                    }
                 }
             }
         };
