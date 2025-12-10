@@ -35,11 +35,11 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.1.5" />
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.1.6" />
     </ItemGroup>
 
     <ItemGroup>
