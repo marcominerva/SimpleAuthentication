@@ -157,7 +157,7 @@ internal class AuthenticationDocumentTransformer(IConfiguration configuration, s
                 return;
             }
 
-            AddSecurityScheme(document, settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token");
+            AddSecurityScheme(document, settings.SchemeName, SecuritySchemeType.Http, JwtBearerDefaults.AuthenticationScheme, ParameterLocation.Header, HeaderNames.Authorization, "Insert the Bearer Token", "JWT");
             AddSecurityRequirement(document, settings.SchemeName);
         }
 
@@ -199,7 +199,7 @@ internal class AuthenticationDocumentTransformer(IConfiguration configuration, s
         }
     }
 
-    private static void AddSecurityScheme(OpenApiDocument document, string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description)
+    private static void AddSecurityScheme(OpenApiDocument document, string name, SecuritySchemeType securitySchemeType, string? scheme, ParameterLocation location, string parameterName, string description, string? bearerFormat = null)
     {
         document.Components ??= new();
         document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
@@ -210,7 +210,8 @@ internal class AuthenticationDocumentTransformer(IConfiguration configuration, s
             Name = parameterName,
             Description = description,
             Type = securitySchemeType,
-            Scheme = scheme
+            Scheme = scheme,
+            BearerFormat = bearerFormat
         });
     }
 
