@@ -31,15 +31,15 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.12" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.14" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.4" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.1.9" />
+        <PackageReference Include="SimpleAuthenticationTools.Abstractions" Version="3.1.10" />
     </ItemGroup>
 
     <ItemGroup>
