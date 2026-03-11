@@ -42,7 +42,7 @@
 - Return `Task` or `ValueTask` from asynchronous methods.
 - Use `CancellationToken` parameters to support cancellation.
 - Avoid async void methods except for event handlers.
-- Call `ConfigureAwait(false)` on awaited calls to avoid deadlocks.
+- Use `ConfigureAwait(false)` only in library code that may be consumed by apps with a `SynchronizationContext` (e.g., classic ASP.NET, WPF, WinForms); it is generally unnecessary in ASP.NET Core.
 
 ### Error Handling
 
