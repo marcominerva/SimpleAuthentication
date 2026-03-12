@@ -6,11 +6,19 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace SimpleAuthentication.JwtBearer;
 
-internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptions) : IJwtBearerService
+/// <summary>
+/// Default implementation of <see cref="IJwtBearerService"/> that provides JWT Bearer token generation and validation.
+/// </summary>
+/// <param name="jwtBearerSettingsOptions">The JWT Bearer settings.</param>
+public class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptions) : IJwtBearerService
 {
-    private readonly JwtBearerSettings jwtBearerSettings = jwtBearerSettingsOptions.Value;
+    /// <summary>
+    /// Gets the JWT Bearer settings used by this service.
+    /// </summary>
+    protected readonly JwtBearerSettings jwtBearerSettings = jwtBearerSettingsOptions.Value;
 
-    public Task<string> CreateTokenAsync(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
+    /// <inheritdoc />
+    public virtual Task<string> CreateTokenAsync(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {
         claims ??= [];
         claims.Update(jwtBearerSettings.NameClaimType, userName);
@@ -35,7 +43,8 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
         return Task.FromResult(token);
     }
 
-    public async Task<ClaimsPrincipal> ValidateTokenAsync(string token, bool validateLifetime = true)
+    /// <inheritdoc />
+    public virtual async Task<ClaimsPrincipal> ValidateTokenAsync(string token, bool validateLifetime = true)
     {
         var tokenHandler = new JsonWebTokenHandler();
 
@@ -71,7 +80,8 @@ internal class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOpt
         return principal;
     }
 
-    public async Task<string> RefreshTokenAsync(string token, bool validateLifetime, DateTime? absoluteExpiration = null)
+    /// <inheritdoc />
+    public virtual async Task<string> RefreshTokenAsync(string token, bool validateLifetime, DateTime? absoluteExpiration = null)
     {
         var principal = await ValidateTokenAsync(token, validateLifetime);
         var claims = (principal.Identity as ClaimsIdentity)!.Claims.ToList();
