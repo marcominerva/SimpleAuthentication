@@ -15,26 +15,26 @@ public class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptio
     /// <summary>
     /// Gets the JWT Bearer settings used by this service.
     /// </summary>
-    protected readonly JwtBearerSettings jwtBearerSettings = jwtBearerSettingsOptions.Value;
+    protected JwtBearerSettings JwtBearerSettings { get; } = jwtBearerSettingsOptions.Value;
 
     /// <inheritdoc />
     public virtual Task<string> CreateTokenAsync(string userName, IList<Claim>? claims = null, string? issuer = null, string? audience = null, DateTime? absoluteExpiration = null)
     {
         claims ??= [];
-        claims.Update(jwtBearerSettings.NameClaimType, userName);
+        claims.Update(JwtBearerSettings.NameClaimType, userName);
         claims.Update(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString());
 
         var now = DateTime.UtcNow;
 
         var securityTokenDescriptor = new SecurityTokenDescriptor()
         {
-            Subject = new ClaimsIdentity(claims, jwtBearerSettings.SchemeName, jwtBearerSettings.NameClaimType, jwtBearerSettings.RoleClaimType),
-            Issuer = issuer ?? jwtBearerSettings.Issuers?.FirstOrDefault(),
-            Audience = audience ?? jwtBearerSettings.Audiences?.FirstOrDefault(),
+            Subject = new ClaimsIdentity(claims, JwtBearerSettings.SchemeName, JwtBearerSettings.NameClaimType, JwtBearerSettings.RoleClaimType),
+            Issuer = issuer ?? JwtBearerSettings.Issuers?.FirstOrDefault(),
+            Audience = audience ?? JwtBearerSettings.Audiences?.FirstOrDefault(),
             IssuedAt = now,
-            NotBefore = now.Add(-jwtBearerSettings.ClockSkew),
-            Expires = absoluteExpiration ?? (jwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? now.Add(jwtBearerSettings.ExpirationTime!.Value) : DateTime.MaxValue),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerSettings.SecurityKey)), jwtBearerSettings.Algorithm)
+            NotBefore = now.Add(-JwtBearerSettings.ClockSkew),
+            Expires = absoluteExpiration ?? (JwtBearerSettings.ExpirationTime.GetValueOrDefault() > TimeSpan.Zero ? now.Add(JwtBearerSettings.ExpirationTime!.Value) : DateTime.MaxValue),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtBearerSettings.SecurityKey)), JwtBearerSettings.Algorithm)
         };
 
         var tokenHandler = new JsonWebTokenHandler();
@@ -55,23 +55,23 @@ public class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptio
 
         var tokenValidationParameters = new TokenValidationParameters
         {
-            AuthenticationType = jwtBearerSettings.SchemeName,
-            NameClaimType = jwtBearerSettings.NameClaimType,
-            RoleClaimType = jwtBearerSettings.RoleClaimType,
-            ValidateIssuer = jwtBearerSettings.Issuers?.Any() ?? false,
-            ValidIssuers = jwtBearerSettings.Issuers,
-            ValidateAudience = jwtBearerSettings.Audiences?.Any() ?? false,
-            ValidAudiences = jwtBearerSettings.Audiences,
+            AuthenticationType = JwtBearerSettings.SchemeName,
+            NameClaimType = JwtBearerSettings.NameClaimType,
+            RoleClaimType = JwtBearerSettings.RoleClaimType,
+            ValidateIssuer = JwtBearerSettings.Issuers?.Any() ?? false,
+            ValidIssuers = JwtBearerSettings.Issuers,
+            ValidateAudience = JwtBearerSettings.Audiences?.Any() ?? false,
+            ValidAudiences = JwtBearerSettings.Audiences,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtBearerSettings.SecurityKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtBearerSettings.SecurityKey)),
             RequireExpirationTime = true,
             ValidateLifetime = validateLifetime,
-            ClockSkew = jwtBearerSettings.ClockSkew
+            ClockSkew = JwtBearerSettings.ClockSkew
         };
 
         var validationResult = await tokenHandler.ValidateTokenAsync(token, tokenValidationParameters);
 
-        if (!validationResult.IsValid || validationResult.SecurityToken is not JsonWebToken jsonWebToken || jsonWebToken.Alg != jwtBearerSettings.Algorithm)
+        if (!validationResult.IsValid || validationResult.SecurityToken is not JsonWebToken jsonWebToken || jsonWebToken.Alg != JwtBearerSettings.Algorithm)
         {
             throw new SecurityTokenException("Token is expired or invalid", validationResult.Exception);
         }
@@ -86,7 +86,7 @@ public class JwtBearerService(IOptions<JwtBearerSettings> jwtBearerSettingsOptio
         var principal = await ValidateTokenAsync(token, validateLifetime);
         var claims = (principal.Identity as ClaimsIdentity)!.Claims.ToList();
 
-        var userName = claims.First(c => c.Type == jwtBearerSettings.NameClaimType).Value;
+        var userName = claims.First(c => c.Type == JwtBearerSettings.NameClaimType).Value;
         var issuer = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iss)?.Value;
         var audience = claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Aud)?.Value;
 
