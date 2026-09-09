@@ -10,6 +10,4 @@ namespace SimpleAuthentication.Permissions;
 /// </remarks>
 /// <param name="permissions">The permission list to require for authorization.</param>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class PermissionAttribute(params string[] permissions) : AuthorizeAttribute(string.Join(",", permissions))
-{
-}
+public class PermissionAttribute(params string[] permissions) : AuthorizeAttribute(string.Join(",", permissions));
