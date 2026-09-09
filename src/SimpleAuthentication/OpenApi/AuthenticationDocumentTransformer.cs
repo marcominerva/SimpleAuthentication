@@ -108,7 +108,6 @@ internal class AuthenticationDocumentTransformer(IConfiguration configuration, s
 
 #elif NET10_0_OR_GREATER
 
-using System.Xml.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
