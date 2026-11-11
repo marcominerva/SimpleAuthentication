@@ -45,7 +45,7 @@ internal static class OpenApiHelpers
         };
 }
 
-#elif NET10_0_OR_GREATER
+#elif NET10_0
 
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +68,36 @@ internal static class OpenApiHelpers
             Content = new Dictionary<string, OpenApiMediaType>
             {
                 [MediaTypeNames.Application.ProblemJson] = new()
+                {
+                    Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
+                }
+            }
+        };
+}
+
+#elif NET11_0_OR_GREATER
+
+using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
+
+namespace SimpleAuthentication.OpenApi;
+
+internal static class OpenApiHelpers
+{
+    public static OpenApiSecurityRequirement CreateSecurityRequirement(string name, OpenApiDocument document)
+        => new()
+            {
+                { new OpenApiSecuritySchemeReference(name, document), [] }
+            };
+
+    public static OpenApiResponse CreateResponse(string description)
+        => new()
+        {
+            Description = description,
+            Content = new Dictionary<string, IOpenApiMediaType>
+            {
+                [MediaTypeNames.Application.ProblemJson] = new OpenApiMediaType
                 {
                     Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
                 }
