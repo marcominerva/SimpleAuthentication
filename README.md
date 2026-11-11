@@ -36,7 +36,7 @@ Authentication can be fully configured adding an _Authentication_ section in the
         "SchemeName": "Bearer" // Default: Bearer
         //"NameClaimType": "user_name", // Default: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
         //"RoleClaimType": "user_role", // Default: http://schemas.microsoft.com/ws/2008/06/identity/claims/role
-        "SecurityKey": "supersecretsecuritykey42!", // Required
+        "SecurityKey": "supersupersupersupersupersecretsecuritykey42!", // Required
         "Algorithm": "HS256", // Default: HS256
         "Issuers": [ "issuer" ], // Optional
         "Audiences": [ "audience" ], // Optional

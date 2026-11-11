@@ -9,7 +9,7 @@
     <Project Path="samples/MinimalApis/ApiKeySample/ApiKeySample.csproj" />
     <Project Path="samples/MinimalApis/BasicAuthenticationSample/BasicAuthenticationSample.csproj" />
     <Project Path="samples/MinimalApis/JwtBearerSample/JwtBearerSample.csproj" />
-    <Project Path="samples/MinimalApis/Net8JwtBearerSample/Net8JwtBearerSample.csproj" />
+    <Project Path="samples/MinimalApis/JwtBearerSample.Swashbuckle/JwtBearerSample.Swashbuckle.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
