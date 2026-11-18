@@ -13,7 +13,9 @@ The Orders API registers Microsoft Entra ID next to the schemes of [Simple Authe
 
 ## Configure Microsoft Entra ID
 
-The sample needs a Microsoft Entra ID tenant where you can register applications and grant admin consent. The following steps use the [Microsoft Entra admin center](https://entra.microsoft.com).
+The sample needs a Microsoft Entra ID tenant where you can register applications and grant admin consent. The following steps use the [Microsoft Entra admin center](https://entra.microsoft.com). The meaning of each setting is explained in the [Microsoft Entra ID setup](https://github.com/marcominerva/SimpleAuthentication/tree/master/src/SimpleAuthentication.EntraId#microsoft-entra-id-setup) section of the package documentation.
+
+In this sample, the Inventory API is the *target API* of the Orders API, and the Orders API is in turn the *target API* of the client application: each target API needs its application role and the `idtyp` optional claim.
 
 **1. Register the Inventory API**
 
@@ -97,6 +99,8 @@ curl "https://localhost:7101/api/orders" -H "Authorization: Bearer <access-token
 ```
 
 The response contains the orders, with the availability of the products provided by the Inventory API. If you call the Orders API without a token, with a token that does not contain the `Orders.Read` role or with a token issued on behalf of a user, the request is rejected. The same happens to the Orders API if it has not been granted the `Inventory.Read` role.
+
+If something doesn't work, the [Verifying the token](https://github.com/marcominerva/SimpleAuthentication/tree/master/src/SimpleAuthentication.EntraId#verifying-the-token) and [Troubleshooting](https://github.com/marcominerva/SimpleAuthentication/tree/master/src/SimpleAuthentication.EntraId#troubleshooting) sections of the package documentation show how to check the content of the tokens and the most common causes of errors.
 
 ## What to look at
 
