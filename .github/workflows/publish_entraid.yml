@@ -1,0 +1,63 @@
+name: Publish Microsoft Entra ID for Simple Authentication on NuGet
+
+permissions:
+  contents: write
+  id-token: write
+
+on:
+  push:
+    branches: [ master ]
+    paths: [ 'src/SimpleAuthentication.EntraId/**' ]
+  workflow_dispatch:
+
+env:
+  NET_VERSION: '11.x'
+  PROJECT_NAME: src/SimpleAuthentication.EntraId
+  PROJECT_FILE: SimpleAuthentication.EntraId.csproj
+  TAG_NAME: entraid
+  RELEASE_NAME: SimpleAuthenticationTools.EntraId
+
+jobs:
+  build:
+    name: Publish Microsoft Entra ID for Simple Authentication on NuGet
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+    - name: Setup .NET SDK ${{ env.NET_VERSION }}
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: ${{ env.NET_VERSION }}
+        dotnet-quality: 'ga'
+
+    - name: Nerdbank.GitVersioning
+      uses: dotnet/nbgv@v0.4
+      id: nbgv
+      with:
+        path: ${{ env.PROJECT_NAME }}
+
+    - name: Package
+      run: dotnet pack -c Release -o . '${{ env.PROJECT_NAME }}/${{ env.PROJECT_FILE }}'
+
+    - name: NuGet login (OIDC → temp API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
+    - name: Publish on NuGet
+      run: dotnet nuget push *.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
+
+    - name: Create release
+      uses: softprops/action-gh-release@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: v${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          name: ${{ env.RELEASE_NAME }} ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+          draft: false
+          prerelease: false

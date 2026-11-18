@@ -6,7 +6,7 @@
 [![NuGet](https://img.shields.io/nuget/dt/SimpleAuthenticationTools)](https://www.nuget.org/packages/SimpleAuthenticationTools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/marcominerva/SimpleAuthentication/blob/master/LICENSE)
 
-A library to easily integrate Authentication in ASP.NET Core projects. Currently it supports JWT Bearer, API Key and Basic Authentication in both Controller-based and Minimal API projects.
+A library to easily integrate Authentication in ASP.NET Core projects. Currently it supports JWT Bearer, API Key and Basic Authentication in both Controller-based and Minimal API projects. Service-to-service authentication with Microsoft Entra ID is available as an [optional package](#microsoft-entra-id-authentication).
 
 > [!IMPORTANT]
 > **Update from Version 2.x to 3.x**
@@ -378,11 +378,58 @@ app.MapGet("api/me", (ClaimsPrincipal user) =>
 .RequireAuthorization(policyNames: "UserProfile")
 ```
 
+## Microsoft Entra ID authentication
+
+If your services use Microsoft Entra ID to talk to each other, you can install the optional [SimpleAuthentication.EntraId](https://github.com/marcominerva/SimpleAuthentication/tree/master/src/SimpleAuthentication.EntraId) package. Search for *SimpleAuthenticationTools.EntraId* in the **Package Manager GUI** or run the following command in the **.NET CLI**:
+
+```shell
+dotnet add package SimpleAuthenticationTools.EntraId
+```
+
+The package is built on top of [Microsoft.Identity.Web](https://learn.microsoft.com/entra/msidweb/) and adds a Microsoft Entra ID scheme next to the ones you are already using, without changing the default scheme and without adding a fallback policy:
+
+```csharp
+using SimpleAuthentication;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Registers the schemes defined in the Authentication section, then adds a scheme (named EntraId)
+// that validates the access tokens issued by a single Microsoft Entra ID tenant.
+builder.Services.AddSimpleAuthentication(builder.Configuration)
+    .AddEntraIdJwtBearer(builder.Configuration.GetSection("AzureAd"))
+    // The following lines are required only if the application calls other APIs.
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddInMemoryTokenCaches();
+
+// Registers an HTTP client that calls another API using an app-only access token.
+builder.Services.AddEntraIdHttpClient("Inventory", builder.Configuration.GetSection("DownstreamApis:Inventory"))
+    .AddTypedClient<InventoryClient>();
+
+var app = builder.Build();
+
+// ...
+
+// Requires an app-only access token that contains the Orders.Read application role.
+app.MapGet("api/orders", () => TypedResults.Ok())
+    .RequireEntraIdApplicationRole("Orders.Read");
+
+app.Run();
+```
+
+In short:
+
+- only the endpoints that explicitly require it are protected by Microsoft Entra ID. Policies based on application roles accept app-only tokens and reject the ones issued on behalf of a user;
+- HTTP clients acquire app-only tokens using the credentials (for example a managed identity federated with the app registration) and the token cache configured for Microsoft.Identity.Web. They can send requests only to the configured HTTPS base address and never forward the token of the incoming request;
+- HTTP clients use timeouts, retries and circuit breaker, but the requests that can write data are never retried automatically.
+
+Refer to the [documentation of the package](https://github.com/marcominerva/SimpleAuthentication/tree/master/src/SimpleAuthentication.EntraId) for configuration and usage details.
+
 ## Samples
 
 - JWT Bearer ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/JwtBearerSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/JwtBearerSample))
 - API Key ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/ApiKeySample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/ApiKeySample))
 - Basic Authentication ([Controller](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/Controllers/BasicAuthenticationSample) | [Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/BasicAuthenticationSample))
+- Microsoft Entra ID ([Minimal API](https://github.com/marcominerva/SimpleAuthentication/tree/master/samples/MinimalApis/EntraIdMicroservices))
 
 ## Contribute
 
