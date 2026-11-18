@@ -11,13 +11,21 @@
     <Project Path="samples/MinimalApis/JwtBearerSample/JwtBearerSample.csproj" />
     <Project Path="samples/MinimalApis/JwtBearerSample.Swashbuckle/JwtBearerSample.Swashbuckle.csproj" />
   </Folder>
+  <Folder Name="/samples/Minimal APIs/EntraIdMicroservices/">
+    <Project Path="samples/MinimalApis/EntraIdMicroservices/InventoryApi/InventoryApi.csproj" />
+    <Project Path="samples/MinimalApis/EntraIdMicroservices/OrdersApi/OrdersApi.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="src/Directory.Build.props" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/SimpleAuthentication.Abstractions/SimpleAuthentication.Abstractions.csproj" />
+    <Project Path="src/SimpleAuthentication.EntraId/SimpleAuthentication.EntraId.csproj" />
     <Project Path="src/SimpleAuthentication.Swashbuckle/SimpleAuthentication.Swashbuckle.csproj" />
     <Project Path="src/SimpleAuthentication/SimpleAuthentication.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SimpleAuthentication.EntraId.Tests/SimpleAuthentication.EntraId.Tests.csproj" />
   </Folder>
 </Solution>
